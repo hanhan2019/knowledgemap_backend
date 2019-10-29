@@ -1,0 +1,8 @@
+Web:
+  ListenAddr: 0.0.0.0:1234
+DB:
+  Mongo:
+    Uri: mongodb://127.0.0.1:27017/knowledgemap_manage
+  Redis:
+    addr: "localhost:6379"
+    Db: 0

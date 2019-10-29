@@ -35,7 +35,7 @@ var _ server.Option
 // Client API for KnowledegeMap service
 
 type KnowledegeMapService interface {
-	GetKnowledegeMapBySbject(ctx context.Context, in *Empty, opts ...client.CallOption) (*KnowledegeMapInfo, error)
+	GetKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMapBySubject, opts ...client.CallOption) (*KnowledegeMapInfo, error)
 }
 
 type knowledegeMapService struct {
@@ -56,8 +56,8 @@ func NewKnowledegeMapService(name string, c client.Client) KnowledegeMapService 
 	}
 }
 
-func (c *knowledegeMapService) GetKnowledegeMapBySbject(ctx context.Context, in *Empty, opts ...client.CallOption) (*KnowledegeMapInfo, error) {
-	req := c.c.NewRequest(c.name, "KnowledegeMap.GetKnowledegeMapBySbject", in)
+func (c *knowledegeMapService) GetKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMapBySubject, opts ...client.CallOption) (*KnowledegeMapInfo, error) {
+	req := c.c.NewRequest(c.name, "KnowledegeMap.GetKnowledegeMapBySubject", in)
 	out := new(KnowledegeMapInfo)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -69,12 +69,12 @@ func (c *knowledegeMapService) GetKnowledegeMapBySbject(ctx context.Context, in 
 // Server API for KnowledegeMap service
 
 type KnowledegeMapHandler interface {
-	GetKnowledegeMapBySbject(context.Context, *Empty, *KnowledegeMapInfo) error
+	GetKnowledegeMapBySubject(context.Context, *CRqQueryMapBySubject, *KnowledegeMapInfo) error
 }
 
 func RegisterKnowledegeMapHandler(s server.Server, hdlr KnowledegeMapHandler, opts ...server.HandlerOption) error {
 	type knowledegeMap interface {
-		GetKnowledegeMapBySbject(ctx context.Context, in *Empty, out *KnowledegeMapInfo) error
+		GetKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMapBySubject, out *KnowledegeMapInfo) error
 	}
 	type KnowledegeMap struct {
 		knowledegeMap
@@ -87,6 +87,6 @@ type knowledegeMapHandler struct {
 	KnowledegeMapHandler
 }
 
-func (h *knowledegeMapHandler) GetKnowledegeMapBySbject(ctx context.Context, in *Empty, out *KnowledegeMapInfo) error {
-	return h.KnowledegeMapHandler.GetKnowledegeMapBySbject(ctx, in, out)
+func (h *knowledegeMapHandler) GetKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMapBySubject, out *KnowledegeMapInfo) error {
+	return h.KnowledegeMapHandler.GetKnowledegeMapBySubject(ctx, in, out)
 }

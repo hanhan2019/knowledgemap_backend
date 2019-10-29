@@ -1,0 +1,17 @@
+syntax = "proto3";
+package api;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+// import "myProjects/collegeManage/app/college/user/api/user.proto";
+
+
+
+// message Empty{}
+
+
+service Question {
+    // rpc Register(RegisterReq) returns (PassportUserReply) {}
+	// rpc Login(LoginReq) returns (PassportUserReply) {}
+	// rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+}

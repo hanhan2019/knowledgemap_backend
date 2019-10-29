@@ -1,6 +1,6 @@
 package handler
 
-type PassportService struct{}
+type QuestionService struct{}
 
 // func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rsp *api.PassportUserReply) error {
 // 	fmt.Println("here")
