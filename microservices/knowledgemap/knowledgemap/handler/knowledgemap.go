@@ -2,10 +2,15 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"knowledgemap_backend/microservices/knowledgemap/knowledgemap/api"
+	math "knowledgemap_backend/microservices/knowledgemap/knowledgemap/data/math"
+	"knowledgemap_backend/microservices/knowledgemap/knowledgemap/model"
+	qapi "knowledgemap_backend/microservices/knowledgemap/question/api"
 
 	"github.com/Sirupsen/logrus"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type KnowledgeMapService struct{}
@@ -118,4 +123,67 @@ func (s *KnowledgeMapService) GetKnowledegeMapBySubject(ctx context.Context, req
 	knowledgeMap, err := gdao.QueryKnowledgeMapByCourse(req.Subject)
 	rsp.Knowledgemap = knowledgeMap
 	return err
+}
+
+func (s *KnowledgeMapService) GetMyKnowledegeMapBySubject(ctx context.Context, req *api.CRqQueryMyMapBySubject, rsp *api.KnowledegeMapInfo) error {
+	if req.Subject == "" {
+		logrus.Errorln("subject is undefine!")
+		return errors.New("subject is undefine!")
+	}
+	mathKnowledgeMap := math.GetMathKnowledgeMap()
+	questionInfo, err := questionSrv.GetMyQuestionInfo(ctx, &qapi.CRqQueryMyQuestionInfoBySubject{Uid: req.Uid, Subject: req.Subject})
+	for _, v := range questionInfo.Knowledgenodes {
+		node := &model.Node{}
+		err := gdao.QueryNodeInfoByNodeID(ctx, bson.ObjectIdHex(v), node)
+		if err != nil {
+			logrus.Errorf("can't find node:%v", v)
+			continue
+		}
+		nodeInfo := CreateKnowledgeMapFromNodes(ctx, node)
+		if len(nodeInfo) != 0 {
+			mathKnowledgeMap["@graph"] = append(mathKnowledgeMap["@graph"].([]map[string]interface{}), nodeInfo...)
+		}
+	}
+	info, _ := json.Marshal(mathKnowledgeMap)
+	rsp.Knowledgemap = string(info[:])
+	return err
+}
+
+func CreateKnowledgeMapFromNodes(ctx context.Context, node *model.Node) []map[string]interface{} {
+	info := []map[string]interface{}{}
+	relations := new([]*model.Relation)
+	err := gdao.QueryRelationByNodeID(ctx, node.ID, relations)
+	if err != nil {
+		logrus.Errorf("can't find node relations:%v", node.ID.Hex())
+		return info
+	}
+
+	contains := []map[string]interface{}{}
+	derives := []map[string]interface{}{}
+	affects := []map[string]interface{}{}
+	for _, v := range *relations {
+		switch v.Relation {
+		case model.RelationContain:
+			contains = append(contains, map[string]interface{}{"id": v.ObjectNodeID})
+		case model.RelationDerive:
+			derives = append(derives, map[string]interface{}{"id": v.ObjectNodeID})
+		case model.RelationAffect:
+			affects = append(affects, map[string]interface{}{"id": v.ObjectNodeID})
+		default:
+		}
+	}
+
+	label := []map[string]interface{}{}
+	for _, v := range node.Label {
+		label = append(label, map[string]interface{}{"language": v.Language, "value": v.Value})
+	}
+	info = append(info, map[string]interface{}{
+		"id":       node.Kind,
+		"label":    label,
+		"type":     node.Type,
+		"contains": contains,
+		"derives":  derives,
+		"affects":  affects,
+	})
+	return info
 }

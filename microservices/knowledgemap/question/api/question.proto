@@ -11,7 +11,17 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 
 service Question {
+	rpc GetMyQuestionInfo(CRqQueryMyQuestionInfoBySubject) returns (CRpMyQuestionInfoBySubject) {}
     // rpc Register(RegisterReq) returns (PassportUserReply) {}
 	// rpc Login(LoginReq) returns (PassportUserReply) {}
 	// rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+}
+
+message CRqQueryMyQuestionInfoBySubject{
+	string uid = 1;
+	string subject = 2 [(gogoproto.jsontag) = "subject"];
+}
+
+message CRpMyQuestionInfoBySubject{
+	repeated string knowledgenodes =1;
 }

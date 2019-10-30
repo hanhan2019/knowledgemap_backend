@@ -35,6 +35,7 @@ var _ server.Option
 // Client API for Question service
 
 type QuestionService interface {
+	GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, opts ...client.CallOption) (*CRpMyQuestionInfoBySubject, error)
 }
 
 type questionService struct {
@@ -55,13 +56,25 @@ func NewQuestionService(name string, c client.Client) QuestionService {
 	}
 }
 
+func (c *questionService) GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, opts ...client.CallOption) (*CRpMyQuestionInfoBySubject, error) {
+	req := c.c.NewRequest(c.name, "Question.GetMyQuestionInfo", in)
+	out := new(CRpMyQuestionInfoBySubject)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Question service
 
 type QuestionHandler interface {
+	GetMyQuestionInfo(context.Context, *CRqQueryMyQuestionInfoBySubject, *CRpMyQuestionInfoBySubject) error
 }
 
 func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...server.HandlerOption) error {
 	type question interface {
+		GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, out *CRpMyQuestionInfoBySubject) error
 	}
 	type Question struct {
 		question
@@ -72,4 +85,8 @@ func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...serv
 
 type questionHandler struct {
 	QuestionHandler
+}
+
+func (h *questionHandler) GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, out *CRpMyQuestionInfoBySubject) error {
+	return h.QuestionHandler.GetMyQuestionInfo(ctx, in, out)
 }

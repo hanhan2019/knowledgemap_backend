@@ -2,14 +2,18 @@ package handler
 
 import (
 	"knowledgemap_backend/library/database/mongo"
+	"knowledgemap_backend/microservices/common/namespace"
 	"knowledgemap_backend/microservices/knowledgemap/knowledgemap/dao"
+	qapi "knowledgemap_backend/microservices/knowledgemap/question/api"
 
 	"github.com/go-redis/redis"
+	mclient "github.com/micro/go-micro/client"
 	"github.com/spf13/viper"
 )
 
 var (
-	gdao *dao.Dao
+	gdao        *dao.Dao
+	questionSrv qapi.QuestionService
 )
 
 func Init() {
@@ -30,4 +34,5 @@ func Init() {
 
 	gdao = dao.InitDao(db, client)
 	gdao.InitAllCourseKnowledgeMap()
+	questionSrv = qapi.NewQuestionService(namespace.GetName("planet.app.planet.mining"), mclient.DefaultClient)
 }
