@@ -17,8 +17,8 @@ const (
 
 type Node struct {
 	ID    bson.ObjectId `bson:"_id" json:"_id"` //仅为数据库存储的唯一id
-	Label []LableInfo   `bson:"babel" json:"label"`
-	Kind  string        `bson:"id" json:"id"` //对应jsonld 里的实体id
+	Label []LableInfo   `bson:"label" json:"label"`
+	Kind  string        `bson:"kind" json:"kind"` //对应jsonld 里的实体id
 	Type  NodeType      `bson:"type" json:"type"`
 }
 

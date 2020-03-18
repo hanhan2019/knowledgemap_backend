@@ -34,5 +34,6 @@ func Init() {
 
 	gdao = dao.InitDao(db, client)
 	gdao.InitAllCourseKnowledgeMap()
-	questionSrv = qapi.NewQuestionService(namespace.GetName("planet.app.planet.mining"), mclient.DefaultClient)
+	questionSrv = qapi.NewQuestionService(namespace.GetName("microservices.knowledgemap.question"), mclient.DefaultClient)
+	gdao.InitAllCourseKnowledgeMap()
 }

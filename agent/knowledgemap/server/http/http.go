@@ -4,22 +4,32 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator"
+	micro "github.com/micro/go-micro"
+	"github.com/micro/go-micro/registry"
+	"github.com/micro/go-micro/registry/consul"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	// validator "gopkg.in/go-playground/validator.v8"
 
 	"knowledgemap_backend/microservices/common/conf"
-
 	"knowledgemap_backend/microservices/common/middlewares"
+	"knowledgemap_backend/microservices/common/namespace"
 
-	"knowledgemap_backend/microservices/knowledgemap/passport/api"
+	kapi "knowledgemap_backend/microservices/knowledgemap/knowledgemap/api"
+	"knowledgemap_backend/microservices/knowledgemap/knowledgemap/handler"
+	papi "knowledgemap_backend/microservices/knowledgemap/passport/api"
+	qapi "knowledgemap_backend/microservices/knowledgemap/question/api"
+	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/micro/go-micro/client"
-	"github.com/sirupsen/logrus"
 )
 
 var (
-	passSrv api.PassportService
+	passportSrv     papi.PassportService
+	userSrv         uapi.UserService
+	questionSrv     qapi.QuestionService
+	knowledgeMapSrv kapi.KnowledegeMapService
 )
 
 type (
@@ -43,45 +53,53 @@ func Init() *echo.Echo {
 		contextlog.SetFormatter(&logrus.JSONFormatter{})
 		e.Use(middlewares.CreateContextLogMid(contextlog))
 	}
+
 	if conf.IsDebugEnv() {
 		e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
 			fmt.Printf("%s\n", resBody)
 		}))
 	}
 
-	passSrv = api.NewPassportService("collegemanage.app.college.passport", client.DefaultClient)
-	// userSrv = uapi.NewUserService("collegemanage.app.college.user", client.DefaultClient)
+	reg := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{
+			"127.0.0.1:8500",
+		}
+	})
+
+	services := micro.NewService(micro.Registry(reg), micro.Name(namespace.GetName("agent.knowledgemap.client")))
+	services.Init()
+	micro.RegisterHandler(services.Server(), new(handler.KnowledgeMapService))
+	go services.Run()
+	// questionSrv = qapi.NewQuestionService(namespace.GetName("microservices.knowledgemap.question"), client.DefaultClient)
+	// knowledgeMapSrv = kapi.NewKnowledegeMapService(namespace.GetName("microservices.knowledgemap.knowledgemap"), client.DefaultClient)
+	questionSrv = qapi.NewQuestionService(namespace.GetName("microservices.knowledgemap.question"), services.Client())
+	knowledgeMapSrv = kapi.NewKnowledegeMapService(namespace.GetName("microservices.knowledgemap.knowledgemap"), services.Client())
+	userSrv = uapi.NewUserService(namespace.GetName("microservices.knowledgemap.user"), services.Client())
+	passportSrv = papi.NewPassportService(namespace.GetName("microservices.knowledgemap.passport"), services.Client())
 	// courseSrv = capi.NewCourseService("collegemanage.app.college.course", client.DefaultClient)
 	InitRouter(e)
 	/*
 		//using gomcro web
-			service := web.NewService(
-				web.Name("go.micro.api.api.user"),
-			)
-			service.Init()
-			service.Handle("/", e)
-			go service.Run()
+		service := web.NewService(
+			web.Name("go.micro.api.api.user"),
+		)
+		service.Init()
+		service.Handle("/", e)
+		go service.Run()
 	*/
-
 	go e.Start(viper.GetString("web.listenaddr"))
 	return e
 }
 
 func InitRouter(e *echo.Echo) {
 
-	// api := e.Group("/api")
+	api := e.Group("/api")
 
-	// api.POST("/user/register", userRegister)
-	// api.PUT("/user/login", userLogin)
+	api.POST("/user/register", userRegister)
+	api.PUT("/user/login", userLogin)
 
 	// authMid := CreateAuthMid(passSrv)
-	// api.GET("/user/classmate/:cid", getClassMates, authMid)
+	api.GET("/hi", hello)
+	api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
 	// api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
-	// api.GET("/user/teacherallcourse/:uid", getTeacherAllCourseInfo, authMid)
-	// api.GET("/user/teacherallstudents/:uid", getTeacherAllStudent, authMid)
-	// api.GET("/user/allelectivedcourse/:uid", getElectivedCourseInfo, authMid)
-	// api.PUT("/user/givegrade", giveGrade, authMid)
-	// api.POST("/user/addcourse", addCourse)
-	// api.PUT("/user/choosecourse", chooseCourse, authMid)
-	// api.PUT("/user/deletecourse", deleteCourse, authMid)
 }

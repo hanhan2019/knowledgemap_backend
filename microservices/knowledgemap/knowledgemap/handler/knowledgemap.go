@@ -9,7 +9,7 @@ import (
 	"knowledgemap_backend/microservices/knowledgemap/knowledgemap/model"
 	qapi "knowledgemap_backend/microservices/knowledgemap/question/api"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -131,7 +131,7 @@ func (s *KnowledgeMapService) GetMyKnowledegeMapBySubject(ctx context.Context, r
 		return errors.New("subject is undefine!")
 	}
 	mathKnowledgeMap := math.GetMathKnowledgeMap()
-	questionInfo, err := questionSrv.GetMyQuestionInfo(ctx, &qapi.CRqQueryMyQuestionInfoBySubject{Uid: req.Uid, Subject: req.Subject})
+	questionInfo, err := questionSrv.GetMyQuestionInfo(ctx, &qapi.CRqQueryMyQuestionInfoBySubject{Uid: req.Uid, Subject: req.Subject, Endtime: req.Endtime})
 	for _, v := range questionInfo.Knowledgenodes {
 		node := &model.Node{}
 		err := gdao.QueryNodeInfoByNodeID(ctx, bson.ObjectIdHex(v), node)
@@ -162,13 +162,19 @@ func CreateKnowledgeMapFromNodes(ctx context.Context, node *model.Node) []map[st
 	derives := []map[string]interface{}{}
 	affects := []map[string]interface{}{}
 	for _, v := range *relations {
+		node := &model.Node{}
+		err := gdao.QueryNodeInfoByNodeID(ctx, v.ObjectNodeID, node)
+		if err != nil {
+			logrus.Errorf("can't find node:%v", v)
+			continue
+		}
 		switch v.Relation {
 		case model.RelationContain:
-			contains = append(contains, map[string]interface{}{"id": v.ObjectNodeID})
+			contains = append(contains, map[string]interface{}{"id": node.Kind})
 		case model.RelationDerive:
-			derives = append(derives, map[string]interface{}{"id": v.ObjectNodeID})
+			derives = append(derives, map[string]interface{}{"id": node.Kind})
 		case model.RelationAffect:
-			affects = append(affects, map[string]interface{}{"id": v.ObjectNodeID})
+			affects = append(affects, map[string]interface{}{"id": node.Kind})
 		default:
 		}
 	}

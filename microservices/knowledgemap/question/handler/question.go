@@ -1,5 +1,15 @@
 package handler
 
+import (
+	"context"
+	"knowledgemap_backend/microservices/knowledgemap/question/api"
+	"knowledgemap_backend/microservices/knowledgemap/question/model"
+
+	"github.com/Sirupsen/logrus"
+
+	"gopkg.in/mgo.v2/bson"
+)
+
 type QuestionService struct{}
 
 // func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rsp *api.PassportUserReply) error {
@@ -101,3 +111,21 @@ type QuestionService struct{}
 // func (s *PassportService) CheckSToken(ctx context.Context, req *api.SessionTokenReq, rsp *uapi.Empty) error {
 // 	return gdao.CheckSessionToken(ctx, req.Uid, req.Stoken)
 // }
+
+func (s *QuestionService) GetMyQuestionInfo(ctx context.Context, req *api.CRqQueryMyQuestionInfoBySubject, rsp *api.CRpMyQuestionInfoBySubject) error {
+	logrus.Printf("GetMyQuestionInfo, uid:%v, subject:%v, endtime:%v", req.Uid, req.Subject, req.Endtime)
+	records := new([]*model.AnswerRecord)
+	if err := gdao.QueryUserAnswerRecords(ctx, bson.ObjectIdHex(req.Uid), req.Subject, req.Endtime, records); err != nil {
+		logrus.Errorf("GetMyQuestionInfo wrong:%v ,uid:%v, subject:%v", err, req.Uid, req.Subject)
+		return err
+	}
+	for _, v := range *records {
+		questionInfo := new(model.Qusetion)
+		if err := gdao.QueryQuestionInfo(ctx, v.QuestionID, questionInfo); err != nil {
+			logrus.Errorf("QueryQuestionInfo wrong:%v ,questionId:%v", err, v.QuestionID)
+			continue
+		}
+		rsp.Knowledgenodes = append(rsp.Knowledgenodes, questionInfo.Knowledge.Hex())
+	}
+	return nil
+}

@@ -20,6 +20,7 @@ service Question {
 message CRqQueryMyQuestionInfoBySubject{
 	string uid = 1;
 	string subject = 2 [(gogoproto.jsontag) = "subject"];
+	int64 endtime = 3 [(gogoproto.jsontag) = "endtime"];
 }
 
 message CRpMyQuestionInfoBySubject{

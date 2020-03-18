@@ -2,7 +2,7 @@ package handler
 
 import (
 	"knowledgemap_backend/library/database/mongo"
-	"knowledgemap_backend/microservices/knowledgemap/passport/dao"
+	"knowledgemap_backend/microservices/knowledgemap/user/dao"
 
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"

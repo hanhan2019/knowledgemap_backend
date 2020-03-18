@@ -23,6 +23,6 @@ type Qusetion struct {
 	Answer     []string      `json:"answer" bson:"answer"`
 	Subject    string        `json:"subject" bson:"subject"`
 	Course     string        `json:"course" bson:"course"`
-	Knowledge  string        `json:"knowledge" bson:"knowledge"`
+	Knowledge  bson.ObjectId `json:"knowledge" bson:"knowledge"`
 	CreateTime int64         `json:"createtime" bson:"createtime"`
 }

@@ -3,25 +3,30 @@ package main
 import (
 	"fmt"
 
+	"knowledgemap_backend/microservices/common/conf"
 	"knowledgemap_backend/microservices/common/namespace"
-	"knowledgemap_backend/microservices/knowledgemap/passport/api"
-	"myProjects/collegeManage/app/college/passport/handler"
-	"myProjects/collegeManage/app/common/conf"
+	"knowledgemap_backend/microservices/knowledgemap/user/api"
+	"knowledgemap_backend/microservices/knowledgemap/user/handler"
 
 	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/registry"
+	"github.com/micro/go-micro/registry/consul"
 )
 
 func main() {
-	service := micro.NewService(
-		micro.Name(namespace.GetName("knowledgemap.microservices.knowledgemap.user")),
-	)
+	reg := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{
+			"127.0.0.1:8500",
+		}
+	})
+	service := micro.NewService(micro.Registry(reg), micro.Name(namespace.GetName("microservices.knowledgemap.user")))
 	// Init will parse the command line flags.
 	service.Init()
 	// Register handler
 	conf.Init()
 	handler.Init()
 
-	api.RegisterPassportHandler(service.Server(), new(handler.PassportService))
+	api.RegisterUserHandler(service.Server(), new(handler.UserService))
 	// Run the server
 	if err := service.Run(); err != nil {
 		fmt.Println(err)

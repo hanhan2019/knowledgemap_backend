@@ -9,12 +9,20 @@ import (
 	"knowledgemap_backend/microservices/knowledgemap/question/handler"
 
 	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/registry"
+	"github.com/micro/go-micro/registry/consul"
 )
 
 func main() {
-	service := micro.NewService(
-		micro.Name(namespace.GetName("knowledgemap.microservices.knowledgemap.question")),
-	)
+	reg := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = []string{
+			"127.0.0.1:8500",
+		}
+	})
+	service := micro.NewService(micro.Registry(reg), micro.Name(namespace.GetName("microservices.knowledgemap.question")))
+	// service := micro.NewService(
+	// 	micro.Name(namespace.GetName("microservices.knowledgemap.question")),
+	// )
 	// Init will parse the command line flags.
 	service.Init()
 	// Register handler

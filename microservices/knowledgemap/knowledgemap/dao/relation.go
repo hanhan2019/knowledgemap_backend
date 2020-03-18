@@ -11,7 +11,7 @@ import (
 func (d *Dao) QueryRelationByNodeID(ctx context.Context, nodeId bson.ObjectId, relations *[]*model.Relation) error {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
-	if err := db.C(model.RELATION_NAME).Find(bson.M{"mainnodeid": nodeId}).All(*relations); err != nil {
+	if err := db.C(model.RELATION_NAME).Find(bson.M{"mainnodeid": nodeId}).All(relations); err != nil {
 		return err
 	}
 	return nil

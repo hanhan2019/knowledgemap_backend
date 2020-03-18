@@ -104,7 +104,6 @@ func Err(errstr string, errcode ...COMMSTATUS) *ApiRes {
 }
 
 func VBind(c echo.Context, req interface{}) (err error) {
-
 	clog := middlewares.Log(c)
 	if err = c.Bind(req); err != nil {
 		c.JSON(http.StatusBadRequest, Err(err.Error(), STATUS_INVALIDE_ARGS))

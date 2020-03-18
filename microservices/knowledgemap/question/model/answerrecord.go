@@ -12,6 +12,7 @@ type AnswerRecord struct {
 	QuestionID bson.ObjectId `json:"question" bson:"question"`
 	Answer     string        `json:"answer" bson:"answer"`
 	IsTrue     bool          `json:"istrue" bson:"istrue"`
-	Knowledge  string        `json:"knowledge" bson:"knowledge"`
-	CreateTime int64         `json:"createtime" bson:"createtime"`
+	// Knowledge  string        `json:"knowledge" bson:"knowledge"`
+	Subject    string `json:"subject" bson:"subject"`
+	CreateTime int64  `json:"createtime" bson:"createtime"`
 }

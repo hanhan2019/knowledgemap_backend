@@ -12,7 +12,7 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service KnowledegeMap {
 	rpc GetKnowledegeMapBySubject(CRqQueryMapBySubject) returns (KnowledegeMapInfo) {}
-    rpc GetMyKnowledegeMap(CRqQueryMyMapBySubject) returns (KnowledegeMapInfo) {}
+    rpc GetMyKnowledegeMapBySubject(CRqQueryMyMapBySubject) returns (KnowledegeMapInfo) {}
 	// rpc Login(LoginReq) returns (PassportUserReply) {}
 	// rpc CheckSToken(SessionTokenReq) returns (Empty) {}
 }
@@ -31,6 +31,7 @@ message KnowledegeMapInfo{
 message CRqQueryMyMapBySubject {
     string uid = 1;
 	string subject = 2 [(gogoproto.jsontag) = "subject"];
+	int64 endtime = 3 [(gogoproto.jsontag) = "endtime"];
 }
 // message PassportUserReply {
 //     UserReply user =  1;
