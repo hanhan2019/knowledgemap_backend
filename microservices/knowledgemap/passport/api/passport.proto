@@ -3,7 +3,7 @@ package api;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-// import "myProjects/collegeManage/app/college/user/api/user.proto";
+import "knowledgemap_backend/microservices/knowledgemap/user/api/user.proto";
 
 
 
@@ -11,51 +11,51 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 
 service Passport {
-    // rpc Register(RegisterReq) returns (PassportUserReply) {}
-	// rpc Login(LoginReq) returns (PassportUserReply) {}
-	// rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+    rpc Register(RegisterReq) returns (PassportUserReply) {}
+	rpc Login(LoginReq) returns (PassportUserReply) {}
+	rpc CheckSToken(SessionTokenReq) returns (Empty) {}
 }
 
 
 
-// message SessionTokenReq {
-//     string uid = 1;
-//     string stoken = 2;
-// }
+message SessionTokenReq {
+    string uid = 1;
+    string stoken = 2;
+}
 
-// message PassportUserReply {
-//     UserReply user =  1;
-//     string token = 2;
-//     int64 expires = 3;
-// }
+message PassportUserReply {
+    UserReply user =  1;
+    string token = 2;
+    int64 expires = 3;
+}
 
-// message RegisterReq {
-//     enum RegisterType{
-//         STUDENT = 0;
-//         TEACHER = 1;
-//         SECRETARY = 2;
-//     }
-//     RegisterType rtype = 1;
-//     string  name = 2;
-//     string  major = 3;
-//     string  idcard = 4 ;
-//     string  origin = 5;
-//     string  class = 6;
-//     string admissontime = 7;
-//     string  account =8;
-//     string password= 9;
-//     string college =10;
-//     string course =11;
-// }
+message RegisterReq {
+    enum RegisterType{
+        STUDENT = 0;
+        TEACHER = 1;
+        SECRETARY = 2;
+    }
+    RegisterType rtype = 1 [(gogoproto.moretags) = "form:\"rtype\""];
+    string  name = 2 [(gogoproto.moretags) = "form:\"name\""];
+    string  major = 3 [(gogoproto.moretags) = "form:\"major\""];
+    string  idcard = 4 [(gogoproto.moretags) = "form:\"idcard\""];
+    string  origin = 5 [(gogoproto.moretags) = "form:\"origin\""];
+    string  class = 6 [(gogoproto.moretags) = "form:\"class\""];
+    string admissontime = 7 [(gogoproto.moretags) = "form:\"admissontime\""];
+    string  account =8 [(gogoproto.moretags) = "form:\"account\""];
+    string password= 9 [(gogoproto.moretags) = "form:\"password\""];
+    string college =10 [(gogoproto.moretags) = "form:\"college\""];
+    string course =11 [(gogoproto.moretags) = "form:\"course\""];
+}
 
-// message LoginReq{
-//     enum LoginType{
-//         STUDENT = 0;
-//         TEACHER = 1;
-//         SECRETARY = 2;
-//         NOTFOUND = -1;
-//     }
-//     LoginType ltype = 1;
-//     string  account = 2;
-//     string  passward = 3;
-// }
+message LoginReq{
+    enum LoginType{
+        STUDENT = 0;
+        TEACHER = 1;
+        SECRETARY = 2;
+        NOTFOUND = -1;
+    }
+    LoginType ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
+    string  account = 2 [(gogoproto.moretags) = "form:\"account\""];
+    string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
+}

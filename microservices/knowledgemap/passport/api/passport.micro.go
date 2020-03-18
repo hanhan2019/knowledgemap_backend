@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
+	api "knowledgemap_backend/microservices/knowledgemap/user/api"
 	math "math"
 )
 
@@ -35,6 +36,9 @@ var _ server.Option
 // Client API for Passport service
 
 type PassportService interface {
+	Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*PassportUserReply, error)
+	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*PassportUserReply, error)
+	CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.Empty, error)
 }
 
 type passportService struct {
@@ -55,13 +59,49 @@ func NewPassportService(name string, c client.Client) PassportService {
 	}
 }
 
+func (c *passportService) Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*PassportUserReply, error) {
+	req := c.c.NewRequest(c.name, "Passport.Register", in)
+	out := new(PassportUserReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *passportService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*PassportUserReply, error) {
+	req := c.c.NewRequest(c.name, "Passport.Login", in)
+	out := new(PassportUserReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *passportService) CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Passport.CheckSToken", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Passport service
 
 type PassportHandler interface {
+	Register(context.Context, *RegisterReq, *PassportUserReply) error
+	Login(context.Context, *LoginReq, *PassportUserReply) error
+	CheckSToken(context.Context, *SessionTokenReq, *api.Empty) error
 }
 
 func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...server.HandlerOption) error {
 	type passport interface {
+		Register(ctx context.Context, in *RegisterReq, out *PassportUserReply) error
+		Login(ctx context.Context, in *LoginReq, out *PassportUserReply) error
+		CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.Empty) error
 	}
 	type Passport struct {
 		passport
@@ -72,4 +112,16 @@ func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...serv
 
 type passportHandler struct {
 	PassportHandler
+}
+
+func (h *passportHandler) Register(ctx context.Context, in *RegisterReq, out *PassportUserReply) error {
+	return h.PassportHandler.Register(ctx, in, out)
+}
+
+func (h *passportHandler) Login(ctx context.Context, in *LoginReq, out *PassportUserReply) error {
+	return h.PassportHandler.Login(ctx, in, out)
+}
+
+func (h *passportHandler) CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.Empty) error {
+	return h.PassportHandler.CheckSToken(ctx, in, out)
 }
