@@ -62,7 +62,8 @@ func Init() *echo.Echo {
 
 	reg := consul.NewRegistry(func(op *registry.Options) {
 		op.Addrs = []string{
-			"127.0.0.1:8500",
+			//"127.0.0.1:8500",
+			"172.17.9.156:8500",
 		}
 	})
 
@@ -98,8 +99,9 @@ func InitRouter(e *echo.Echo) {
 	api.POST("/user/register", userRegister)
 	api.PUT("/user/login", userLogin)
 
-	// authMid := CreateAuthMid(passSrv)
+	authMid := CreateAuthMid(passportSrv)
+	api.PUT("/user/changepassword", userChangePassword, authMid)
 	api.GET("/hi", hello)
 	api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
-	// api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
+	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

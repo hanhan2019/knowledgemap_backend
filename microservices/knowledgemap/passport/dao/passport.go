@@ -18,6 +18,7 @@ import (
 func GetLoginTokenRedisKey(uid string) string {
 	return fmt.Sprintf("passport:logintoken:%v", uid)
 }
+
 func (d *Dao) CheckIDCardInStudent(ctx context.Context, idCard string) error {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
@@ -232,5 +233,19 @@ func (d *Dao) FillSecretaryByAccount(ctx context.Context, account string, rsp **
 	if err == nil {
 		(*rsp).Userid = bson.ObjectId((*rsp).Userid).Hex()
 	}
+	return
+}
+
+func (d *Dao) ChangePassword(ctx context.Context, account, password string, rsp **uapi.Empty) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	if *rsp == nil {
+		*rsp = &uapi.Empty{}
+	}
+	err = db.C(model.STUDENT_COLLECTION_NAME).Update(bson.M{"account": account}, bson.M{
+		"$set": bson.M{
+			"password": password,
+		},
+	})
 	return
 }

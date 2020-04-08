@@ -13,9 +13,9 @@ import "knowledgemap_backend/microservices/knowledgemap/user/api/user.proto";
 service Passport {
     rpc Register(RegisterReq) returns (PassportUserReply) {}
 	rpc Login(LoginReq) returns (PassportUserReply) {}
-	rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+    rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+    rpc ChangePassword(ChangePasswordReq) returns (Empty) {}
 }
-
 
 
 message SessionTokenReq {
@@ -58,4 +58,9 @@ message LoginReq{
     LoginType ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
     string  account = 2 [(gogoproto.moretags) = "form:\"account\""];
     string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
+}
+
+message ChangePasswordReq{
+    string  account = 1 [(gogoproto.moretags) = "form:\"account\""];
+    string  password = 2 [(gogoproto.moretags) = "form:\"password\""];
 }

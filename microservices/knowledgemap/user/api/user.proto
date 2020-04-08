@@ -5,7 +5,7 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service User {
 	rpc UserInfo(UserReq) returns (UserReply) {}
-	rpc UserClassInfo(ClassReq)returns (ClassReply){}
+	// rpc UserClassInfo(ClassReq)returns (ClassReply){}
 }
 
 message UserReq {
@@ -26,10 +26,10 @@ message UserReply {
 	string  number=11;
 }
 
-message ClassReq {
-	string classid = 1 [(gogoproto.jsontag) = "cid"];
-}
+// message ClassReq {
+// 	string classid = 1 [(gogoproto.jsontag) = "cid"];
+// }
 
-message ClassReply {
-	repeated UserReply students = 1;
-}
+// message ClassReply {
+// 	repeated UserReply students = 1;
+// }

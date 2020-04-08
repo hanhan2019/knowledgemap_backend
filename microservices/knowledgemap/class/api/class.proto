@@ -1,0 +1,41 @@
+syntax = "proto3";
+package api;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "knowledgemap_backend/microservices/knowledgemap/user/api/user.proto";
+
+service Class {
+    rpc CreateClass(CreateClassReq)returns (ClassReply){}
+    rpc ClassInfo(ClassReq) returns (ClassReply) {}
+    rpc JoinClass(JoinClassReq)returns (UserClassReply){}
+    rpc UserClassInfo(UserReq)returns (UserClassReply){}
+}
+
+message ClassReq {
+	string classid = 1 [(gogoproto.jsontag) = "classid"];
+}
+
+message ClassReply {
+	string  classid = 1 [(gogoproto.moretags) = "bson:\"_id\",form:\"_id\""];
+    string  name = 2;
+    string  major = 3;
+    string  college = 4;
+    string  teachername = 5;
+    int64   CreateTime = 6;
+    string  Number = 7;
+}
+
+message UserClassReply {
+	repeated ClassReply classes = 1;
+}
+
+message CreateClassReq{
+    string  name = 1 [(gogoproto.jsontag) = "classid"];
+    string  major = 2;
+    string  college = 3;
+    string  teachername = 4;
+}
+message JoinClassReq{
+    string userid = 1 [(gogoproto.jsontag) = "uid"];
+    string classid = 2;
+}

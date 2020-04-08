@@ -16,7 +16,8 @@ import (
 func main() {
 	reg := consul.NewRegistry(func(op *registry.Options) {
 		op.Addrs = []string{
-			"127.0.0.1:8500",
+			//"127.0.0.1:8500",
+			"172.17.9.156:8500",
 		}
 	})
 	service := micro.NewService(micro.Registry(reg), micro.Name(namespace.GetName("microservices.knowledgemap.passport")))

@@ -53,7 +53,7 @@ func (s *PassportService) Login(ctx context.Context, req *api.LoginReq, rsp *api
 	if loginType == api.LoginReq_NOTFOUND {
 		return errors.New("登陆失败")
 	}
-	if !checkPassWord(req.Passward, rsp.User.Password) {
+	if !checkPassWord(req.Password, rsp.User.Password) {
 		logrus.Infof("password err!")
 		return errors.New("密码错误!")
 	}
@@ -80,4 +80,8 @@ func FindUserByAccount(ctx context.Context, account string, rsp *api.PassportUse
 
 func (s *PassportService) CheckSToken(ctx context.Context, req *api.SessionTokenReq, rsp *uapi.Empty) error {
 	return gdao.CheckSessionToken(ctx, req.Uid, req.Stoken)
+}
+
+func (s *PassportService) ChangePassword(ctx context.Context, req *api.ChangePasswordReq, rsp *uapi.Empty) error {
+	return gdao.ChangePassword(ctx, req.Account, req.Password, &rsp)
 }

@@ -1,8 +1,6 @@
 package comm
 
 import (
-	"net/http"
-
 	"knowledgemap_backend/microservices/common/middlewares"
 
 	"github.com/labstack/echo"
@@ -106,11 +104,12 @@ func Err(errstr string, errcode ...COMMSTATUS) *ApiRes {
 func VBind(c echo.Context, req interface{}) (err error) {
 	clog := middlewares.Log(c)
 	if err = c.Bind(req); err != nil {
-		c.JSON(http.StatusBadRequest, Err(err.Error(), STATUS_INVALIDE_ARGS))
+		clog.Error(err)
+		return
 	}
 	if err = c.Validate(req); err != nil {
 		clog.Error(err)
-		c.JSON(http.StatusBadRequest, Err("", STATUS_INVALIDE_ARGS))
+		return
 	}
 	return
 }

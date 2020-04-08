@@ -36,7 +36,7 @@ func userRegister(c echo.Context) error {
 	}
 	if res, err := passportSrv.Register(context.TODO(), req); err != nil {
 		clog.Errorf("call register %v", err)
-		return err
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
 	} else {
 		return c.JSON(http.StatusOK, comm.Data(res))
 	}
@@ -60,5 +60,20 @@ func userLogin(c echo.Context) error {
 			//如果用mcode登录,且未找到用户，尝试注册用户
 			return c.JSON(http.StatusOK, comm.Err("need register", comm.STATUS_PHONE_NOT_REGISTER))
 		}
+	}
+}
+
+func userChangePassword(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(papi.ChangePasswordReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	if res, err := passportSrv.ChangePassword(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
 	}
 }
