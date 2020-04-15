@@ -34,6 +34,7 @@ func createDefaultClass(req *api.CreateClassReq) *model.Class {
 	class.Major = req.Major
 	class.College = req.College
 	class.TeacherName = req.Teachername
+	class.TeacherId = req.Teacherid
 	class.CreateTime = time.Now().Unix()
 	return class
 }

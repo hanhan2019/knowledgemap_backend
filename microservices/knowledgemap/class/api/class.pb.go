@@ -13,6 +13,8 @@
 		UserClassReply
 		CreateClassReq
 		JoinClassReq
+		InvitationReq
+		QueryClassUserInfoReply
 */
 package api
 
@@ -57,8 +59,8 @@ type ClassReply struct {
 	Major       string `protobuf:"bytes,3,opt,name=major,proto3" json:"major,omitempty"`
 	College     string `protobuf:"bytes,4,opt,name=college,proto3" json:"college,omitempty"`
 	Teachername string `protobuf:"bytes,5,opt,name=teachername,proto3" json:"teachername,omitempty"`
-	CreateTime  int64  `protobuf:"varint,6,opt,name=CreateTime,proto3" json:"CreateTime,omitempty"`
-	Number      string `protobuf:"bytes,7,opt,name=Number,proto3" json:"Number,omitempty"`
+	CreateTime  int64  `protobuf:"varint,6,opt,name=createTime,proto3" json:"createTime,omitempty"`
+	Number      string `protobuf:"bytes,7,opt,name=number,proto3" json:"number,omitempty"`
 }
 
 func (m *ClassReply) Reset()                    { *m = ClassReply{} }
@@ -132,10 +134,11 @@ func (m *UserClassReply) GetClasses() []*ClassReply {
 }
 
 type CreateClassReq struct {
-	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"classid"`
-	Major       string `protobuf:"bytes,2,opt,name=major,proto3" json:"major,omitempty"`
-	College     string `protobuf:"bytes,3,opt,name=college,proto3" json:"college,omitempty"`
-	Teachername string `protobuf:"bytes,4,opt,name=teachername,proto3" json:"teachername,omitempty"`
+	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" form:"classname"`
+	Major       string `protobuf:"bytes,2,opt,name=major,proto3" json:"major,omitempty" form:"major"`
+	College     string `protobuf:"bytes,3,opt,name=college,proto3" json:"college,omitempty" form:"college"`
+	Teachername string `protobuf:"bytes,4,opt,name=teachername,proto3" json:"teachername,omitempty" form:"teachername"`
+	Teacherid   string `protobuf:"bytes,5,opt,name=teacherid,proto3" json:"teacherid,omitempty" form:"teacherid"`
 }
 
 func (m *CreateClassReq) Reset()                    { *m = CreateClassReq{} }
@@ -171,9 +174,18 @@ func (m *CreateClassReq) GetTeachername() string {
 	return ""
 }
 
+func (m *CreateClassReq) GetTeacherid() string {
+	if m != nil {
+		return m.Teacherid
+	}
+	return ""
+}
+
 type JoinClassReq struct {
-	Userid  string `protobuf:"bytes,1,opt,name=userid,proto3" json:"uid"`
-	Classid string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty"`
+	Userid   string `protobuf:"bytes,1,opt,name=userid,proto3" json:"uid"`
+	Classid  string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty"`
+	Username string `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	Status   string `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
 }
 
 func (m *JoinClassReq) Reset()                    { *m = JoinClassReq{} }
@@ -195,12 +207,111 @@ func (m *JoinClassReq) GetClassid() string {
 	return ""
 }
 
+func (m *JoinClassReq) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *JoinClassReq) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
+type InvitationReq struct {
+	Classid       string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
+	Invitaioncode string `protobuf:"bytes,2,opt,name=invitaioncode,proto3" json:"invitaioncode,omitempty" form:"invitationcode"`
+	Userid        string `protobuf:"bytes,3,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
+}
+
+func (m *InvitationReq) Reset()                    { *m = InvitationReq{} }
+func (m *InvitationReq) String() string            { return proto.CompactTextString(m) }
+func (*InvitationReq) ProtoMessage()               {}
+func (*InvitationReq) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{5} }
+
+func (m *InvitationReq) GetClassid() string {
+	if m != nil {
+		return m.Classid
+	}
+	return ""
+}
+
+func (m *InvitationReq) GetInvitaioncode() string {
+	if m != nil {
+		return m.Invitaioncode
+	}
+	return ""
+}
+
+func (m *InvitationReq) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+type QueryClassUserInfoReply struct {
+	Classid  string                                 `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid,omitempty"`
+	Students []*QueryClassUserInfoReply_StudentInfo `protobuf:"bytes,2,rep,name=students" json:"students,omitempty"`
+}
+
+func (m *QueryClassUserInfoReply) Reset()                    { *m = QueryClassUserInfoReply{} }
+func (m *QueryClassUserInfoReply) String() string            { return proto.CompactTextString(m) }
+func (*QueryClassUserInfoReply) ProtoMessage()               {}
+func (*QueryClassUserInfoReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{6} }
+
+func (m *QueryClassUserInfoReply) GetClassid() string {
+	if m != nil {
+		return m.Classid
+	}
+	return ""
+}
+
+func (m *QueryClassUserInfoReply) GetStudents() []*QueryClassUserInfoReply_StudentInfo {
+	if m != nil {
+		return m.Students
+	}
+	return nil
+}
+
+type QueryClassUserInfoReply_StudentInfo struct {
+	Userid   string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty"`
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+}
+
+func (m *QueryClassUserInfoReply_StudentInfo) Reset()         { *m = QueryClassUserInfoReply_StudentInfo{} }
+func (m *QueryClassUserInfoReply_StudentInfo) String() string { return proto.CompactTextString(m) }
+func (*QueryClassUserInfoReply_StudentInfo) ProtoMessage()    {}
+func (*QueryClassUserInfoReply_StudentInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptorClass, []int{6, 0}
+}
+
+func (m *QueryClassUserInfoReply_StudentInfo) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *QueryClassUserInfoReply_StudentInfo) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*ClassReq)(nil), "api.ClassReq")
 	proto.RegisterType((*ClassReply)(nil), "api.ClassReply")
 	proto.RegisterType((*UserClassReply)(nil), "api.UserClassReply")
 	proto.RegisterType((*CreateClassReq)(nil), "api.CreateClassReq")
 	proto.RegisterType((*JoinClassReq)(nil), "api.JoinClassReq")
+	proto.RegisterType((*InvitationReq)(nil), "api.InvitationReq")
+	proto.RegisterType((*QueryClassUserInfoReply)(nil), "api.QueryClassUserInfoReply")
+	proto.RegisterType((*QueryClassUserInfoReply_StudentInfo)(nil), "api.QueryClassUserInfoReply.StudentInfo")
 }
 func (m *ClassReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
@@ -354,6 +465,12 @@ func (m *CreateClassReq) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintClass(dAtA, i, uint64(len(m.Teachername)))
 		i += copy(dAtA[i:], m.Teachername)
 	}
+	if len(m.Teacherid) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Teacherid)))
+		i += copy(dAtA[i:], m.Teacherid)
+	}
 	return i, nil
 }
 
@@ -383,6 +500,120 @@ func (m *JoinClassReq) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintClass(dAtA, i, uint64(len(m.Classid)))
 		i += copy(dAtA[i:], m.Classid)
+	}
+	if len(m.Username) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Username)))
+		i += copy(dAtA[i:], m.Username)
+	}
+	if len(m.Status) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Status)))
+		i += copy(dAtA[i:], m.Status)
+	}
+	return i, nil
+}
+
+func (m *InvitationReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *InvitationReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Classid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Classid)))
+		i += copy(dAtA[i:], m.Classid)
+	}
+	if len(m.Invitaioncode) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Invitaioncode)))
+		i += copy(dAtA[i:], m.Invitaioncode)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	return i, nil
+}
+
+func (m *QueryClassUserInfoReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryClassUserInfoReply) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Classid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Classid)))
+		i += copy(dAtA[i:], m.Classid)
+	}
+	if len(m.Students) > 0 {
+		for _, msg := range m.Students {
+			dAtA[i] = 0x12
+			i++
+			i = encodeVarintClass(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *QueryClassUserInfoReply_StudentInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryClassUserInfoReply_StudentInfo) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Username) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Username)))
+		i += copy(dAtA[i:], m.Username)
 	}
 	return i, nil
 }
@@ -470,6 +701,10 @@ func (m *CreateClassReq) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovClass(uint64(l))
 	}
+	l = len(m.Teacherid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
 	return n
 }
 
@@ -481,6 +716,62 @@ func (m *JoinClassReq) Size() (n int) {
 		n += 1 + l + sovClass(uint64(l))
 	}
 	l = len(m.Classid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Status)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	return n
+}
+
+func (m *InvitationReq) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Classid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Invitaioncode)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryClassUserInfoReply) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Classid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	if len(m.Students) > 0 {
+		for _, e := range m.Students {
+			l = e.Size()
+			n += 1 + l + sovClass(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryClassUserInfoReply_StudentInfo) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Username)
 	if l > 0 {
 		n += 1 + l + sovClass(uint64(l))
 	}
@@ -1048,6 +1339,35 @@ func (m *CreateClassReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Teachername = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Teacherid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Teacherid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipClass(dAtA[iNdEx:])
@@ -1155,6 +1475,419 @@ func (m *JoinClassReq) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Classid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Status = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipClass(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthClass
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *InvitationReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowClass
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: InvitationReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: InvitationReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Classid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Invitaioncode", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Invitaioncode = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipClass(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthClass
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryClassUserInfoReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowClass
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryClassUserInfoReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryClassUserInfoReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Classid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Students", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Students = append(m.Students, &QueryClassUserInfoReply_StudentInfo{})
+			if err := m.Students[len(m.Students)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipClass(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthClass
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryClassUserInfoReply_StudentInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowClass
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: StudentInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: StudentInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1285,35 +2018,53 @@ var (
 func init() { proto.RegisterFile("api/class.proto", fileDescriptorClass) }
 
 var fileDescriptorClass = []byte{
-	// 475 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0xcd, 0xc6, 0xf9, 0x20, 0x93, 0x7e, 0xc0, 0xf2, 0x21, 0x93, 0x83, 0x13, 0x59, 0x42, 0x0a,
-	0x12, 0x8d, 0x45, 0x4b, 0x2f, 0x70, 0x6b, 0x4e, 0xe5, 0xc0, 0xc1, 0x82, 0x73, 0xb5, 0xb6, 0x27,
-	0xee, 0x52, 0xdb, 0x6b, 0xd6, 0x31, 0x88, 0x33, 0x7f, 0x82, 0x9f, 0xc4, 0x91, 0x33, 0x87, 0x80,
-	0xc2, 0xad, 0x47, 0x7e, 0x01, 0xf2, 0xd8, 0x31, 0x6e, 0x68, 0x7b, 0x9b, 0xf7, 0x66, 0x67, 0xde,
-	0xbc, 0x19, 0x2d, 0xec, 0x8b, 0x54, 0x3a, 0x7e, 0x24, 0xb2, 0x6c, 0x96, 0x6a, 0xb5, 0x54, 0xdc,
-	0x10, 0xa9, 0x1c, 0x1d, 0x84, 0x72, 0x79, 0x9e, 0x7b, 0x33, 0x5f, 0xc5, 0x4e, 0xa8, 0x42, 0xe5,
-	0x50, 0xce, 0xcb, 0x17, 0x84, 0x08, 0x50, 0x54, 0xd6, 0x8c, 0xe6, 0x17, 0x89, 0xfa, 0x14, 0x61,
-	0x10, 0x62, 0x2c, 0xd2, 0x33, 0x4f, 0xf8, 0x17, 0x98, 0x04, 0x4e, 0x2c, 0x7d, 0xad, 0x32, 0xd4,
-	0x1f, 0xa5, 0x8f, 0x99, 0xd3, 0x7c, 0xe2, 0xe4, 0x19, 0x6a, 0xa7, 0x50, 0x2e, 0x82, 0xb2, 0x89,
-	0xfd, 0x1c, 0xee, 0xcc, 0x8b, 0x39, 0x5c, 0xfc, 0xc0, 0x9f, 0x40, 0x9f, 0x66, 0x92, 0x81, 0xc9,
-	0x26, 0x6c, 0x3a, 0x38, 0x19, 0x5e, 0xae, 0xc6, 0x1b, 0xca, 0xdd, 0x04, 0xf6, 0x4f, 0x06, 0x50,
-	0xd5, 0xa4, 0xd1, 0x67, 0x7e, 0xb4, 0x5d, 0xf5, 0xf8, 0xcf, 0x6a, 0xfc, 0xd0, 0xcb, 0x54, 0xf2,
-	0xd2, 0x3e, 0x93, 0x81, 0xfd, 0x6c, 0xa1, 0x74, 0x5c, 0x86, 0x75, 0x0f, 0xce, 0xa1, 0x93, 0x88,
-	0x18, 0xcd, 0x76, 0x51, 0xe1, 0x52, 0xcc, 0x1f, 0x40, 0x37, 0x16, 0xef, 0x95, 0x36, 0x0d, 0x22,
-	0x4b, 0xc0, 0x4d, 0xe8, 0xfb, 0x2a, 0x8a, 0x30, 0x44, 0xb3, 0x43, 0xfc, 0x06, 0xf2, 0x09, 0x0c,
-	0x97, 0x28, 0xfc, 0x73, 0xd4, 0xd4, 0xaa, 0x4b, 0xd9, 0x26, 0xc5, 0x2d, 0x80, 0xb9, 0x46, 0xb1,
-	0xc4, 0xb7, 0x32, 0x46, 0xb3, 0x37, 0x61, 0x53, 0xc3, 0x6d, 0x30, 0xfc, 0x11, 0xf4, 0xde, 0xe4,
-	0xb1, 0x87, 0xda, 0xec, 0x53, 0x71, 0x85, 0xec, 0x57, 0xb0, 0xf7, 0x2e, 0x43, 0xdd, 0x30, 0xf9,
-	0xb4, 0x32, 0x89, 0x99, 0xc9, 0x26, 0xc6, 0x74, 0x78, 0xb8, 0x3f, 0x13, 0xa9, 0x9c, 0xfd, 0x7b,
-	0xe1, 0x6e, 0xf2, 0xf6, 0x17, 0x06, 0x7b, 0xa5, 0x46, 0xbd, 0xd8, 0x71, 0xe5, 0xf6, 0x9a, 0xad,
-	0x6e, 0x59, 0x6f, 0xdf, 0x60, 0xdd, 0xb8, 0xd5, 0x7a, 0xe7, 0x3f, 0xeb, 0xf6, 0x29, 0xec, 0xbc,
-	0x56, 0x32, 0x69, 0x8c, 0xd0, 0x2b, 0xae, 0x5e, 0x1f, 0xa9, 0x7f, 0xb9, 0x1a, 0x1b, 0xb9, 0x0c,
-	0xdc, 0x8a, 0x26, 0xb1, 0xea, 0x8c, 0xed, 0x4a, 0xac, 0x84, 0x87, 0x3f, 0x18, 0x74, 0xa9, 0x0f,
-	0x3f, 0x86, 0x61, 0xc3, 0x19, 0xbf, 0x5f, 0xee, 0xe0, 0x8a, 0xd7, 0xd1, 0xf6, 0x62, 0xec, 0x16,
-	0x3f, 0x80, 0x01, 0xe1, 0xd3, 0x64, 0xa1, 0xf8, 0x6e, 0x33, 0x7f, 0xed, 0xf3, 0x63, 0x18, 0xd4,
-	0xa3, 0xf3, 0x7b, 0x94, 0x6f, 0x5a, 0x19, 0x95, 0xb2, 0x57, 0x0f, 0x64, 0xb7, 0xf8, 0x0b, 0xd8,
-	0xad, 0x39, 0x52, 0xda, 0xa9, 0xdf, 0xdd, 0x5c, 0x75, 0x72, 0xf7, 0xdb, 0xda, 0x62, 0xdf, 0xd7,
-	0x16, 0xfb, 0xb5, 0xb6, 0xd8, 0xd7, 0xdf, 0x56, 0xcb, 0xeb, 0xd1, 0xc7, 0x38, 0xfa, 0x1b, 0x00,
-	0x00, 0xff, 0xff, 0x86, 0x61, 0x40, 0x01, 0xa4, 0x03, 0x00, 0x00,
+	// 753 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0xcd, 0x6e, 0xd3, 0x58,
+	0x14, 0x8e, 0x93, 0x36, 0x69, 0x4e, 0x9a, 0xfe, 0xdc, 0xe9, 0x74, 0x3c, 0xd1, 0x28, 0x8e, 0xae,
+	0x34, 0xa3, 0x54, 0x6a, 0x13, 0xb5, 0x9d, 0x8e, 0x46, 0xb0, 0x40, 0x24, 0xb0, 0x28, 0x3b, 0x5c,
+	0x58, 0x57, 0x8e, 0x7d, 0x9b, 0x5e, 0x1a, 0xfb, 0x1a, 0xff, 0x14, 0x75, 0xc1, 0x7b, 0xf0, 0x0a,
+	0xbc, 0x03, 0x12, 0x5b, 0x96, 0x3c, 0x81, 0x41, 0x65, 0xd7, 0x65, 0x1e, 0x00, 0x21, 0x9f, 0x7b,
+	0xed, 0x38, 0x69, 0xa9, 0xc4, 0xee, 0x9e, 0x9f, 0xef, 0xfc, 0x7c, 0xe7, 0xb3, 0x0c, 0xeb, 0x96,
+	0xcf, 0xfb, 0xf6, 0xc4, 0x0a, 0xc3, 0x9e, 0x1f, 0x88, 0x48, 0x90, 0x8a, 0xe5, 0xf3, 0xd6, 0xde,
+	0x98, 0x47, 0xe7, 0xf1, 0xa8, 0x67, 0x0b, 0xb7, 0x3f, 0x16, 0x63, 0xd1, 0xc7, 0xd8, 0x28, 0x3e,
+	0x43, 0x0b, 0x0d, 0x7c, 0x49, 0x4c, 0x6b, 0x78, 0xe1, 0x89, 0x37, 0x13, 0xe6, 0x8c, 0x99, 0x6b,
+	0xf9, 0xa7, 0x23, 0xcb, 0xbe, 0x60, 0x9e, 0xd3, 0x77, 0xb9, 0x1d, 0x88, 0x90, 0x05, 0x97, 0xdc,
+	0x66, 0x61, 0xbf, 0x98, 0xd2, 0x8f, 0x43, 0x16, 0xf4, 0xd3, 0xce, 0xe9, 0x43, 0x16, 0xa1, 0xfb,
+	0xb0, 0x32, 0x4c, 0xe7, 0x30, 0xd9, 0x6b, 0xf2, 0x37, 0xd4, 0x70, 0x26, 0xee, 0xe8, 0x5a, 0x47,
+	0xeb, 0xd6, 0x07, 0x8d, 0x9b, 0xc4, 0xc8, 0x5c, 0x66, 0xf6, 0xa0, 0x5f, 0x34, 0x00, 0x85, 0xf1,
+	0x27, 0x57, 0xe4, 0x70, 0x11, 0xf5, 0xe7, 0x34, 0x31, 0x7e, 0x1f, 0x85, 0xc2, 0x7b, 0x40, 0x4f,
+	0xb9, 0x43, 0x77, 0xcf, 0x44, 0xe0, 0xca, 0x67, 0x5e, 0x83, 0x10, 0x58, 0xf2, 0x2c, 0x97, 0xe9,
+	0xe5, 0x14, 0x61, 0xe2, 0x9b, 0x6c, 0xc1, 0xb2, 0x6b, 0xbd, 0x12, 0x81, 0x5e, 0x41, 0xa7, 0x34,
+	0x88, 0x0e, 0x35, 0x5b, 0x4c, 0x26, 0x6c, 0xcc, 0xf4, 0x25, 0xf4, 0x67, 0x26, 0xe9, 0x40, 0x23,
+	0x62, 0x96, 0x7d, 0xce, 0x02, 0x2c, 0xb5, 0x8c, 0xd1, 0xa2, 0x8b, 0xb4, 0x01, 0xec, 0x80, 0x59,
+	0x11, 0x7b, 0xc1, 0x5d, 0xa6, 0x57, 0x3b, 0x5a, 0xb7, 0x62, 0x16, 0x3c, 0x64, 0x1b, 0xaa, 0x5e,
+	0xec, 0x8e, 0x58, 0xa0, 0xd7, 0x10, 0xac, 0x2c, 0xfa, 0x10, 0xd6, 0x5e, 0x86, 0x2c, 0x28, 0x2c,
+	0xb9, 0xa3, 0x96, 0x64, 0xa1, 0xae, 0x75, 0x2a, 0xdd, 0xc6, 0xc1, 0x7a, 0xcf, 0xf2, 0x79, 0x6f,
+	0x96, 0x61, 0x66, 0x71, 0xfa, 0x5d, 0x83, 0xb5, 0x21, 0xf6, 0xc8, 0x89, 0xed, 0xaa, 0x6d, 0x25,
+	0x3f, 0x5b, 0xd3, 0xc4, 0xd8, 0x90, 0xa4, 0x20, 0x26, 0x0d, 0x51, 0xc5, 0xc1, 0x3f, 0x19, 0x07,
+	0x48, 0xcc, 0x60, 0x63, 0x9a, 0x18, 0xab, 0x32, 0x15, 0xdd, 0x34, 0x63, 0x65, 0x77, 0xc6, 0x0a,
+	0xb2, 0x35, 0x20, 0xd3, 0xc4, 0x58, 0x53, 0x45, 0x65, 0x80, 0xce, 0x98, 0xfa, 0x7f, 0x9e, 0x29,
+	0xe4, 0x71, 0xb0, 0x3d, 0x4d, 0x0c, 0x22, 0x11, 0x85, 0x20, 0x9d, 0x67, 0xf0, 0x00, 0xea, 0xca,
+	0xe4, 0x8e, 0x64, 0xb8, 0x38, 0x7e, 0x1e, 0xa2, 0xe6, 0x2c, 0x8d, 0xbe, 0x85, 0xd5, 0x67, 0x82,
+	0x7b, 0xf9, 0xf6, 0x06, 0x54, 0x53, 0xc1, 0xe5, 0xfa, 0xa8, 0xdd, 0x24, 0x46, 0x25, 0xe6, 0x8e,
+	0xa9, 0xdc, 0x78, 0x62, 0xa5, 0xa0, 0xb2, 0x3a, 0xb1, 0x92, 0x49, 0x0b, 0x56, 0xd2, 0x1c, 0x9c,
+	0x5a, 0xaa, 0x22, 0xb7, 0xd3, 0xe3, 0x85, 0x91, 0x15, 0xc5, 0xa1, 0xd2, 0x85, 0xb2, 0xe8, 0x7b,
+	0x0d, 0x9a, 0xc7, 0xde, 0x25, 0x8f, 0xac, 0x88, 0x0b, 0x2f, 0x1d, 0x60, 0x77, 0x51, 0xa1, 0x45,
+	0xb2, 0x94, 0xa8, 0x67, 0x3d, 0x1f, 0x41, 0x93, 0x23, 0x9c, 0x0b, 0xcf, 0x16, 0x8e, 0xd2, 0xa8,
+	0x54, 0xb5, 0xc4, 0xf0, 0xbc, 0x7a, 0x1a, 0xa7, 0xe6, 0x7c, 0x3e, 0xd9, 0xc9, 0xf7, 0x95, 0xa7,
+	0xd9, 0x9c, 0x26, 0x46, 0x53, 0x22, 0xa5, 0x9f, 0x66, 0x9b, 0xd3, 0x0f, 0x1a, 0xfc, 0xf1, 0x3c,
+	0x66, 0xc1, 0x15, 0x92, 0x95, 0x6a, 0xee, 0xd8, 0x3b, 0x13, 0x52, 0x72, 0xfa, 0xc2, 0xd4, 0xb3,
+	0x09, 0x9f, 0xc0, 0x4a, 0x18, 0xc5, 0x0e, 0xf3, 0xa2, 0x50, 0x2f, 0xa3, 0x1a, 0xbb, 0xa8, 0xc6,
+	0x9f, 0x54, 0xea, 0x9d, 0xc8, 0x64, 0x74, 0xe4, 0xc8, 0xd6, 0x63, 0x68, 0x14, 0x02, 0x29, 0x9d,
+	0xc5, 0x2b, 0xe5, 0xc7, 0x29, 0x9e, 0xa0, 0x3c, 0x7f, 0x82, 0x83, 0x8f, 0x15, 0x58, 0xc6, 0x7e,
+	0xe4, 0x08, 0x1a, 0x05, 0xcd, 0x93, 0xdf, 0xe4, 0xd7, 0x31, 0xf7, 0x15, 0xb4, 0x16, 0x3f, 0x19,
+	0x5a, 0x22, 0x7b, 0x50, 0x47, 0x1b, 0x27, 0x68, 0x16, 0xe3, 0x77, 0xa6, 0x1f, 0x41, 0x3d, 0x57,
+	0x16, 0xd9, 0xc4, 0x78, 0x51, 0x69, 0x2d, 0xd9, 0x76, 0xfe, 0xd3, 0xa5, 0x25, 0xf2, 0x2f, 0x34,
+	0x73, 0x1f, 0x76, 0x5a, 0xcd, 0xf3, 0xee, 0x41, 0x0d, 0x81, 0xdc, 0x26, 0x74, 0x71, 0xc8, 0xbf,
+	0xee, 0x23, 0x9e, 0x96, 0xc8, 0x21, 0xac, 0x4b, 0x16, 0x8e, 0x33, 0x89, 0x10, 0x82, 0x90, 0x39,
+	0x85, 0xb6, 0x00, 0x7d, 0x4f, 0x5d, 0x3f, 0x4a, 0x41, 0xfb, 0xd0, 0x3c, 0x89, 0x84, 0xff, 0x2b,
+	0x90, 0xff, 0x32, 0xcd, 0x73, 0xe1, 0xe1, 0x9c, 0x77, 0x41, 0x6e, 0x33, 0x3a, 0xd8, 0xf8, 0x74,
+	0xdd, 0xd6, 0x3e, 0x5f, 0xb7, 0xb5, 0xaf, 0xd7, 0x6d, 0xed, 0xdd, 0xb7, 0x76, 0x69, 0x54, 0xc5,
+	0xff, 0xc2, 0xe1, 0x8f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x9c, 0x4a, 0xe8, 0xec, 0xa3, 0x06, 0x00,
+	0x00,
 }

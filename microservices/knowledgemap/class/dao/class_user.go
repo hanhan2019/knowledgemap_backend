@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"errors"
 	"knowledgemap_backend/microservices/knowledgemap/class/api"
 	"knowledgemap_backend/microservices/knowledgemap/class/model"
 	"time"
@@ -26,6 +27,12 @@ func createClassUserRecord(req *api.JoinClassReq) *model.ClassUser {
 	record.ID = bson.NewObjectId()
 	record.ClassId = req.Classid
 	record.UserId = req.Userid
+	record.UserName = req.Username
+	userStatus := req.Status
+	if req.Status == "" {
+		userStatus = string(model.Student)
+	}
+	record.Status = model.UserStatus(userStatus)
 	record.CreateTime = time.Now().Unix()
 	return record
 }
@@ -36,6 +43,29 @@ func (d *Dao) FillMyAllClass(ctx context.Context, userid string, classes *[]*mod
 	col := db.C(model.CLASS_USER_COLLECTION_NAME)
 	cont := bson.M{
 		"userid": userid,
+	}
+	return col.Find(cont).All(classes)
+}
+
+func (d *Dao) CheckInClass(ctx context.Context, userId, classId string) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.CLASS_USER_COLLECTION_NAME)
+	if cnt, err := col.Find(bson.M{"userid": userId, "classid": classId}).Count(); err != nil {
+		return err
+	} else if cnt > 0 {
+		return errors.New("errors.inclass-duplicated")
+	}
+	return nil
+}
+
+func (d *Dao) FillAllStudentsById(ctx context.Context, classid string, classes *[]*model.ClassUser) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.CLASS_USER_COLLECTION_NAME)
+	cont := bson.M{
+		"classid": classid,
+		"status":  model.Student,
 	}
 	return col.Find(cont).All(classes)
 }

@@ -40,6 +40,10 @@ type ClassService interface {
 	ClassInfo(ctx context.Context, in *ClassReq, opts ...client.CallOption) (*ClassReply, error)
 	JoinClass(ctx context.Context, in *JoinClassReq, opts ...client.CallOption) (*UserClassReply, error)
 	UserClassInfo(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*UserClassReply, error)
+	QueryClassUserInfo(ctx context.Context, in *ClassReq, opts ...client.CallOption) (*QueryClassUserInfoReply, error)
+	CreateInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error)
+	StopInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error)
+	InvitaionInfo(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*ClassReply, error)
 }
 
 type classService struct {
@@ -100,6 +104,46 @@ func (c *classService) UserClassInfo(ctx context.Context, in *api.UserReq, opts 
 	return out, nil
 }
 
+func (c *classService) QueryClassUserInfo(ctx context.Context, in *ClassReq, opts ...client.CallOption) (*QueryClassUserInfoReply, error) {
+	req := c.c.NewRequest(c.name, "Class.QueryClassUserInfo", in)
+	out := new(QueryClassUserInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *classService) CreateInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Class.CreateInvitaion", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *classService) StopInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Class.StopInvitaion", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *classService) InvitaionInfo(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*ClassReply, error) {
+	req := c.c.NewRequest(c.name, "Class.InvitaionInfo", in)
+	out := new(ClassReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Class service
 
 type ClassHandler interface {
@@ -107,6 +151,10 @@ type ClassHandler interface {
 	ClassInfo(context.Context, *ClassReq, *ClassReply) error
 	JoinClass(context.Context, *JoinClassReq, *UserClassReply) error
 	UserClassInfo(context.Context, *api.UserReq, *UserClassReply) error
+	QueryClassUserInfo(context.Context, *ClassReq, *QueryClassUserInfoReply) error
+	CreateInvitaion(context.Context, *InvitationReq, *api.Empty) error
+	StopInvitaion(context.Context, *InvitationReq, *api.Empty) error
+	InvitaionInfo(context.Context, *InvitationReq, *ClassReply) error
 }
 
 func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.HandlerOption) error {
@@ -115,6 +163,10 @@ func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.Han
 		ClassInfo(ctx context.Context, in *ClassReq, out *ClassReply) error
 		JoinClass(ctx context.Context, in *JoinClassReq, out *UserClassReply) error
 		UserClassInfo(ctx context.Context, in *api.UserReq, out *UserClassReply) error
+		QueryClassUserInfo(ctx context.Context, in *ClassReq, out *QueryClassUserInfoReply) error
+		CreateInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error
+		StopInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error
+		InvitaionInfo(ctx context.Context, in *InvitationReq, out *ClassReply) error
 	}
 	type Class struct {
 		class
@@ -141,4 +193,20 @@ func (h *classHandler) JoinClass(ctx context.Context, in *JoinClassReq, out *Use
 
 func (h *classHandler) UserClassInfo(ctx context.Context, in *api.UserReq, out *UserClassReply) error {
 	return h.ClassHandler.UserClassInfo(ctx, in, out)
+}
+
+func (h *classHandler) QueryClassUserInfo(ctx context.Context, in *ClassReq, out *QueryClassUserInfoReply) error {
+	return h.ClassHandler.QueryClassUserInfo(ctx, in, out)
+}
+
+func (h *classHandler) CreateInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error {
+	return h.ClassHandler.CreateInvitaion(ctx, in, out)
+}
+
+func (h *classHandler) StopInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error {
+	return h.ClassHandler.StopInvitaion(ctx, in, out)
+}
+
+func (h *classHandler) InvitaionInfo(ctx context.Context, in *InvitationReq, out *ClassReply) error {
+	return h.ClassHandler.InvitaionInfo(ctx, in, out)
 }

@@ -5,10 +5,14 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "knowledgemap_backend/microservices/knowledgemap/user/api/user.proto";
 
 service Class {
-    rpc CreateClass(CreateClassReq)returns (ClassReply){}
-    rpc ClassInfo(ClassReq) returns (ClassReply) {}
-    rpc JoinClass(JoinClassReq)returns (UserClassReply){}
-    rpc UserClassInfo(UserReq)returns (UserClassReply){}
+    rpc CreateClass(CreateClassReq)returns (ClassReply){}//创建班级
+    rpc ClassInfo(ClassReq) returns (ClassReply) {}//查询班级信息
+    rpc JoinClass(JoinClassReq)returns (UserClassReply){}//加入班级
+    rpc UserClassInfo(UserReq)returns (UserClassReply){}//查询所有班级
+    rpc QueryClassUserInfo(ClassReq)returns(QueryClassUserInfoReply){}//查询班内所有学生
+    rpc CreateInvitaion(InvitationReq)returns (Empty){}
+    rpc StopInvitaion(InvitationReq)returns (Empty){}
+    rpc InvitaionInfo(InvitationReq)returns (ClassReply){}
 }
 
 message ClassReq {
@@ -21,8 +25,8 @@ message ClassReply {
     string  major = 3;
     string  college = 4;
     string  teachername = 5;
-    int64   CreateTime = 6;
-    string  Number = 7;
+    int64   createTime = 6;
+    string  number = 7;
 }
 
 message UserClassReply {
@@ -30,12 +34,31 @@ message UserClassReply {
 }
 
 message CreateClassReq{
-    string  name = 1 [(gogoproto.jsontag) = "classid"];
-    string  major = 2;
-    string  college = 3;
-    string  teachername = 4;
+    string  name = 1 [(gogoproto.moretags) = "form:\"classname\""];
+    string  major = 2 [(gogoproto.moretags) = "form:\"major\""];
+    string  college = 3 [(gogoproto.moretags) = "form:\"college\""];
+    string  teachername = 4 [(gogoproto.moretags) = "form:\"teachername\""];
+    string  teacherid = 5 [(gogoproto.moretags) = "form:\"teacherid\""];
 }
+
 message JoinClassReq{
     string userid = 1 [(gogoproto.jsontag) = "uid"];
     string classid = 2;
+    string username = 3;
+    string status = 4;
+}
+
+message InvitationReq{
+    string  classid = 1 [(gogoproto.moretags) = "form:\"classid\""];
+    string  invitaioncode = 2 [(gogoproto.moretags) = "form:\"invitationcode\""];
+    string  userid = 3 [(gogoproto.moretags) = "form:\"userid\""];
+}
+
+message QueryClassUserInfoReply{
+    message StudentInfo{
+        string userid = 1 ;
+        string username = 2;
+    }
+    string classid = 1 ;
+    repeated StudentInfo students = 2;
 }
