@@ -15,6 +15,7 @@ import (
 	"knowledgemap_backend/microservices/common/middlewares"
 	"knowledgemap_backend/microservices/common/namespace"
 
+	capi "knowledgemap_backend/microservices/knowledgemap/class/api"
 	kapi "knowledgemap_backend/microservices/knowledgemap/knowledgemap/api"
 	"knowledgemap_backend/microservices/knowledgemap/knowledgemap/handler"
 	papi "knowledgemap_backend/microservices/knowledgemap/passport/api"
@@ -30,6 +31,7 @@ var (
 	userSrv         uapi.UserService
 	questionSrv     qapi.QuestionService
 	knowledgeMapSrv kapi.KnowledegeMapService
+	classSrv        capi.ClassService
 )
 
 type (
@@ -62,8 +64,8 @@ func Init() *echo.Echo {
 
 	reg := consul.NewRegistry(func(op *registry.Options) {
 		op.Addrs = []string{
-			//"127.0.0.1:8500",
-			"172.17.9.156:8500",
+			"127.0.0.1:8500",
+			//"172.17.9.156:8500",
 		}
 	})
 
@@ -77,6 +79,7 @@ func Init() *echo.Echo {
 	knowledgeMapSrv = kapi.NewKnowledegeMapService(namespace.GetName("microservices.knowledgemap.knowledgemap"), services.Client())
 	userSrv = uapi.NewUserService(namespace.GetName("microservices.knowledgemap.user"), services.Client())
 	passportSrv = papi.NewPassportService(namespace.GetName("microservices.knowledgemap.passport"), services.Client())
+	classSrv = capi.NewClassService(namespace.GetName("microservices.knowledgemap.class"), services.Client())
 	// courseSrv = capi.NewCourseService("collegemanage.app.college.course", client.DefaultClient)
 	InitRouter(e)
 	/*
@@ -100,8 +103,17 @@ func InitRouter(e *echo.Echo) {
 	api.PUT("/user/login", userLogin)
 
 	authMid := CreateAuthMid(passportSrv)
+	mustTeacherMid := CreateMustPositionMid(passportSrv, POSITION_TEACHER)
+	mustStudentMid := CreateMustPositionMid(passportSrv, POSITION_STUDENT)
 	api.PUT("/user/changepassword", userChangePassword, authMid)
 	api.GET("/hi", hello)
 	api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
+	api.POST("/class/create", classCreate, authMid, mustTeacherMid)
+	api.PUT("/class/join", joinClass, authMid, mustStudentMid)
+	api.GET("/class/query/myclasses", queryMyClasses, authMid)
+	api.GET("/class/query/alluserinclass/:classid", queryAllUserInClass, authMid)
+	api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
+	api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
+	api.GET("/class/invitation/query/:invitationcode", queryInvitation, authMid)
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }
