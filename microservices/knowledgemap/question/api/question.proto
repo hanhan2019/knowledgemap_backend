@@ -43,7 +43,7 @@ message CreateQuestionReq{
 }
 
 message QuestionInfoReply{
-	string id = 1[(gogoproto.moretags) = "form:\"kind\""];
+	string id = 1[(gogoproto.moretags) = "form:\"id\""];
     int64  kind = 2 [(gogoproto.moretags) = "form:\"kind\""];
     string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
     repeated string  option = 4 [(gogoproto.moretags) = "form:\"option\""];

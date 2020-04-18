@@ -2,9 +2,11 @@ package http
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-playground/validator"
 	micro "github.com/micro/go-micro"
+	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/consul"
 	"github.com/sirupsen/logrus"
@@ -62,19 +64,21 @@ func Init() *echo.Echo {
 		}))
 	}
 
+	addr := "127.0.0.1:8500"
+	profile := os.Getenv("profile")
+	if profile != "debug" {
+		addr = "172.17.9.156:8500"
+	}
 	reg := consul.NewRegistry(func(op *registry.Options) {
-		op.Addrs = []string{
-			//"127.0.0.1:8500",
-			"172.17.9.156:8500",
-		}
+		op.Addrs = []string{addr}
 	})
 
 	services := micro.NewService(micro.Registry(reg), micro.Name(namespace.GetName("agent.knowledgemap.client")))
 	services.Init()
 	micro.RegisterHandler(services.Server(), new(handler.KnowledgeMapService))
 	go services.Run()
-	// questionSrv = qapi.NewQuestionService(namespace.GetName("microservices.knowledgemap.question"), client.DefaultClient)
-	// knowledgeMapSrv = kapi.NewKnowledegeMapService(namespace.GetName("microservices.knowledgemap.knowledgemap"), client.DefaultClient)
+	//questionSrv = qapi.NewQuestionService(namespace.GetName("microservices.knowledgemap.question"), client.DefaultClient)
+	knowledgeMapSrv = kapi.NewKnowledegeMapService(namespace.GetName("microservices.knowledgemap.knowledgemap"), client.DefaultClient)
 	questionSrv = qapi.NewQuestionService(namespace.GetName("microservices.knowledgemap.question"), services.Client())
 	knowledgeMapSrv = kapi.NewKnowledegeMapService(namespace.GetName("microservices.knowledgemap.knowledgemap"), services.Client())
 	userSrv = uapi.NewUserService(namespace.GetName("microservices.knowledgemap.user"), services.Client())
@@ -115,5 +119,21 @@ func InitRouter(e *echo.Echo) {
 	api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
 	api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
 	api.GET("/class/invitation/query/:invitationcode", queryInvitation, authMid)
+	{
+		api.POST("/knowledge/create", createKnowledge, authMid, mustTeacherMid)
+		api.GET("/knowledge/query/:knowledgeId", queryKnowledge, authMid)
+	}
+	{
+		api.POST("/question/create", createQuestion, authMid, mustTeacherMid)
+		api.GET("/question/query/:kind/:course/:subject/:knowledge", queryQuestion, authMid)
+	}
+	{
+		api.POST("/homework/create", createHomeWork, authMid, mustTeacherMid)
+		api.GET("/homework/query/:userid/:classid", queryHomeWork, authMid)
+		api.PUT("/homework/do", doHomeWork, authMid)
+		api.GET("/homework/answerrecord/query/:homeworkid", queryAnswerRecord, authMid, mustTeacherMid)
+		api.GET("/homework/query/info/:classid", queryHomeWorkInClass, authMid)
+
+	}
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

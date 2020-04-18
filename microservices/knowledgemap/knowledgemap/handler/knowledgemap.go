@@ -97,16 +97,16 @@ func CreateKnowledgeMapFromNodes(ctx context.Context, node *model.Node) []map[st
 
 func (s *KnowledgeMapService) CreateKnowledege(ctx context.Context, req *api.CreateKnowledegeReq, rsp *api.KnowledegeInfoReply) error {
 	logrus.Infof("CreateKnowledege req is %v ", req)
-	knowledege := &model.Node{bson.NewObjectId(), []model.LableInfo{model.LableInfo{"zh", req.Name}}, "default", model.NodeConcept, req.Subject, req.Course}
-	knowledge, err := gdao.NewNode(ctx, knowledege)
+	knowledge := &model.Node{bson.NewObjectId(), []model.LableInfo{model.LableInfo{"zh", req.Name}}, "default", model.NodeConcept, req.Subject, req.Course}
+	knowledgeInfo, err := gdao.NewNode(ctx, knowledge)
 	if err != nil {
 		fmt.Println("create knowledge error", err)
 		return fmt.Errorf("创建知识点失败")
 	} else {
-		rsp.Id = knowledege.ID.Hex()
-		rsp.Name = knowledege.Label[0].Value
-		rsp.Subject = knowledege.Subject
-		rsp.Course = knowledege.Course
+		rsp.Id = knowledgeInfo.ID.Hex()
+		rsp.Name = knowledgeInfo.Label[0].Value
+		rsp.Subject = knowledgeInfo.Subject
+		rsp.Course = knowledgeInfo.Course
 	}
 	return nil
 }
@@ -117,6 +117,11 @@ func (s *KnowledgeMapService) QueryKnowledegeInfo(ctx context.Context, req *api.
 	if err := gdao.FillKnowledgeByID(ctx, bson.ObjectIdHex(req.Id), knowledege); err != nil {
 		fmt.Println("query knowledege info error", err)
 		return fmt.Errorf("查询知识点信息失败")
+	} else {
+		rsp.Id = knowledege.ID.Hex()
+		rsp.Name = knowledege.Label[0].Value
+		rsp.Subject = knowledege.Subject
+		rsp.Course = knowledege.Course
 	}
 	return nil
 }

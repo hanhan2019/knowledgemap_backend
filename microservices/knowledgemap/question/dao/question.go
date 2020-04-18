@@ -21,7 +21,7 @@ func (d *Dao) NewQuestion(ctx context.Context, question *model.Qusetion) error {
 	return col.Insert(question)
 }
 
-func (d *Dao) FillQuestionBySubject(ctx context.Context, kind int64, subject, course, knowledge string, questions *[]*model.Qusetion) error {
+func (d *Dao) FillQuestionBySubject(ctx context.Context, kind int64, subject, course string, knowledge bson.ObjectId, questions *[]*model.Qusetion) error {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
 	col := db.C(model.QUESTION_COLLECTION_NAME)

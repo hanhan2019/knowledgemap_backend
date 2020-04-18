@@ -35,14 +35,14 @@ message CRqQueryMyMapBySubject {
 }
 
 message CreateKnowledegeReq{
-	string name = 1 [(gogoproto.jsontag) = "subject"];//对应node里面的label:value
-	string subject = 2 [(gogoproto.jsontag) = "subject"];
-	int64 course = 3 [(gogoproto.jsontag) = "course"];
+	string name = 1 [(gogoproto.moretags) = "form:\"name\""];//对应node里面的label:value
+	string subject = 2 [(gogoproto.moretags) = "form:\"subject\""];
+	string course = 3 [(gogoproto.moretags) = "form:\"course\""];
 }
 
 message KnowledegeInfoReply{
 	string id = 1 [(gogoproto.jsontag) = "id"];
-	string name = 2 [(gogoproto.jsontag) = "subject"];//对应node里面的label:value
+	string name = 2 [(gogoproto.jsontag) = "name"];//对应node里面的label:value
 	string subject = 3 [(gogoproto.jsontag) = "subject"];
 	string course = 4 [(gogoproto.jsontag) = "course"];
 }

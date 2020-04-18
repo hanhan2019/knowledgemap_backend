@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"knowledgemap_backend/microservices/common/conf"
 	"knowledgemap_backend/microservices/common/namespace"
@@ -14,10 +15,13 @@ import (
 )
 
 func main() {
+	addr := "127.0.0.1:8500"
+	profile := os.Getenv("profile")
+	if profile != "debug" {
+		addr = "172.17.9.156:8500"
+	}
 	reg := consul.NewRegistry(func(op *registry.Options) {
-		op.Addrs = []string{
-			"127.0.0.1:8500",
-		}
+		op.Addrs = []string{addr}
 	})
 	service := micro.NewService(micro.Registry(reg), micro.Name(namespace.GetName("microservices.knowledgemap.knowledgemap")))
 	// service := micro.NewService(micro.Name(namespace.GetName("microservices.knowledgemap.knowledgemap")))

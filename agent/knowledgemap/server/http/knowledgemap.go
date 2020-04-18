@@ -41,3 +41,30 @@ func queryUserKnowledgeMap(c echo.Context) error {
 
 	}
 }
+
+func createKnowledge(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(kapi.CreateKnowledegeReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	if res, err := knowledgeMapSrv.CreateKnowledege(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func queryKnowledge(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(kapi.QueryKnowledegeInfoReq)
+	req.Id = c.Param("knowledgeId")
+	if res, err := knowledgeMapSrv.QueryKnowledegeInfo(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
