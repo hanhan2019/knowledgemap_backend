@@ -15,6 +15,7 @@ service Passport {
 	rpc Login(LoginReq) returns (PassportUserReply) {}
     rpc CheckSToken(SessionTokenReq) returns (Empty) {}
     rpc ChangePassword(ChangePasswordReq) returns (Empty) {}
+    rpc CheckIndentify(UserReq) returns (IndentifyReply){}
 }
 
 
@@ -63,4 +64,15 @@ message LoginReq{
 message ChangePasswordReq{
     string  account = 1 [(gogoproto.moretags) = "form:\"account\""];
     string  password = 2 [(gogoproto.moretags) = "form:\"password\""];
+}
+
+enum Indentify{
+    STUDENT = 0;
+    TEACHER = 1;
+    SECRETARY = 2;
+    NOTFOUND = -1;
+}
+
+message IndentifyReply{
+    Indentify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
 }

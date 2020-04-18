@@ -23,12 +23,12 @@ func (u *UserService) UserInfo(ctx context.Context, req *api.UserReq, rsp *api.U
 	}
 }
 
-func (u *UserService) UserClassInfo(ctx context.Context, req *api.ClassReq, rsp *api.ClassReply) error {
-	logrus.Infof("UserClassInfo req is %v ", req)
-	if err := gdao.GetAllStudentInClass(ctx, req.Classid, &rsp); err != nil {
-		logrus.Errorf("UserClassInfo error %v ", err)
-		return err
-	} else {
-		return nil
-	}
-}
+// func (u *UserService) UserClassInfo(ctx context.Context, req *capi.ClassReq, rsp *api.ClassReply) error {
+// 	logrus.Infof("UserClassInfo req is %v ", req)
+// 	if err := gdao.GetAllStudentInClass(ctx, req.Classid, &rsp); err != nil {
+// 		logrus.Errorf("UserClassInfo error %v ", err)
+// 		return err
+// 	} else {
+// 		return nil
+// 	}
+// }

@@ -7,6 +7,8 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
+	api1 "knowledgemap_backend/microservices/knowledgemap/class/api"
+	api "knowledgemap_backend/microservices/knowledgemap/user/api"
 	math "math"
 )
 
@@ -36,6 +38,13 @@ var _ server.Option
 
 type QuestionService interface {
 	GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, opts ...client.CallOption) (*CRpMyQuestionInfoBySubject, error)
+	CreateQuestion(ctx context.Context, in *CreateQuestionReq, opts ...client.CallOption) (*QuestionInfoReply, error)
+	QueryQuestion(ctx context.Context, in *QueryQuestionReq, opts ...client.CallOption) (*QueryQuestionReply, error)
+	CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, opts ...client.CallOption) (*CreateHomeWorkReply, error)
+	QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, opts ...client.CallOption) (*QueryMyHomeWorkReply, error)
+	DoHomeWork(ctx context.Context, in *DoHomeWorkReq, opts ...client.CallOption) (*api.Empty, error)
+	QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, opts ...client.CallOption) (*QueryAnswerRecordReply, error)
+	QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, opts ...client.CallOption) (*QueryHomeWorkInClassReply, error)
 }
 
 type questionService struct {
@@ -66,15 +75,99 @@ func (c *questionService) GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQ
 	return out, nil
 }
 
+func (c *questionService) CreateQuestion(ctx context.Context, in *CreateQuestionReq, opts ...client.CallOption) (*QuestionInfoReply, error) {
+	req := c.c.NewRequest(c.name, "Question.CreateQuestion", in)
+	out := new(QuestionInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) QueryQuestion(ctx context.Context, in *QueryQuestionReq, opts ...client.CallOption) (*QueryQuestionReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryQuestion", in)
+	out := new(QueryQuestionReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, opts ...client.CallOption) (*CreateHomeWorkReply, error) {
+	req := c.c.NewRequest(c.name, "Question.CreateHomeWork", in)
+	out := new(CreateHomeWorkReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, opts ...client.CallOption) (*QueryMyHomeWorkReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryMyHomeWork", in)
+	out := new(QueryMyHomeWorkReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) DoHomeWork(ctx context.Context, in *DoHomeWorkReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Question.DoHomeWork", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, opts ...client.CallOption) (*QueryAnswerRecordReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryAnswerRecord", in)
+	out := new(QueryAnswerRecordReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, opts ...client.CallOption) (*QueryHomeWorkInClassReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryHomeWorkInClass", in)
+	out := new(QueryHomeWorkInClassReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Question service
 
 type QuestionHandler interface {
 	GetMyQuestionInfo(context.Context, *CRqQueryMyQuestionInfoBySubject, *CRpMyQuestionInfoBySubject) error
+	CreateQuestion(context.Context, *CreateQuestionReq, *QuestionInfoReply) error
+	QueryQuestion(context.Context, *QueryQuestionReq, *QueryQuestionReply) error
+	CreateHomeWork(context.Context, *CreateHomeWorkReq, *CreateHomeWorkReply) error
+	QueryMyHomeWork(context.Context, *QueryMyHomeWorkReq, *QueryMyHomeWorkReply) error
+	DoHomeWork(context.Context, *DoHomeWorkReq, *api.Empty) error
+	QueryAnswerRecord(context.Context, *QueryAnswerRecordReq, *QueryAnswerRecordReply) error
+	QueryHomeWorkInClass(context.Context, *api1.ClassReq, *QueryHomeWorkInClassReply) error
 }
 
 func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...server.HandlerOption) error {
 	type question interface {
 		GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, out *CRpMyQuestionInfoBySubject) error
+		CreateQuestion(ctx context.Context, in *CreateQuestionReq, out *QuestionInfoReply) error
+		QueryQuestion(ctx context.Context, in *QueryQuestionReq, out *QueryQuestionReply) error
+		CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, out *CreateHomeWorkReply) error
+		QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, out *QueryMyHomeWorkReply) error
+		DoHomeWork(ctx context.Context, in *DoHomeWorkReq, out *api.Empty) error
+		QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, out *QueryAnswerRecordReply) error
+		QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, out *QueryHomeWorkInClassReply) error
 	}
 	type Question struct {
 		question
@@ -89,4 +182,32 @@ type questionHandler struct {
 
 func (h *questionHandler) GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, out *CRpMyQuestionInfoBySubject) error {
 	return h.QuestionHandler.GetMyQuestionInfo(ctx, in, out)
+}
+
+func (h *questionHandler) CreateQuestion(ctx context.Context, in *CreateQuestionReq, out *QuestionInfoReply) error {
+	return h.QuestionHandler.CreateQuestion(ctx, in, out)
+}
+
+func (h *questionHandler) QueryQuestion(ctx context.Context, in *QueryQuestionReq, out *QueryQuestionReply) error {
+	return h.QuestionHandler.QueryQuestion(ctx, in, out)
+}
+
+func (h *questionHandler) CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, out *CreateHomeWorkReply) error {
+	return h.QuestionHandler.CreateHomeWork(ctx, in, out)
+}
+
+func (h *questionHandler) QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, out *QueryMyHomeWorkReply) error {
+	return h.QuestionHandler.QueryMyHomeWork(ctx, in, out)
+}
+
+func (h *questionHandler) DoHomeWork(ctx context.Context, in *DoHomeWorkReq, out *api.Empty) error {
+	return h.QuestionHandler.DoHomeWork(ctx, in, out)
+}
+
+func (h *questionHandler) QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, out *QueryAnswerRecordReply) error {
+	return h.QuestionHandler.QueryAnswerRecord(ctx, in, out)
+}
+
+func (h *questionHandler) QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, out *QueryHomeWorkInClassReply) error {
+	return h.QuestionHandler.QueryHomeWorkInClass(ctx, in, out)
 }

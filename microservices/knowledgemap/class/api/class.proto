@@ -16,7 +16,7 @@ service Class {
 }
 
 message ClassReq {
-	string classid = 1 [(gogoproto.jsontag) = "classid"];
+	string classid = 1 [(gogoproto.moretags) = "form:\"classid\""];
 }
 
 message ClassReply {
@@ -42,10 +42,10 @@ message CreateClassReq{
 }
 
 message JoinClassReq{
-    string userid = 1 [(gogoproto.jsontag) = "uid"];
-    string classid = 2;
-    string username = 3;
-    string status = 4;
+    string userid = 1 [(gogoproto.jsontag) = "uid",(gogoproto.moretags) = "form:\"userid\""];
+    string classid = 2 [(gogoproto.moretags) = "form:\"classid\""];
+    string username = 3 [(gogoproto.moretags) = "form:\"username\""];
+    string status = 4 [(gogoproto.moretags) = "form:\"status\""];
 }
 
 message InvitationReq{

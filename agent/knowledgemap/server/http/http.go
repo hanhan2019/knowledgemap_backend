@@ -64,8 +64,8 @@ func Init() *echo.Echo {
 
 	reg := consul.NewRegistry(func(op *registry.Options) {
 		op.Addrs = []string{
-			"127.0.0.1:8500",
-			//"172.17.9.156:8500",
+			//"127.0.0.1:8500",
+			"172.17.9.156:8500",
 		}
 	})
 

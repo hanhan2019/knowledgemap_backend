@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"knowledgemap_backend/microservices/knowledgemap/question/api"
 	"knowledgemap_backend/microservices/knowledgemap/question/model"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 
@@ -126,6 +128,49 @@ func (s *QuestionService) GetMyQuestionInfo(ctx context.Context, req *api.CRqQue
 			continue
 		}
 		rsp.Knowledgenodes = append(rsp.Knowledgenodes, questionInfo.Knowledge.Hex())
+	}
+	return nil
+}
+
+func (s *QuestionService) CreateQuestion(ctx context.Context, req *api.CreateQuestionReq, rsp *api.QuestionInfoReply) error {
+	logrus.Infof("CreateQuestion req is %v ", req)
+	id := bson.NewObjectId()
+	question := &model.Qusetion{id, model.Qusetion_Kind(req.Kind), req.Content, req.Option, req.Answer, req.Subject, req.Course, bson.ObjectIdHex(req.Knowledge), time.Now().Unix()}
+	if err := gdao.NewQuestion(ctx, question); err != nil {
+		fmt.Println("create question error", err)
+		return fmt.Errorf("创建题目失败")
+	} else {
+		rsp.Id = id.Hex()
+		rsp.Kind = req.Kind
+		rsp.Knowledge = req.Knowledge
+		rsp.Option = req.Option
+		rsp.Subject = req.Subject
+		rsp.Answer = req.Answer
+		rsp.Content = req.Content
+		rsp.Course = req.Course
+	}
+	return nil
+}
+
+func (s *QuestionService) QueryQuestion(ctx context.Context, req *api.QueryQuestionReq, rsp *api.QueryQuestionReply) error {
+	logrus.Infof("QueryQuestion req is %v ", req)
+	questions := new([]*model.Qusetion)
+	if err := gdao.FillQuestionBySubject(ctx, req.Kind, req.Subject, req.Course, req.Knowledge, questions); err != nil {
+		fmt.Println("query questions info error", err)
+		return fmt.Errorf("查询题目失败")
+	} else {
+		for _, v := range *questions {
+			info := new(api.QuestionInfoReply)
+			info.Id = v.ID.Hex()
+			info.Kind = int64(v.Kind)
+			info.Subject = v.Subject
+			info.Content = v.Content
+			info.Course = v.Course
+			info.Answer = v.Answer
+			info.Option = v.Option
+			info.Knowledge = v.Knowledge.Hex()
+			rsp.Questions = append(rsp.Questions, info)
+		}
 	}
 	return nil
 }

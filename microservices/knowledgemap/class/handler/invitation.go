@@ -13,7 +13,9 @@ import (
 
 func (s *ClassService) CreateInvitaion(ctx context.Context, req *api.InvitationReq, rsp *uapi.Empty) error {
 	logrus.Infof("create invitaion req is %v ", req)
-
+	if err := CheckClass(ctx, req.Classid); err != nil {
+		return err
+	}
 	if invitaion, err := gdao.NewInvitation(ctx, req); err != nil {
 		fmt.Println("create invitaion err", err)
 		return fmt.Errorf("邀请码已被使用")
@@ -25,9 +27,6 @@ func (s *ClassService) CreateInvitaion(ctx context.Context, req *api.InvitationR
 
 func (s *ClassService) StopInvitaion(ctx context.Context, req *api.InvitationReq, rsp *uapi.Empty) error {
 	logrus.Infof("stop invitaion req is %v ", req)
-	if err := CheckClass(ctx, req.Classid); err != nil {
-		return nil
-	}
 	if err := gdao.StopInvitaion(ctx, req.Invitaioncode); err != nil {
 		fmt.Println("stop invitaion err", err)
 		return fmt.Errorf("停用邀请码失败")

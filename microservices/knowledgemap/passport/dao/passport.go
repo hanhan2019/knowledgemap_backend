@@ -136,6 +136,7 @@ func createDefaultTeacher(req *api.RegisterReq) *model.Teacher {
 	user.Account = req.Account
 	user.Password = req.Password
 	user.Courses = []string{req.Course}
+	user.CreateTime = time.Now().Unix()
 	return user
 }
 
@@ -192,6 +193,7 @@ func (d *Dao) CheckSessionToken(ctx context.Context, uid, token string) error {
 		return err
 	} else {
 		if savedToken != token {
+			fmt.Println("token 不正确")
 			return pmodel.ErrorSessionTokenNotValidate
 		}
 	}
@@ -230,6 +232,44 @@ func (d *Dao) FillSecretaryByAccount(ctx context.Context, account string, rsp **
 		*rsp = &uapi.UserReply{}
 	}
 	err = db.C(model.SECRETARY_COLLECTION_NAME).Find(bson.M{"account": account}).One(*rsp)
+	if err == nil {
+		(*rsp).Userid = bson.ObjectId((*rsp).Userid).Hex()
+	}
+	return
+}
+
+func (d *Dao) FillStudentById(ctx context.Context, id bson.ObjectId, rsp **uapi.UserReply) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	if *rsp == nil {
+		*rsp = &uapi.UserReply{}
+	}
+	err = db.C(model.STUDENT_COLLECTION_NAME).FindId(id).One(*rsp)
+	if err == nil {
+		(*rsp).Userid = bson.ObjectId((*rsp).Userid).Hex()
+	}
+	return
+}
+
+func (d *Dao) FillTeacherById(ctx context.Context, id bson.ObjectId, rsp **uapi.UserReply) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	if *rsp == nil {
+		*rsp = &uapi.UserReply{}
+	}
+	err = db.C(model.TEACHER_COLLECTION_NAME).FindId(id).One(*rsp)
+	if err == nil {
+		(*rsp).Userid = bson.ObjectId((*rsp).Userid).Hex()
+	}
+	return
+}
+func (d *Dao) FillSecretaryById(ctx context.Context, id bson.ObjectId, rsp **uapi.UserReply) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	if *rsp == nil {
+		*rsp = &uapi.UserReply{}
+	}
+	err = db.C(model.SECRETARY_COLLECTION_NAME).FindId(id).One(*rsp)
 	if err == nil {
 		(*rsp).Userid = bson.ObjectId((*rsp).Userid).Hex()
 	}

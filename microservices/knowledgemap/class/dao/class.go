@@ -46,5 +46,8 @@ func (d *Dao) FillClassByID(ctx context.Context, id bson.ObjectId, rsp **api.Cla
 		*rsp = &api.ClassReply{}
 	}
 	err = db.C(model.CLASS_COLLECTION_NAME).FindId(id).One(*rsp)
+	if err == nil {
+		(*rsp).Classid = bson.ObjectId((*rsp).Classid).Hex()
+	}
 	return
 }

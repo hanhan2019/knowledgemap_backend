@@ -29,16 +29,18 @@ type Student struct {
 }
 
 type Teacher struct {
-	ID      bson.ObjectId `bson:"_id" json:"_id"`
-	People  `bson:",inline"`
-	Courses []string `bson:"courses" json:"courses"`
-	Classes []string `bson:"classes" json:"classes"`
+	ID         bson.ObjectId `bson:"_id" json:"_id"`
+	People     `bson:",inline"`
+	Courses    []string `bson:"courses" json:"courses"`
+	Classes    []string `bson:"classes" json:"classes"`
+	CreateTime int64    `bson:"createtime" json:"createtime"`
 }
 
 type Secretary struct {
-	ID      bson.ObjectId `bson:"_id" json:"_id"`
-	People  `bson:",inline"`
-	College string `bson:"college" json:"college"`
+	ID         bson.ObjectId `bson:"_id" json:"_id"`
+	People     `bson:",inline"`
+	College    string `bson:"college" json:"college"`
+	CreateTime int64  `bson:"createtime" json:"createtime"`
 }
 
 type Class struct {

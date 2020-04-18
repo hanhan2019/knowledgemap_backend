@@ -5,8 +5,6 @@ import (
 	"knowledgemap_backend/microservices/knowledgemap/class/api"
 	"knowledgemap_backend/microservices/knowledgemap/class/model"
 	"time"
-
-	"gopkg.in/mgo.v2/bson"
 )
 
 func (d *Dao) newInvitaion(ctx context.Context, invitation *model.Invitation) (*model.Invitation, error) {
@@ -34,7 +32,7 @@ func (d *Dao) StopInvitaion(ctx context.Context, invitation string) error {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
 	col := db.C(model.Invitation_COLLECTION_NAME)
-	return col.UpdateId(invitation, bson.M{"stoptime": time.Now().Unix()})
+	return col.RemoveId(invitation)
 }
 
 func (d *Dao) FillInvitaion(ctx context.Context, invitationCode string, invitation *model.Invitation) (err error) {
@@ -43,6 +41,6 @@ func (d *Dao) FillInvitaion(ctx context.Context, invitationCode string, invitati
 	if invitation == nil {
 		invitation = &model.Invitation{}
 	}
-	err = db.C(model.CLASS_COLLECTION_NAME).FindId(invitationCode).One(invitation)
+	err = db.C(model.Invitation_COLLECTION_NAME).FindId(invitationCode).One(invitation)
 	return
 }

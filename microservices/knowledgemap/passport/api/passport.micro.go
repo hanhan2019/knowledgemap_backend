@@ -40,6 +40,7 @@ type PassportService interface {
 	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*PassportUserReply, error)
 	CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.Empty, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordReq, opts ...client.CallOption) (*api.Empty, error)
+	CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IndentifyReply, error)
 }
 
 type passportService struct {
@@ -100,6 +101,16 @@ func (c *passportService) ChangePassword(ctx context.Context, in *ChangePassword
 	return out, nil
 }
 
+func (c *passportService) CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IndentifyReply, error) {
+	req := c.c.NewRequest(c.name, "Passport.CheckIndentify", in)
+	out := new(IndentifyReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Passport service
 
 type PassportHandler interface {
@@ -107,6 +118,7 @@ type PassportHandler interface {
 	Login(context.Context, *LoginReq, *PassportUserReply) error
 	CheckSToken(context.Context, *SessionTokenReq, *api.Empty) error
 	ChangePassword(context.Context, *ChangePasswordReq, *api.Empty) error
+	CheckIndentify(context.Context, *api.UserReq, *IndentifyReply) error
 }
 
 func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...server.HandlerOption) error {
@@ -115,6 +127,7 @@ func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...serv
 		Login(ctx context.Context, in *LoginReq, out *PassportUserReply) error
 		CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.Empty) error
 		ChangePassword(ctx context.Context, in *ChangePasswordReq, out *api.Empty) error
+		CheckIndentify(ctx context.Context, in *api.UserReq, out *IndentifyReply) error
 	}
 	type Passport struct {
 		passport
@@ -141,4 +154,8 @@ func (h *passportHandler) CheckSToken(ctx context.Context, in *SessionTokenReq, 
 
 func (h *passportHandler) ChangePassword(ctx context.Context, in *ChangePasswordReq, out *api.Empty) error {
 	return h.PassportHandler.ChangePassword(ctx, in, out)
+}
+
+func (h *passportHandler) CheckIndentify(ctx context.Context, in *api.UserReq, out *IndentifyReply) error {
+	return h.PassportHandler.CheckIndentify(ctx, in, out)
 }

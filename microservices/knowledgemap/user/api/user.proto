@@ -9,8 +9,9 @@ service User {
 }
 
 message UserReq {
-	string userid = 1 [(gogoproto.jsontag) = "uid"];
+	string userid = 1 [(gogoproto.moretags) = "form:\"userid\""];
 }
+
 message Empty{}
 message UserReply {
 	string  userid = 1 [(gogoproto.moretags) = "bson:\"_id\",form:\"_id\""];

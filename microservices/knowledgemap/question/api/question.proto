@@ -3,7 +3,8 @@ package api;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-// import "myProjects/collegeManage/app/college/user/api/user.proto";
+import "knowledgemap_backend/microservices/knowledgemap/user/api/user.proto";
+import "knowledgemap_backend/microservices/knowledgemap/class/api/class.proto";
 
 
 
@@ -12,9 +13,13 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service Question {
 	rpc GetMyQuestionInfo(CRqQueryMyQuestionInfoBySubject) returns (CRpMyQuestionInfoBySubject) {}
-    // rpc Register(RegisterReq) returns (PassportUserReply) {}
-	// rpc Login(LoginReq) returns (PassportUserReply) {}
-	// rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+    rpc CreateQuestion(CreateQuestionReq) returns (QuestionInfoReply) {}
+	rpc QueryQuestion(QueryQuestionReq) returns (QueryQuestionReply) {}
+	rpc CreateHomeWork(CreateHomeWorkReq) returns (CreateHomeWorkReply) {}
+	rpc QueryMyHomeWork(QueryMyHomeWorkReq) returns (QueryMyHomeWorkReply) {}
+	rpc DoHomeWork(DoHomeWorkReq) returns (Empty) {}
+	rpc QueryAnswerRecord(QueryAnswerRecordReq)returns (QueryAnswerRecordReply){}
+	rpc QueryHomeWorkInClass(ClassReq) returns(QueryHomeWorkInClassReply){}
 }
 
 message CRqQueryMyQuestionInfoBySubject{
@@ -25,4 +30,107 @@ message CRqQueryMyQuestionInfoBySubject{
 
 message CRpMyQuestionInfoBySubject{
 	repeated string knowledgenodes =1;
+}
+
+message CreateQuestionReq{
+    int64  kind = 1 [(gogoproto.moretags) = "form:\"kind\""];
+    string  content = 2 [(gogoproto.moretags) = "form:\"content\""];
+    repeated string  option = 3 [(gogoproto.moretags) = "form:\"option\""];
+    repeated string answer = 4 [(gogoproto.moretags) = "form:\"answer\""];
+	string  subject = 5 [(gogoproto.moretags) = "form:\"subject\""];
+	string  course = 6 [(gogoproto.moretags) = "form:\"course\""];
+    string  knowledge = 7 [(gogoproto.moretags) = "form:\"knowledge\""];
+}
+
+message QuestionInfoReply{
+	string id = 1[(gogoproto.moretags) = "form:\"kind\""];
+    int64  kind = 2 [(gogoproto.moretags) = "form:\"kind\""];
+    string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
+    repeated string  option = 4 [(gogoproto.moretags) = "form:\"option\""];
+    repeated string answer = 5 [(gogoproto.moretags) = "form:\"answer\""];
+	string  subject = 6 [(gogoproto.moretags) = "form:\"subject\""];
+	string  course = 7 [(gogoproto.moretags) = "form:\"course\""];
+    string  knowledge = 8 [(gogoproto.moretags) = "form:\"knowledge\""];
+}
+
+message QueryQuestionReq{
+    int64  kind = 1 [(gogoproto.moretags) = "form:\"kind\""];
+	string  subject = 2 [(gogoproto.moretags) = "form:\"subject\""];
+	string  course = 3 [(gogoproto.moretags) = "form:\"course\""];
+    string  knowledge = 4 [(gogoproto.moretags) = "form:\"knowledge\""];
+}
+
+message QueryQuestionReply{
+    repeated QuestionInfoReply questions = 1 [(gogoproto.moretags) = "form:\"questions\""];
+}
+
+message CreateHomeWorkReq{
+	string name = 1 [(gogoproto.moretags) = "form:\"name\""] ;
+	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
+	repeated string students =3 [(gogoproto.moretags) = "form:\"students\""];
+	repeated string questions =4 [(gogoproto.moretags) = "form:\"questions\""];
+}
+
+message CreateHomeWorkReply{
+	string homeworkid = 1 [(gogoproto.moretags) = "form:\"homeworkid\""] ;
+}
+
+message QueryMyHomeWorkReq{
+	string userid = 1 [(gogoproto.moretags) = "form:\"userid\""] ;
+	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
+}
+
+message QuestionInfo{
+	string questionid = 1 [(gogoproto.moretags) = "form:\"qustionid\""] ;
+	int64 kind = 2 [(gogoproto.moretags) = "form:\"kind\""] ;
+	string content = 3 [(gogoproto.moretags) = "form:\"content\""] ;
+	repeated string option = 4 [(gogoproto.moretags) = "form:\"option\""] ;
+}
+
+message HomeWorkInfo{
+	string homeworkid = 1 [(gogoproto.moretags) = "form:\"homeworkid\""] ;
+	string name = 2 [(gogoproto.moretags) = "form:\"name\""] ;
+	repeated QuestionInfo questions = 3 [(gogoproto.moretags) = "form:\"questions\""] ;
+}
+
+message QueryMyHomeWorkReply{
+	repeated HomeWorkInfo homework = 1 [(gogoproto.moretags) = "form:\"homework\""] ;
+}
+
+message DoHomeWorkInfo{
+	string questionid = 1  [(gogoproto.moretags) = "form:\"questionid\""] ;
+	repeated string answer = 2 [(gogoproto.moretags) = "form:\"answer\""] ;
+}
+
+message DoHomeWorkReq{
+	string homeworkid = 1  [(gogoproto.moretags) = "form:\"homeworkid\""] ;
+	string userid = 2 [(gogoproto.moretags) = "form:\"userid\""] ;
+	string username= 3 [(gogoproto.moretags) = "form:\"username\""] ;
+	repeated DoHomeWorkInfo answer =4 [(gogoproto.moretags) = "form:\"answer\""] ;
+}
+
+message QueryAnswerRecordReq{
+	string homeworkid = 1  [(gogoproto.moretags) = "form:\"homeworkid\""] ;
+}
+
+message UserAnswerInfo{
+	string username = 1  [(gogoproto.moretags) = "form:\"username\""] ;
+	string userid = 2 [(gogoproto.moretags) = "form:\"userid\""] ;
+	repeated string answer = 3 [(gogoproto.moretags) = "form:\"answer\""] ;
+}
+
+message AllUserAnswerInfo{
+	string questionid = 1  [(gogoproto.moretags) = "form:\"questionid\""] ;
+	string content = 2 [(gogoproto.moretags) = "form:\"content\""] ;
+	repeated string option = 3 [(gogoproto.moretags) = "form:\"option\""] ;
+	repeated string rightanswer = 4 [(gogoproto.moretags) = "form:\"rightanswer\""] ;
+	repeated UserAnswerInfo alluseranswer = 5 [(gogoproto.moretags) = "form:\"alluseranswer\""] ;
+}
+
+message QueryAnswerRecordReply{
+	repeated AllUserAnswerInfo homeworkrecord= 1  [(gogoproto.moretags) = "form:\"homeworkrecord\""] ;
+}
+
+message QueryHomeWorkInClassReply{
+	repeated HomeWorkInfo homework = 1 [(gogoproto.moretags) = "form:\"homeworkrecord\""] ;
 }

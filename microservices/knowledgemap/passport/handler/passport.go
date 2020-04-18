@@ -7,6 +7,8 @@ import (
 	"knowledgemap_backend/microservices/knowledgemap/passport/api"
 	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
 
+	"gopkg.in/mgo.v2/bson"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -38,6 +40,21 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 
 func CheckAccount(ctx context.Context, account string) error {
 	if err := gdao.CheckIDCardInStudent(ctx, account); err != nil {
+		return err
+	}
+	if err := gdao.CheckAccountInStudent(ctx, account); err != nil {
+		return err
+	}
+	if err := gdao.CheckIDCardInTeacher(ctx, account); err != nil {
+		return err
+	}
+	if err := gdao.CheckAccountInTeacher(ctx, account); err != nil {
+		return err
+	}
+	if err := gdao.CheckIDCardInSecretary(ctx, account); err != nil {
+		return err
+	}
+	if err := gdao.CheckAccountInSecretary(ctx, account); err != nil {
 		return err
 	}
 	return nil
@@ -79,9 +96,31 @@ func FindUserByAccount(ctx context.Context, account string, rsp *api.PassportUse
 }
 
 func (s *PassportService) CheckSToken(ctx context.Context, req *api.SessionTokenReq, rsp *uapi.Empty) error {
+	logrus.Infof("check token req is %v ", req)
 	return gdao.CheckSessionToken(ctx, req.Uid, req.Stoken)
 }
 
 func (s *PassportService) ChangePassword(ctx context.Context, req *api.ChangePasswordReq, rsp *uapi.Empty) error {
+	logrus.Infof("change password req is %v ", req)
 	return gdao.ChangePassword(ctx, req.Account, req.Password, &rsp)
+}
+
+func (s *PassportService) CheckIndentify(ctx context.Context, req *uapi.UserReq, rsp *api.IndentifyReply) error {
+	logrus.Infof("check indentify req is %v ", req)
+	indentify := FindUserById(ctx, bson.ObjectIdHex(req.Userid))
+	fmt.Println("indentify is", indentify)
+	rsp.Ltype = api.Indentify(indentify)
+	return nil
+}
+
+func FindUserById(ctx context.Context, id bson.ObjectId) int64 {
+	rsp := new(api.PassportUserReply)
+	if gdao.FillStudentById(ctx, id, &rsp.User) == nil {
+		return 0
+	} else if gdao.FillTeacherById(ctx, id, &rsp.User) == nil {
+		return 1
+	} else if gdao.FillSecretaryById(ctx, id, &rsp.User) == nil {
+		return 2
+	}
+	return -1
 }
