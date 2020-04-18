@@ -13,8 +13,8 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 service KnowledegeMap {
 	rpc GetKnowledegeMapBySubject(CRqQueryMapBySubject) returns (KnowledegeMapInfo) {}
     rpc GetMyKnowledegeMapBySubject(CRqQueryMyMapBySubject) returns (KnowledegeMapInfo) {}
-	// rpc Login(LoginReq) returns (PassportUserReply) {}
-	// rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+	rpc CreateKnowledege(CreateKnowledegeReq)returns(KnowledegeInfoReply){}
+	rpc QueryKnowledegeInfo(QueryKnowledegeInfoReq)returns(KnowledegeInfoReply){}
 }
 
 message Empty{}
@@ -33,39 +33,20 @@ message CRqQueryMyMapBySubject {
 	string subject = 2 [(gogoproto.jsontag) = "subject"];
 	int64 endtime = 3 [(gogoproto.jsontag) = "endtime"];
 }
-// message PassportUserReply {
-//     UserReply user =  1;
-//     string token = 2;
-//     int64 expires = 3;
-// }
 
-// message RegisterReq {
-//     enum RegisterType{
-//         STUDENT = 0;
-//         TEACHER = 1;
-//         SECRETARY = 2;
-//     }
-//     RegisterType rtype = 1;
-//     string  name = 2;
-//     string  major = 3;
-//     string  idcard = 4 ;
-//     string  origin = 5;
-//     string  class = 6;
-//     string admissontime = 7;
-//     string  account =8;
-//     string password= 9;
-//     string college =10;
-//     string course =11;
-// }
+message CreateKnowledegeReq{
+	string name = 1 [(gogoproto.jsontag) = "subject"];//对应node里面的label:value
+	string subject = 2 [(gogoproto.jsontag) = "subject"];
+	int64 course = 3 [(gogoproto.jsontag) = "course"];
+}
 
-// message LoginReq{
-//     enum LoginType{
-//         STUDENT = 0;
-//         TEACHER = 1;
-//         SECRETARY = 2;
-//         NOTFOUND = -1;
-//     }
-//     LoginType ltype = 1;
-//     string  account = 2;
-//     string  passward = 3;
-// }
+message KnowledegeInfoReply{
+	string id = 1 [(gogoproto.jsontag) = "id"];
+	string name = 2 [(gogoproto.jsontag) = "subject"];//对应node里面的label:value
+	string subject = 3 [(gogoproto.jsontag) = "subject"];
+	string course = 4 [(gogoproto.jsontag) = "course"];
+}
+
+message QueryKnowledegeInfoReq{
+	string id = 1 [(gogoproto.jsontag) = "id"];
+}

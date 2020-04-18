@@ -37,6 +37,8 @@ var _ server.Option
 type KnowledegeMapService interface {
 	GetKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMapBySubject, opts ...client.CallOption) (*KnowledegeMapInfo, error)
 	GetMyKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMyMapBySubject, opts ...client.CallOption) (*KnowledegeMapInfo, error)
+	CreateKnowledege(ctx context.Context, in *CreateKnowledegeReq, opts ...client.CallOption) (*KnowledegeInfoReply, error)
+	QueryKnowledegeInfo(ctx context.Context, in *QueryKnowledegeInfoReq, opts ...client.CallOption) (*KnowledegeInfoReply, error)
 }
 
 type knowledegeMapService struct {
@@ -77,17 +79,41 @@ func (c *knowledegeMapService) GetMyKnowledegeMapBySubject(ctx context.Context, 
 	return out, nil
 }
 
+func (c *knowledegeMapService) CreateKnowledege(ctx context.Context, in *CreateKnowledegeReq, opts ...client.CallOption) (*KnowledegeInfoReply, error) {
+	req := c.c.NewRequest(c.name, "KnowledegeMap.CreateKnowledege", in)
+	out := new(KnowledegeInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *knowledegeMapService) QueryKnowledegeInfo(ctx context.Context, in *QueryKnowledegeInfoReq, opts ...client.CallOption) (*KnowledegeInfoReply, error) {
+	req := c.c.NewRequest(c.name, "KnowledegeMap.QueryKnowledegeInfo", in)
+	out := new(KnowledegeInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for KnowledegeMap service
 
 type KnowledegeMapHandler interface {
 	GetKnowledegeMapBySubject(context.Context, *CRqQueryMapBySubject, *KnowledegeMapInfo) error
 	GetMyKnowledegeMapBySubject(context.Context, *CRqQueryMyMapBySubject, *KnowledegeMapInfo) error
+	CreateKnowledege(context.Context, *CreateKnowledegeReq, *KnowledegeInfoReply) error
+	QueryKnowledegeInfo(context.Context, *QueryKnowledegeInfoReq, *KnowledegeInfoReply) error
 }
 
 func RegisterKnowledegeMapHandler(s server.Server, hdlr KnowledegeMapHandler, opts ...server.HandlerOption) error {
 	type knowledegeMap interface {
 		GetKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMapBySubject, out *KnowledegeMapInfo) error
 		GetMyKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMyMapBySubject, out *KnowledegeMapInfo) error
+		CreateKnowledege(ctx context.Context, in *CreateKnowledegeReq, out *KnowledegeInfoReply) error
+		QueryKnowledegeInfo(ctx context.Context, in *QueryKnowledegeInfoReq, out *KnowledegeInfoReply) error
 	}
 	type KnowledegeMap struct {
 		knowledegeMap
@@ -106,4 +132,12 @@ func (h *knowledegeMapHandler) GetKnowledegeMapBySubject(ctx context.Context, in
 
 func (h *knowledegeMapHandler) GetMyKnowledegeMapBySubject(ctx context.Context, in *CRqQueryMyMapBySubject, out *KnowledegeMapInfo) error {
 	return h.KnowledegeMapHandler.GetMyKnowledegeMapBySubject(ctx, in, out)
+}
+
+func (h *knowledegeMapHandler) CreateKnowledege(ctx context.Context, in *CreateKnowledegeReq, out *KnowledegeInfoReply) error {
+	return h.KnowledegeMapHandler.CreateKnowledege(ctx, in, out)
+}
+
+func (h *knowledegeMapHandler) QueryKnowledegeInfo(ctx context.Context, in *QueryKnowledegeInfoReq, out *KnowledegeInfoReply) error {
+	return h.KnowledegeMapHandler.QueryKnowledegeInfo(ctx, in, out)
 }
