@@ -40,7 +40,7 @@ func userRegister(c echo.Context) error {
 	} else {
 		return c.JSON(http.StatusOK, comm.Data(res))
 	}
-	return c.JSON(200, comm.Data("response"))
+	// return c.JSON(http.StatusOK, comm.Data("response"))
 }
 
 func userLogin(c echo.Context) error {
@@ -71,6 +71,22 @@ func userChangePassword(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
 	if res, err := passportSrv.ChangePassword(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func userChangeInfo(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(papi.ChangeUserInfoReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	req.Userid = c.Request().Header.Get("auth-uid")
+	if res, err := passportSrv.ChangeUserInfo(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
 	} else {

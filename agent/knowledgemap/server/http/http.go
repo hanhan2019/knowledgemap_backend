@@ -102,6 +102,7 @@ func Init() *echo.Echo {
 func InitRouter(e *echo.Echo) {
 
 	api := e.Group("/api")
+	api.Use(CorsMid)
 
 	api.POST("/user/register", userRegister)
 	api.PUT("/user/login", userLogin)
@@ -110,15 +111,22 @@ func InitRouter(e *echo.Echo) {
 	mustTeacherMid := CreateMustPositionMid(passportSrv, POSITION_TEACHER)
 	mustStudentMid := CreateMustPositionMid(passportSrv, POSITION_STUDENT)
 	api.PUT("/user/changepassword", userChangePassword, authMid)
+	api.PUT("/user/changeinfo", userChangeInfo, authMid)
 	api.GET("/hi", hello)
 	api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
-	api.POST("/class/create", classCreate, authMid, mustTeacherMid)
-	api.PUT("/class/join", joinClass, authMid, mustStudentMid)
-	api.GET("/class/query/myclasses", queryMyClasses, authMid)
-	api.GET("/class/query/alluserinclass/:classid", queryAllUserInClass, authMid)
-	api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
-	api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
-	api.GET("/class/invitation/query/:invitationcode", queryInvitation, authMid)
+	{
+		api.POST("/class/create", classCreate, authMid, mustTeacherMid)
+		api.PUT("/class/join", joinClass, authMid, mustStudentMid)
+		api.GET("/class/query/myclasses", queryMyClasses, authMid)
+		api.GET("/class/query/alluserinclass/:classid", queryAllUserInClass, authMid)
+		api.GET("/class/query/classinfo/:classid", queryAllUserInClass, authMid)
+		api.GET("/class/query/classes/:college/:subject/:course/:page", searchClasses, authMid)
+
+	}
+
+	// api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
+	// api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
+	// api.GET("/class/invitation/query/:invitationcode", queryInvitation, authMid)
 	{
 		api.POST("/knowledge/create", createKnowledge, authMid, mustTeacherMid)
 		api.GET("/knowledge/query/:knowledgeId", queryKnowledge, authMid)
