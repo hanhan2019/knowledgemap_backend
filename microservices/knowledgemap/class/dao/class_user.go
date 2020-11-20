@@ -28,11 +28,7 @@ func createClassUserRecord(req *api.JoinClassReq) *model.ClassUser {
 	record.ClassId = req.Classid
 	record.UserId = req.Userid
 	record.UserName = req.Username
-	userStatus := req.Status
-	if req.Status == "" {
-		userStatus = string(model.Student)
-	}
-	record.Status = model.UserStatus(userStatus)
+	record.Status = model.UserStatus(req.Indentify)
 	record.CreateTime = time.Now().Unix()
 	return record
 }

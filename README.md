@@ -7,6 +7,7 @@ consul agent -server  -bootstrap-expect 1 -data-dir /tmp/consul -node=172.17.9.1
 公47.95.145.171
 
 所有api要加统一前缀 /api
+所有登录后的操作都需要在header里添加auth-uid为用户id
 
 ----
 
@@ -21,14 +22,10 @@ param:
     - rtype 身份枚举 0学生 1老师 2教秘
     - name string 真实姓名 
     - major string 专业
-    - idcard string 身份证号 唯一id
-    - origin string 籍贯
-    - class string 所属班级
-    - admissiontime string 入学时间
+    - sex string 性别
     - account string 账号
     - password string 密码
     - college string 学院
-    - course string 课程
 
 response:
 
@@ -36,20 +33,17 @@ response:
     "msg": "",
     "code": 0,
     "data": {
-        "user": {
-            "userid": "5e97d27e36d02a8f32563289", 系统内部自建用户id
-            "username": "teacher", 用户名 
-            "usertype": 1, 用户类型枚举
-            "major": "computer", 专业
-            "idcard": "2123456789051", 身份证号
-            "courses": [
-                ""  
-            ], 课程
-            "password": "123456", 密码
-            "number": "5" 学号，教师号，教秘编号
+            "user": {
+                "userid": "5fb665f436d02a366cae5b0f",
+                "username": "teacher1",
+                "major": "computer",
+                "sex": "man",
+                "account": "teacher1",
+                "password": "123456",
+                "number": "1"
             },
-        "token": "M5jez947zdM227ceu3Q6IdM0j2IaT8EfO3j225z6T3N2v8j9", 登录密令
-        "expires": 1587304229 过期时间
+            "token": "55Tfjb56Y6O58fo453M6yd40N2cas3j6I6xc6aLeN5obI0if",
+            "expires": 1605875572
         }
     }`
 
@@ -57,44 +51,7 @@ response:
 
 api:/user/login
 
-desc:登陆
-
-method:put
-
-param:
-
-    - ltype 身份枚举 0学生 1老师 2教秘
-    - account string 账号
-    - password string 密码
-
-response:
-
-    `{
-    "msg": "",
-    "code": 0,
-    "data": {
-        "user": {
-            "userid": "5e97d27e36d02a8f32563289", 系统内部自建用户id
-            "username": "teacher", 用户名 
-            "usertype": 1, 用户类型枚举
-            "major": "computer", 专业
-            "idcard": "2123456789051", 身份证号
-            "courses": [
-                ""  
-            ], 课程
-            "password": "123456", 密码
-            "number": "5" 学号，教师号，教秘编号
-            },
-        "token": "M5jez947zdM227ceu3Q6IdM0j2IaT8EfO3j225z6T3N2v8j9", 登录密令
-        "expires": 1587304229 过期时间
-        }
-    }`
-
-----
-
-api:/user/changepassword
-
-desc:修改用户信息,应该修改为修改用户信息，目前暂时为修改密码，待修改完成后再对接
+desc:用户登录
 
 method:put
 
@@ -106,17 +63,39 @@ param:
 response:
 
     `{
-    "msg":"",      失败的时候代表失败原因
-    "code":0       0代表成功，1代表失败
+    "msg": "",
+    "code": 0,
+    "data": {
+        "user": {
+                "userid": "5fb666c836d02a366cae5b10",
+                "username": "teacher1",
+                "usertype": 1,
+                "major": "computer",
+                "sex": "man",
+                "account": "teacher1",
+                "password": "123456",
+                "number": "1"
+            },
+            "token": "T5vfMbR666c6EcM8M3Q6jdv0h2Qag3z646DcEaDeT51b81M0",
+            "expires": 1605875825
+        }
     }`
 
 ----
 
-api:/user/querymyinfo
+api:/user/changeinfo
 
-desc:查询自己的信息 这个接口需要登陆,待完成
+desc:修改自己的信息
 
-method:get
+method:put
+
+param:
+
+   - name string 修改后的用户名
+   - password string 修改后的密码
+   - sex string 修改后的性别
+   - college string 修改后的学院
+   - major string 修改后的专业
 
 response:
 
@@ -125,17 +104,15 @@ response:
     "code": 0,
     "data": {
         "user": {
-            "userid": "5e97d27e36d02a8f32563289", 系统内部自建用户id
-            "username": "teacher", 用户名 
-            "usertype": 1, 用户类型枚举
-            "major": "computer", 专业
-            "idcard": "2123456789051", 身份证号
-            "courses": [
-                ""  
-            ], 课程
-            "password": "123456", 密码
-            "number": "5" 学号，教师号，教秘编号
-            },
+                "userid": "5fb67c5e36d02a6d18e309c9",
+                "username": "teacher1_change",
+                "major": "computer_change",
+                "sex": "man_change",
+                "account": "teacher1",
+                "password": "123456",
+                "number": "1",
+                "college": "computer_change"
+            }
         }
     }`
 
@@ -152,8 +129,9 @@ param:
    - classname string 课程名
    - major string 专业名
    - college string 学院
-   - teachername string 教师名
-   - teacherid string 教师id编号
+   - teachername string 教师名,教师创建必不填，教秘创建必填
+   - teacherid string 教师id编号，教秘创建必填
+   - introdution string 课程介绍
 
 response:
 
@@ -165,7 +143,8 @@ response:
             "name": "高等数学A",
             "major": "math",
             "college": "computer",
-            "teachername": "李永乐"
+            "teachername": "李永乐",
+            "introduction": "数学课，必学的"
         }
     }`
 
@@ -179,10 +158,7 @@ method:put
 
 param:
 
-    - userid string 学生id
     - classid string 班级id
-    - username string 学生名
-    - status string 状态
   
 response:
 
@@ -198,7 +174,9 @@ response:
                     "college": "computer",
                     "teachername": "李永乐",
                     "createTime": 1587013497,
-                    "number": "10"
+                    "number": "10",
+                     "introduction": "数学课，必学的"
+
                 }
             ]
         }
@@ -226,7 +204,8 @@ response:
                     "college": "computer",
                     "teachername": "李永乐",
                     "createTime": 1587013497,
-                    "number": "10"
+                    "number": "10",
+                    "introduction": "数学课，必学的"
                 }
             ]
         }
@@ -254,7 +233,9 @@ response:
             "name": "高等数学A",
             "major": "math",
             "college": "computer",
-            "teachername": "李永乐"
+            "teachername": "李永乐",
+            "introduction": "数学课，必学的"
+
         }
     }`
 

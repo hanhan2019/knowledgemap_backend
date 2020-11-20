@@ -106,9 +106,19 @@ func (d *Dao) newTeacher(ctx context.Context, teacher *model.Teacher) error {
 	defer db.Session.Close()
 	genIdCol := mongo.NewNumberCollection(db.C(pmodel.GEN_ID_COLLECTION_NAME))
 	//fill username
-	teacherId, _ := genIdCol.Inc(pmodel.GEN_STUDENT_ID_KEY_NAME)
+	teacherId, _ := genIdCol.Inc(pmodel.GEN_TEACHER_ID_KEY_NAME)
 	teacher.Number = fmt.Sprintf("%v", teacherId)
 	return db.C(model.TEACHER_COLLECTION_NAME).Insert(teacher)
+}
+
+func (d *Dao) newSecretary(ctx context.Context, secretary *model.Secretary) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	genIdCol := mongo.NewNumberCollection(db.C(pmodel.GEN_ID_COLLECTION_NAME))
+	//fill username
+	secretaryId, _ := genIdCol.Inc(pmodel.GEN_SECRETARY_ID_KEY_NAME)
+	secretary.Number = fmt.Sprintf("%v", secretaryId)
+	return db.C(model.SECRETARY_COLLECTION_NAME).Insert(secretary)
 }
 
 func createDefaultStudent(req *api.RegisterReq) *model.Student {
@@ -116,13 +126,13 @@ func createDefaultStudent(req *api.RegisterReq) *model.Student {
 	user.ID = bson.NewObjectId()
 	user.Name = req.Name
 	user.Major = req.Major
-	user.IDCard = req.Idcard
+	// user.IDCard = req.Idcard
 	user.Account = req.Account
 	user.Password = req.Password
-	user.Origin = req.Origin
-	user.Class = req.Class
+	// user.Origin = req.Origin
+	// user.Class = req.Class
 	user.College = req.College
-	user.AdmissionTime = req.Admissontime
+	//user.AdmissionTime = req.Admissontime
 	user.CreateTime = time.Now().Unix()
 	return user
 }
@@ -132,10 +142,25 @@ func createDefaultTeacher(req *api.RegisterReq) *model.Teacher {
 	user.ID = bson.NewObjectId()
 	user.Name = req.Name
 	user.Major = req.Major
-	user.IDCard = req.Idcard
+	//user.IDCard = req.Idcard
 	user.Account = req.Account
 	user.Password = req.Password
-	user.Courses = []string{req.Course}
+	//user.Courses = []string{req.Course}
+	user.College = req.College
+	user.Sex = req.Sex
+	user.CreateTime = time.Now().Unix()
+	return user
+}
+
+func createDefaultSecretary(req *api.RegisterReq) *model.Secretary {
+	user := new(model.Secretary)
+	user.ID = bson.NewObjectId()
+	user.Name = req.Name
+	user.Major = req.Major
+	//user.IDCard = req.Idcard
+	user.Account = req.Account
+	user.Password = req.Password
+	user.College = req.College
 	user.CreateTime = time.Now().Unix()
 	return user
 }
@@ -149,6 +174,12 @@ func (d *Dao) NewTeacher(ctx context.Context, req *api.RegisterReq) error {
 	teacher := createDefaultTeacher(req)
 	return d.newTeacher(ctx, teacher)
 }
+
+func (d *Dao) NewSecretary(ctx context.Context, req *api.RegisterReq) error {
+	secreatary := createDefaultSecretary(req)
+	return d.newSecretary(ctx, secreatary)
+}
+
 func (d *Dao) FillUserByIDCardInStudent(ctx context.Context, idCard string, rsp **uapi.UserReply) (err error) {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
@@ -193,7 +224,7 @@ func (d *Dao) CheckSessionToken(ctx context.Context, uid, token string) error {
 		return err
 	} else {
 		if savedToken != token {
-			fmt.Println("token 不正确")
+			fmt.Println("token 不正确", savedToken, token)
 			return pmodel.ErrorSessionTokenNotValidate
 		}
 	}
@@ -285,6 +316,32 @@ func (d *Dao) ChangePassword(ctx context.Context, account, password string, rsp 
 	err = db.C(model.STUDENT_COLLECTION_NAME).Update(bson.M{"account": account}, bson.M{
 		"$set": bson.M{
 			"password": password,
+		},
+	})
+	return
+}
+
+func (d *Dao) ChangeUserInfo(ctx context.Context, req *api.ChangeUserInfoReq) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	dbName := ""
+	switch req.Usertype {
+	case api.Indentify_STUDENT:
+		dbName = model.STUDENT_COLLECTION_NAME
+	case api.Indentify_TEACHER:
+		dbName = model.TEACHER_COLLECTION_NAME
+	case api.Indentify_SECRETARY:
+		dbName = model.SECRETARY_COLLECTION_NAME
+	default:
+		return errors.New("errors.wrong_type")
+	}
+	err = db.C(dbName).UpdateId(bson.ObjectIdHex(req.Userid), bson.M{
+		"$set": bson.M{
+			"password": req.Password,
+			"major":    req.Major,
+			"college":  req.College,
+			"sex":      req.Sex,
+			"name":     req.Name,
 		},
 	})
 	return

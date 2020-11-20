@@ -16,14 +16,16 @@ const (
 )
 
 type Class struct {
-	ID          bson.ObjectId `bson:"_id" json:"_id"`
-	Number      string        `bson:"number" json:"number"`
-	Name        string        `bson:"name" json:"name"`
-	College     string        `bson:"college" json:"college"`
-	Major       string        `bson:"major" json:"major"`
-	TeacherName string        `bson:"teachername" json:"teachername"`
-	TeacherId   string        `bson:"teacherid" json:"teacherid"`
-	CreateTime  int64         `bson:"createtime" json:"createtime"`
+	ID           bson.ObjectId `bson:"_id" json:"_id"`
+	Number       string        `bson:"number" json:"number"`
+	Name         string        `bson:"name" json:"name"`
+	College      string        `bson:"college" json:"college"`
+	Sbuject      string        `bson:"subject" json:"subject"`
+	Course       string        `bson:"course" json:"course"`
+	TeacherName  string        `bson:"teachername" json:"teachername"`
+	TeacherId    string        `bson:"teacherid" json:"teacherid"`
+	CreateTime   int64         `bson:"createtime" json:"createtime"`
+	Introduction string        `bson:"introduction" json:"introduction"`
 }
 
 type ClassUser struct {

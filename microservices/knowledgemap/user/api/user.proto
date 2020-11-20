@@ -18,13 +18,13 @@ message UserReply {
 	string  username = 2 [(gogoproto.moretags) = "bson:\"name\""];;
 	int64  	usertype = 3;
 	string  major = 4;
-	string  idcard = 5;
-	string  admissontime = 6;
-	string  origin = 7;
-	repeated string  courses = 8;
-	string  class = 9;
-	string  password =10;
-	string  number=11;
+	string  sex = 5;
+	// repeated string  courses = 8;
+	// string  class = 9;
+	string  account =6;
+	string  password = 7;
+	string  number=8;
+	string college = 9;
 }
 
 // message ClassReq {

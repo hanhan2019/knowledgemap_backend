@@ -15,45 +15,52 @@ import (
 type PassportService struct{}
 
 func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rsp *api.PassportUserReply) error {
+	logrus.Infof("Register req is %v ", req)
 	if err := CheckAccount(ctx, req.Account); err != nil {
 		fmt.Printf("CheckAccount error %v ", err)
 		return errors.New("CheckAccount error")
 	}
 	switch req.Rtype {
-	case api.RegisterReq_STUDENT:
+	case api.Indentify_STUDENT:
 		gdao.NewStudent(ctx, req)
-		if err := gdao.FillUserByIDCardInStudent(ctx, req.Idcard, &rsp.User); err != nil {
+		if err := gdao.FillStudentByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
 		return gdao.GenerateLoginToken(ctx, &rsp)
-	case api.RegisterReq_TEACHER:
+	case api.Indentify_TEACHER:
 		gdao.NewTeacher(ctx, req)
-		if err := gdao.FillUserByIDCardInTeacher(ctx, req.Idcard, &rsp.User); err != nil {
+		if err := gdao.FillTeacherByAccount(ctx, req.Account, &rsp.User); err != nil {
+			return err
+		}
+		return gdao.GenerateLoginToken(ctx, &rsp)
+	case api.Indentify_SECRETARY:
+		gdao.NewTeacher(ctx, req)
+		if err := gdao.FillTeacherByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
 		return gdao.GenerateLoginToken(ctx, &rsp)
 	default:
-		fmt.Println("there_2")
-		return nil
+		fmt.Println("账号类型错误")
+		return errors.New("rtype error")
 	}
 }
 
 func CheckAccount(ctx context.Context, account string) error {
-	if err := gdao.CheckIDCardInStudent(ctx, account); err != nil {
-		return err
-	}
+	// if err := gdao.CheckIDCardInStudent(ctx, account); err != nil {
+	// 	return err
+	// }
 	if err := gdao.CheckAccountInStudent(ctx, account); err != nil {
 		return err
 	}
-	if err := gdao.CheckIDCardInTeacher(ctx, account); err != nil {
-		return err
-	}
+	// if err := gdao.CheckIDCardInTeacher(ctx, account); err != nil {
+	// 	return err
+	// }
 	if err := gdao.CheckAccountInTeacher(ctx, account); err != nil {
 		return err
 	}
-	if err := gdao.CheckIDCardInSecretary(ctx, account); err != nil {
-		return err
-	}
+	// if err := gdao.CheckIDCardInSecretary(ctx, account); err != nil {
+	// 	return err
+	// }
 	if err := gdao.CheckAccountInSecretary(ctx, account); err != nil {
 		return err
 	}
@@ -62,17 +69,16 @@ func CheckAccount(ctx context.Context, account string) error {
 
 func (s *PassportService) Login(ctx context.Context, req *api.LoginReq, rsp *api.PassportUserReply) error {
 	logrus.Infof("Login req is %v ", req)
-	loginType := FindUserByAccount(ctx, req.Account, rsp)
-	//check error
-	logrus.Infof("loginType is %v ", loginType)
+	//loginType := FindUserIndentifyByAccount(ctx, req.Account, rsp)
+	logrus.Infof("loginType is %v ", req.Ltype)
 	logrus.Infof("login rsp is %v ", rsp)
-	rsp.User.Usertype = int64(loginType)
-	if loginType == api.LoginReq_NOTFOUND {
-		return errors.New("登陆失败")
+	if err := FindUserByLtypeAndAccount(ctx, req.Account, req.Ltype, rsp); err != nil {
+		return err
 	}
+	rsp.User.Usertype = int64(req.Ltype)
 	if !checkPassWord(req.Password, rsp.User.Password) {
 		logrus.Infof("password err!")
-		return errors.New("密码错误!")
+		return errors.New("password weong")
 	}
 	return gdao.GenerateLoginToken(ctx, &rsp)
 }
@@ -84,19 +90,27 @@ func checkPassWord(in, orign string) bool {
 		return false
 	}
 }
-func FindUserByAccount(ctx context.Context, account string, rsp *api.PassportUserReply) api.LoginReq_LoginType {
-	if gdao.FillStudentByAccount(ctx, account, &rsp.User) == nil {
-		return api.LoginReq_STUDENT
-	} else if gdao.FillTeacherByAccount(ctx, account, &rsp.User) == nil {
-		return api.LoginReq_TEACHER
-	} else if gdao.FillSecretaryByAccount(ctx, account, &rsp.User) == nil {
-		return api.LoginReq_SECRETARY
+func FindUserByLtypeAndAccount(ctx context.Context, account string, ltype api.Indentify, rsp *api.PassportUserReply) error {
+	var err error
+	switch ltype {
+	case api.Indentify_STUDENT:
+		err = gdao.FillStudentByAccount(ctx, account, &rsp.User)
+	case api.Indentify_TEACHER:
+		err = gdao.FillTeacherByAccount(ctx, account, &rsp.User)
+	case api.Indentify_SECRETARY:
+		err = gdao.FillSecretaryByAccount(ctx, account, &rsp.User)
+	default:
+		return errors.New("unknow ltype")
 	}
-	return api.LoginReq_NOTFOUND
+	if err != nil {
+		return errors.New("need register")
+	}
+	return nil
 }
 
 func (s *PassportService) CheckSToken(ctx context.Context, req *api.SessionTokenReq, rsp *uapi.Empty) error {
 	logrus.Infof("check token req is %v ", req)
+	//FindUserById(ctx, req.Type, req.Uid, rsp)
 	return gdao.CheckSessionToken(ctx, req.Uid, req.Stoken)
 }
 
@@ -107,13 +121,13 @@ func (s *PassportService) ChangePassword(ctx context.Context, req *api.ChangePas
 
 func (s *PassportService) CheckIndentify(ctx context.Context, req *uapi.UserReq, rsp *api.IndentifyReply) error {
 	logrus.Infof("check indentify req is %v ", req)
-	indentify := FindUserById(ctx, bson.ObjectIdHex(req.Userid))
+	indentify := FindUserIndentifyById(ctx, bson.ObjectIdHex(req.Userid))
 	fmt.Println("indentify is", indentify)
 	rsp.Ltype = api.Indentify(indentify)
 	return nil
 }
 
-func FindUserById(ctx context.Context, id bson.ObjectId) int64 {
+func FindUserIndentifyById(ctx context.Context, id bson.ObjectId) int64 {
 	rsp := new(api.PassportUserReply)
 	if gdao.FillStudentById(ctx, id, &rsp.User) == nil {
 		return 0
@@ -123,4 +137,22 @@ func FindUserById(ctx context.Context, id bson.ObjectId) int64 {
 		return 2
 	}
 	return -1
+}
+func FindUserById(ctx context.Context, indentify api.Indentify, uid string, rsp *api.PassportUserReply) {
+	switch indentify {
+	case api.Indentify_STUDENT:
+		gdao.FillStudentById(ctx, bson.ObjectIdHex(uid), &rsp.User)
+	case api.Indentify_TEACHER:
+		gdao.FillTeacherById(ctx, bson.ObjectIdHex(uid), &rsp.User)
+	case api.Indentify_SECRETARY:
+		gdao.FillSecretaryById(ctx, bson.ObjectIdHex(uid), &rsp.User)
+	}
+	return
+}
+func (s *PassportService) ChangeUserInfo(ctx context.Context, req *api.ChangeUserInfoReq, rsp *api.PassportUserReply) error {
+	logrus.Infof("change userInfo req is %v ", req)
+	// rsp = FindUserById(ctx, bson.ObjectIdHex(req.Userid))
+	gdao.ChangeUserInfo(ctx, req)
+	FindUserById(ctx, req.Usertype, req.Userid, rsp)
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 	papi "knowledgemap_backend/microservices/knowledgemap/passport/api"
 	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -34,6 +35,7 @@ func userRegister(c echo.Context) error {
 		clog.Errorf("参数错误:%v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
+	// fmt.Println("req is", req.Rtype, req.Name, req.Major, req.College, req.Sex, req.Account, req.Password)
 	if res, err := passportSrv.Register(context.TODO(), req); err != nil {
 		clog.Errorf("call register %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -86,6 +88,8 @@ func userChangeInfo(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
 	req.Userid = c.Request().Header.Get("auth-uid")
+	userType, _ := strconv.ParseInt(c.Request().Header.Get("auth-type"), 10, 64)
+	req.Usertype = papi.Indentify(userType)
 	if res, err := passportSrv.ChangeUserInfo(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))

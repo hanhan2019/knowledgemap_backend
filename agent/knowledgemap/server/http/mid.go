@@ -6,6 +6,7 @@ import (
 	"knowledgemap_backend/microservices/knowledgemap/passport/api"
 	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -23,11 +24,12 @@ func CreateAuthMid(passSrv api.PassportService) echo.MiddlewareFunc {
 			// }
 			uid := c.Request().Header.Get("auth-uid")
 			token := c.Request().Header.Get("auth-session")
-			rsp, err := passSrv.CheckSToken(context.TODO(), &api.SessionTokenReq{Uid: uid, Stoken: token})
+			userType, _ := strconv.ParseInt(c.Request().Header.Get("auth-type"), 10, 64)
+			_, err := passSrv.CheckSToken(context.TODO(), &api.SessionTokenReq{Uid: uid, Stoken: token, Type: api.Indentify(userType)})
 			if err != nil {
 				return c.JSON(http.StatusBadRequest, comm.Err("请先登陆", comm.STATUS_NEED_LOGIN))
 			}
-			c.Set("userName", rsp.User.Username)
+			// c.Set("userName", rsp.User.Username)
 			return next(c)
 		}
 	}

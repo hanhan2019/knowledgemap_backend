@@ -15,6 +15,7 @@ service Passport {
 	rpc Login(LoginReq) returns (PassportUserReply) {}
     rpc CheckSToken(SessionTokenReq) returns (Empty) {}
     rpc ChangePassword(ChangePasswordReq) returns (Empty) {}
+    rpc ChangeUserInfo(ChangeUserInfoReq) returns (PassportUserReply) {}
     rpc CheckIndentify(UserReq) returns (IndentifyReply){}
 }
 
@@ -22,6 +23,7 @@ service Passport {
 message SessionTokenReq {
     string uid = 1;
     string stoken = 2;
+    Indentify type = 3 ;
 }
 
 message PassportUserReply {
@@ -31,32 +33,21 @@ message PassportUserReply {
 }
 
 message RegisterReq {
-    enum RegisterType{
-        STUDENT = 0;
-        TEACHER = 1;
-        SECRETARY = 2;
-    }
-    RegisterType rtype = 1 [(gogoproto.moretags) = "form:\"rtype\""];
+    Indentify rtype = 1 [(gogoproto.moretags) = "form:\"rtype\""];
     string  name = 2 [(gogoproto.moretags) = "form:\"name\""];
     string  major = 3 [(gogoproto.moretags) = "form:\"major\""];
-    string  idcard = 4 [(gogoproto.moretags) = "form:\"idcard\""];
-    string  origin = 5 [(gogoproto.moretags) = "form:\"origin\""];
-    string  class = 6 [(gogoproto.moretags) = "form:\"class\""];
-    string admissontime = 7 [(gogoproto.moretags) = "form:\"admissontime\""];
-    string  account =8 [(gogoproto.moretags) = "form:\"account\""];
-    string password= 9 [(gogoproto.moretags) = "form:\"password\""];
-    string college =10 [(gogoproto.moretags) = "form:\"college\""];
-    string course =11 [(gogoproto.moretags) = "form:\"course\""];
+    string  sex = 4 [(gogoproto.moretags) = "form:\"sex\""];
+    // string  origin = 5 [(gogoproto.moretags) = "form:\"origin\""];
+    //string  class = 5 [(gogoproto.moretags) = "form:\"class\""];
+    //string admissontime = 7 [(gogoproto.moretags) = "form:\"admissontime\""];
+    string  account = 5 [(gogoproto.moretags) = "form:\"account\""];
+    string password = 6 [(gogoproto.moretags) = "form:\"password\""];
+    string college = 7 [(gogoproto.moretags) = "form:\"college\""];
+    //string course =9 [(gogoproto.moretags) = "form:\"course\""];
 }
 
 message LoginReq{
-    enum LoginType{
-        STUDENT = 0;
-        TEACHER = 1;
-        SECRETARY = 2;
-        NOTFOUND = -1;
-    }
-    LoginType ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
+    Indentify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
     string  account = 2 [(gogoproto.moretags) = "form:\"account\""];
     string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
 }
@@ -75,4 +66,14 @@ enum Indentify{
 
 message IndentifyReply{
     Indentify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
+}
+
+message ChangeUserInfoReq{
+    string  userid = 1 [(gogoproto.moretags) = "form:\"userid\""];
+    Indentify  usertype = 2 [(gogoproto.moretags) = "form:\"usertype\""];
+    string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
+    string  major = 4 [(gogoproto.moretags) = "form:\"major\""];
+    string  college = 5 [(gogoproto.moretags) = "form:\"college\""];
+    string  sex = 6 [(gogoproto.moretags) = "form:\"sex\""];
+    string  name = 7 [(gogoproto.moretags) = "form:\"name\""];
 }

@@ -57,17 +57,17 @@ func (*Empty) ProtoMessage()               {}
 func (*Empty) Descriptor() ([]byte, []int) { return fileDescriptorUser, []int{1} }
 
 type UserReply struct {
-	Userid       string   `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" bson:"_id",form:"_id"`
-	Username     string   `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty" bson:"name"`
-	Usertype     int64    `protobuf:"varint,3,opt,name=usertype,proto3" json:"usertype,omitempty"`
-	Major        string   `protobuf:"bytes,4,opt,name=major,proto3" json:"major,omitempty"`
-	Idcard       string   `protobuf:"bytes,5,opt,name=idcard,proto3" json:"idcard,omitempty"`
-	Admissontime string   `protobuf:"bytes,6,opt,name=admissontime,proto3" json:"admissontime,omitempty"`
-	Origin       string   `protobuf:"bytes,7,opt,name=origin,proto3" json:"origin,omitempty"`
-	Courses      []string `protobuf:"bytes,8,rep,name=courses" json:"courses,omitempty"`
-	Class        string   `protobuf:"bytes,9,opt,name=class,proto3" json:"class,omitempty"`
-	Password     string   `protobuf:"bytes,10,opt,name=password,proto3" json:"password,omitempty"`
-	Number       string   `protobuf:"bytes,11,opt,name=number,proto3" json:"number,omitempty"`
+	Userid   string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" bson:"_id",form:"_id"`
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty" bson:"name"`
+	Usertype int64  `protobuf:"varint,3,opt,name=usertype,proto3" json:"usertype,omitempty"`
+	Major    string `protobuf:"bytes,4,opt,name=major,proto3" json:"major,omitempty"`
+	Sex      string `protobuf:"bytes,5,opt,name=sex,proto3" json:"sex,omitempty"`
+	// repeated string  courses = 8;
+	// string  class = 9;
+	Account  string `protobuf:"bytes,6,opt,name=account,proto3" json:"account,omitempty"`
+	Password string `protobuf:"bytes,7,opt,name=password,proto3" json:"password,omitempty"`
+	Number   string `protobuf:"bytes,8,opt,name=number,proto3" json:"number,omitempty"`
+	College  string `protobuf:"bytes,9,opt,name=college,proto3" json:"college,omitempty"`
 }
 
 func (m *UserReply) Reset()                    { *m = UserReply{} }
@@ -103,37 +103,16 @@ func (m *UserReply) GetMajor() string {
 	return ""
 }
 
-func (m *UserReply) GetIdcard() string {
+func (m *UserReply) GetSex() string {
 	if m != nil {
-		return m.Idcard
+		return m.Sex
 	}
 	return ""
 }
 
-func (m *UserReply) GetAdmissontime() string {
+func (m *UserReply) GetAccount() string {
 	if m != nil {
-		return m.Admissontime
-	}
-	return ""
-}
-
-func (m *UserReply) GetOrigin() string {
-	if m != nil {
-		return m.Origin
-	}
-	return ""
-}
-
-func (m *UserReply) GetCourses() []string {
-	if m != nil {
-		return m.Courses
-	}
-	return nil
-}
-
-func (m *UserReply) GetClass() string {
-	if m != nil {
-		return m.Class
+		return m.Account
 	}
 	return ""
 }
@@ -148,6 +127,13 @@ func (m *UserReply) GetPassword() string {
 func (m *UserReply) GetNumber() string {
 	if m != nil {
 		return m.Number
+	}
+	return ""
+}
+
+func (m *UserReply) GetCollege() string {
+	if m != nil {
+		return m.College
 	}
 	return ""
 }
@@ -237,56 +223,35 @@ func (m *UserReply) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintUser(dAtA, i, uint64(len(m.Major)))
 		i += copy(dAtA[i:], m.Major)
 	}
-	if len(m.Idcard) > 0 {
+	if len(m.Sex) > 0 {
 		dAtA[i] = 0x2a
 		i++
-		i = encodeVarintUser(dAtA, i, uint64(len(m.Idcard)))
-		i += copy(dAtA[i:], m.Idcard)
+		i = encodeVarintUser(dAtA, i, uint64(len(m.Sex)))
+		i += copy(dAtA[i:], m.Sex)
 	}
-	if len(m.Admissontime) > 0 {
+	if len(m.Account) > 0 {
 		dAtA[i] = 0x32
 		i++
-		i = encodeVarintUser(dAtA, i, uint64(len(m.Admissontime)))
-		i += copy(dAtA[i:], m.Admissontime)
-	}
-	if len(m.Origin) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintUser(dAtA, i, uint64(len(m.Origin)))
-		i += copy(dAtA[i:], m.Origin)
-	}
-	if len(m.Courses) > 0 {
-		for _, s := range m.Courses {
-			dAtA[i] = 0x42
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if len(m.Class) > 0 {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintUser(dAtA, i, uint64(len(m.Class)))
-		i += copy(dAtA[i:], m.Class)
+		i = encodeVarintUser(dAtA, i, uint64(len(m.Account)))
+		i += copy(dAtA[i:], m.Account)
 	}
 	if len(m.Password) > 0 {
-		dAtA[i] = 0x52
+		dAtA[i] = 0x3a
 		i++
 		i = encodeVarintUser(dAtA, i, uint64(len(m.Password)))
 		i += copy(dAtA[i:], m.Password)
 	}
 	if len(m.Number) > 0 {
-		dAtA[i] = 0x5a
+		dAtA[i] = 0x42
 		i++
 		i = encodeVarintUser(dAtA, i, uint64(len(m.Number)))
 		i += copy(dAtA[i:], m.Number)
+	}
+	if len(m.College) > 0 {
+		dAtA[i] = 0x4a
+		i++
+		i = encodeVarintUser(dAtA, i, uint64(len(m.College)))
+		i += copy(dAtA[i:], m.College)
 	}
 	return i, nil
 }
@@ -334,25 +299,11 @@ func (m *UserReply) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovUser(uint64(l))
 	}
-	l = len(m.Idcard)
+	l = len(m.Sex)
 	if l > 0 {
 		n += 1 + l + sovUser(uint64(l))
 	}
-	l = len(m.Admissontime)
-	if l > 0 {
-		n += 1 + l + sovUser(uint64(l))
-	}
-	l = len(m.Origin)
-	if l > 0 {
-		n += 1 + l + sovUser(uint64(l))
-	}
-	if len(m.Courses) > 0 {
-		for _, s := range m.Courses {
-			l = len(s)
-			n += 1 + l + sovUser(uint64(l))
-		}
-	}
-	l = len(m.Class)
+	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovUser(uint64(l))
 	}
@@ -361,6 +312,10 @@ func (m *UserReply) Size() (n int) {
 		n += 1 + l + sovUser(uint64(l))
 	}
 	l = len(m.Number)
+	if l > 0 {
+		n += 1 + l + sovUser(uint64(l))
+	}
+	l = len(m.College)
 	if l > 0 {
 		n += 1 + l + sovUser(uint64(l))
 	}
@@ -646,7 +601,7 @@ func (m *UserReply) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Idcard", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -671,11 +626,11 @@ func (m *UserReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Idcard = string(dAtA[iNdEx:postIndex])
+			m.Sex = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Admissontime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -700,96 +655,9 @@ func (m *UserReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Admissontime = string(dAtA[iNdEx:postIndex])
+			m.Account = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUser
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUser
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Origin = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Courses", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUser
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUser
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Courses = append(m.Courses, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Class", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUser
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUser
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Class = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Password", wireType)
 			}
@@ -818,7 +686,7 @@ func (m *UserReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Password = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 11:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Number", wireType)
 			}
@@ -846,6 +714,35 @@ func (m *UserReply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Number = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field College", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowUser
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthUser
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.College = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -976,29 +873,27 @@ var (
 func init() { proto.RegisterFile("api/user.proto", fileDescriptorUser) }
 
 var fileDescriptorUser = []byte{
-	// 375 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x91, 0xcf, 0x8e, 0xda, 0x30,
-	0x10, 0xc6, 0x09, 0x81, 0x84, 0x18, 0x4a, 0x5b, 0xab, 0xad, 0x5c, 0x0e, 0x01, 0xf9, 0x44, 0xff,
-	0x05, 0x95, 0xf6, 0xc4, 0x11, 0xa9, 0x87, 0x5e, 0x23, 0xf5, 0x8c, 0x9c, 0xc4, 0xa4, 0xae, 0x70,
-	0xec, 0xda, 0x89, 0x56, 0x79, 0x93, 0x7d, 0xa4, 0x3d, 0xee, 0x65, 0xaf, 0x68, 0xc5, 0xbe, 0x01,
-	0x4f, 0xb0, 0xb2, 0xcd, 0x22, 0x76, 0x4f, 0xf1, 0xef, 0x9b, 0xf9, 0xbe, 0x19, 0x65, 0xc0, 0x98,
-	0x48, 0xb6, 0x68, 0x34, 0x55, 0x89, 0x54, 0xa2, 0x16, 0xd0, 0x27, 0x92, 0x4d, 0xbe, 0x95, 0xac,
-	0xfe, 0xdb, 0x64, 0x49, 0x2e, 0xf8, 0xa2, 0x14, 0xa5, 0x58, 0xd8, 0x5a, 0xd6, 0x6c, 0x2d, 0x59,
-	0xb0, 0x2f, 0xe7, 0xc1, 0x3f, 0x41, 0xf8, 0x47, 0x53, 0x95, 0xd2, 0xff, 0xf0, 0x13, 0x08, 0x4c,
-	0x18, 0x2b, 0x90, 0x37, 0xf3, 0xe6, 0xd1, 0xfa, 0xed, 0x71, 0x3f, 0x7d, 0xb5, 0x15, 0x8a, 0xaf,
-	0xb0, 0xd3, 0x71, 0x7a, 0x6a, 0xc0, 0x21, 0xe8, 0xff, 0xe2, 0xb2, 0x6e, 0xf1, 0x5d, 0x17, 0x44,
-	0xce, 0x2f, 0x77, 0x2d, 0xfc, 0xfe, 0x22, 0xe1, 0xe3, 0x71, 0x3f, 0x7d, 0x9f, 0x69, 0x51, 0xad,
-	0xf0, 0x86, 0x15, 0xf8, 0xab, 0x0b, 0xdb, 0x5c, 0x24, 0xc1, 0x2f, 0x60, 0x60, 0x5e, 0x15, 0xe1,
-	0x14, 0x75, 0xad, 0xe9, 0xf5, 0x71, 0x3f, 0x1d, 0x3a, 0x93, 0x51, 0x71, 0x7a, 0x6e, 0x80, 0x13,
-	0xd7, 0x5c, 0xb7, 0x92, 0x22, 0x7f, 0xe6, 0xcd, 0xfd, 0xf4, 0xcc, 0xf0, 0x1d, 0xe8, 0x73, 0xf2,
-	0x4f, 0x28, 0xd4, 0x33, 0x29, 0xa9, 0x03, 0xf8, 0x01, 0x04, 0xac, 0xc8, 0x89, 0x2a, 0x50, 0xdf,
-	0xca, 0x27, 0x82, 0x18, 0x8c, 0x48, 0xc1, 0x99, 0xd6, 0xa2, 0xaa, 0x19, 0xa7, 0x28, 0xb0, 0xd5,
-	0x67, 0x9a, 0xf1, 0x0a, 0xc5, 0x4a, 0x56, 0xa1, 0xd0, 0x79, 0x1d, 0x41, 0x04, 0xc2, 0x5c, 0x34,
-	0x4a, 0x53, 0x8d, 0x06, 0x33, 0x7f, 0x1e, 0xa5, 0x4f, 0x68, 0x76, 0xc8, 0x77, 0x44, 0x6b, 0x14,
-	0xb9, 0x1d, 0x2c, 0x98, 0xad, 0x25, 0xd1, 0xfa, 0x4a, 0xa8, 0x02, 0x01, 0x5b, 0x38, 0xb3, 0x99,
-	0x51, 0x35, 0x3c, 0xa3, 0x0a, 0x0d, 0xdd, 0x0c, 0x47, 0xcb, 0x25, 0xe8, 0x99, 0xdf, 0x0a, 0x3f,
-	0x83, 0x81, 0xf9, 0xfe, 0xae, 0xb6, 0x02, 0x8e, 0x12, 0x22, 0x59, 0x72, 0xba, 0xd6, 0x64, 0x7c,
-	0x41, 0x72, 0xd7, 0xe2, 0xce, 0xfa, 0xcd, 0xcd, 0x21, 0xf6, 0x6e, 0x0f, 0xb1, 0x77, 0x7f, 0x88,
-	0xbd, 0xeb, 0x87, 0xb8, 0x93, 0x05, 0xf6, 0xc6, 0x3f, 0x1e, 0x03, 0x00, 0x00, 0xff, 0xff, 0xe9,
-	0x37, 0xb5, 0x50, 0x29, 0x02, 0x00, 0x00,
+	// 342 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x91, 0xcf, 0x4e, 0xc2, 0x30,
+	0x1c, 0xc7, 0x19, 0x83, 0x0d, 0xaa, 0x22, 0x36, 0x6a, 0x2a, 0x87, 0x41, 0x7a, 0xc2, 0x7f, 0x23,
+	0xa2, 0x27, 0x8e, 0x24, 0x1e, 0xbc, 0x2e, 0xf1, 0x4c, 0xba, 0x51, 0xe6, 0xcc, 0xb6, 0xd6, 0x6e,
+	0x8b, 0xee, 0x49, 0xf4, 0x91, 0x3c, 0xfa, 0x04, 0xc4, 0xe0, 0x1b, 0xf0, 0x04, 0xa6, 0xed, 0x5c,
+	0x88, 0xa7, 0xfd, 0x3e, 0xdf, 0xdf, 0xef, 0xfb, 0x39, 0x74, 0xa0, 0x47, 0x78, 0x34, 0x29, 0x32,
+	0x2a, 0x5c, 0x2e, 0x58, 0xce, 0xa0, 0x49, 0x78, 0x34, 0xb8, 0x0e, 0xa3, 0xfc, 0xa9, 0xf0, 0xdd,
+	0x80, 0x25, 0x93, 0x90, 0x85, 0x6c, 0xa2, 0x76, 0x7e, 0xb1, 0x52, 0xa4, 0x40, 0x4d, 0xba, 0x83,
+	0xef, 0x80, 0xfd, 0x98, 0x51, 0xe1, 0xd1, 0x17, 0x78, 0x0e, 0x2c, 0x29, 0x8b, 0x96, 0xc8, 0x18,
+	0x19, 0xe3, 0xee, 0xfc, 0x68, 0xbb, 0x1e, 0x1e, 0xac, 0x98, 0x48, 0x66, 0x58, 0xe7, 0xd8, 0xab,
+	0x0e, 0xb0, 0x0d, 0xda, 0xf7, 0x09, 0xcf, 0x4b, 0xfc, 0xde, 0x04, 0x5d, 0xdd, 0xe7, 0x71, 0x09,
+	0x6f, 0xfe, 0x19, 0xce, 0xb6, 0xeb, 0xe1, 0x89, 0x9f, 0xb1, 0x74, 0x86, 0x17, 0xd1, 0x12, 0x5f,
+	0x69, 0xd9, 0x62, 0xc7, 0x04, 0x2f, 0x41, 0x47, 0x4e, 0x29, 0x49, 0x28, 0x6a, 0xaa, 0xd2, 0xe1,
+	0x76, 0x3d, 0xdc, 0xd3, 0x25, 0x99, 0x62, 0xaf, 0x3e, 0x80, 0x03, 0x7d, 0x9c, 0x97, 0x9c, 0x22,
+	0x73, 0x64, 0x8c, 0x4d, 0xaf, 0x66, 0x78, 0x0c, 0xda, 0x09, 0x79, 0x66, 0x02, 0xb5, 0xa4, 0xc5,
+	0xd3, 0x00, 0xfb, 0xc0, 0xcc, 0xe8, 0x1b, 0x6a, 0xab, 0x4c, 0x8e, 0x10, 0x01, 0x9b, 0x04, 0x01,
+	0x2b, 0xd2, 0x1c, 0x59, 0x2a, 0xfd, 0x43, 0x69, 0xe7, 0x24, 0xcb, 0x5e, 0x99, 0x58, 0x22, 0x5b,
+	0xad, 0x6a, 0x86, 0xa7, 0xc0, 0x4a, 0x8b, 0xc4, 0xa7, 0x02, 0x75, 0xd4, 0xa6, 0x22, 0x69, 0x0b,
+	0x58, 0x1c, 0xd3, 0x90, 0xa2, 0xae, 0xb6, 0x55, 0x38, 0x9d, 0x82, 0x96, 0x7c, 0x18, 0x78, 0x01,
+	0x3a, 0xf2, 0xfb, 0x90, 0xae, 0x18, 0xdc, 0x77, 0x09, 0x8f, 0xdc, 0xea, 0xbd, 0x07, 0xbd, 0x1d,
+	0xe2, 0x71, 0x89, 0x1b, 0xf3, 0xfe, 0xe7, 0xc6, 0x31, 0xbe, 0x36, 0x8e, 0xf1, 0xbd, 0x71, 0x8c,
+	0x8f, 0x1f, 0xa7, 0xe1, 0x5b, 0xea, 0x2f, 0xdd, 0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0x6e, 0x6a,
+	0x76, 0x2c, 0xeb, 0x01, 0x00, 0x00,
 }

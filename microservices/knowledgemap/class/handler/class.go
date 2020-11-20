@@ -11,10 +11,18 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+const PageCount = 20
+
 type ClassService struct{}
 
 func (s *ClassService) CreateClass(ctx context.Context, req *api.CreateClassReq, rsp *api.ClassReply) error {
 	logrus.Infof("create class req is %v ", req)
+	//cheack class
+	if err := gdao.CheckNewClass(ctx, req.Name, req.Subject, req.Teacherid, req.College, req.Course); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	//create class
 	if class, err := gdao.NewClass(ctx, req); err != nil {
 		fmt.Println("create class error", err)
 		return fmt.Errorf("创建班级失败")
@@ -33,9 +41,12 @@ func convertClass(class *model.Class, rsp *api.ClassReply) {
 	if class != nil {
 		rsp.Classid = class.ID.Hex()
 		rsp.Name = class.Name
-		rsp.Major = class.Major
+		// rsp.Major = class.Major
 		rsp.Teachername = class.TeacherName
 		rsp.College = class.College
+		rsp.Course = class.Course
+		rsp.Subject = class.Sbuject
+		rsp.Introduction = class.Introduction
 	}
 }
 
@@ -53,6 +64,7 @@ func (s *ClassService) JoinClass(ctx context.Context, req *api.JoinClassReq, rsp
 		fmt.Printf("Check in class error %v ", err)
 		return err
 	}
+	req.Indentify = string(model.Student)
 	if err := gdao.NewClassUser(ctx, req); err != nil {
 		return err
 	} else {
@@ -69,6 +81,7 @@ func (s *ClassService) JoinClass(ctx context.Context, req *api.JoinClassReq, rsp
 	return nil
 }
 
+//查询用户加入的班级
 func (s *ClassService) UserClassInfo(ctx context.Context, req *uapi.UserReq, rsp *api.UserClassReply) error {
 	logrus.Infof("UserClassInfo req is %v ", req)
 	myClasses := new([]*model.ClassUser)
@@ -99,5 +112,22 @@ func (s *ClassService) QueryClassUserInfo(ctx context.Context, req *api.ClassReq
 		info.Username = v.UserName
 		rsp.Students = append(rsp.Students, info)
 	}
+	return nil
+}
+
+func (s *ClassService) SearchClassesInfo(ctx context.Context, req *api.SearchClassesInfoReq, rsp *api.SearchClassesInfoReply) error {
+	logrus.Infof("SearchClassesInfo req is %v ", req)
+	classes := new([]*model.Class)
+	allCount, err := gdao.FillClassByConditions(ctx, req, classes, PageCount)
+	if err != nil {
+		return err
+	}
+	for _, v := range *classes {
+		info := new(api.ClassReply)
+		convertClass(v, info)
+		rsp.Classes = append(rsp.Classes, info)
+	}
+	rsp.Currentpage = req.Page + 1
+	rsp.Totalpage = int64(allCount / PageCount)
 	return nil
 }
