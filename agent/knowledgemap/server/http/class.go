@@ -152,3 +152,14 @@ func queryInvitation(c echo.Context) error {
 		return c.JSON(http.StatusOK, comm.Data(res))
 	}
 }
+
+func queryFormList(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(uapi.Empty)
+	if res, err := classSrv.QueryFormList(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}

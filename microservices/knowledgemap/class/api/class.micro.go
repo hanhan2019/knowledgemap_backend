@@ -42,6 +42,7 @@ type ClassService interface {
 	UserClassInfo(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*UserClassReply, error)
 	QueryClassUserInfo(ctx context.Context, in *ClassReq, opts ...client.CallOption) (*QueryClassUserInfoReply, error)
 	SearchClassesInfo(ctx context.Context, in *SearchClassesInfoReq, opts ...client.CallOption) (*SearchClassesInfoReply, error)
+	QueryFormList(ctx context.Context, in *api.Empty, opts ...client.CallOption) (*QueryFormListReply, error)
 	CreateInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error)
 	StopInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error)
 	InvitaionInfo(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*ClassReply, error)
@@ -125,6 +126,16 @@ func (c *classService) SearchClassesInfo(ctx context.Context, in *SearchClassesI
 	return out, nil
 }
 
+func (c *classService) QueryFormList(ctx context.Context, in *api.Empty, opts ...client.CallOption) (*QueryFormListReply, error) {
+	req := c.c.NewRequest(c.name, "Class.QueryFormList", in)
+	out := new(QueryFormListReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *classService) CreateInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error) {
 	req := c.c.NewRequest(c.name, "Class.CreateInvitaion", in)
 	out := new(api.Empty)
@@ -164,6 +175,7 @@ type ClassHandler interface {
 	UserClassInfo(context.Context, *api.UserReq, *UserClassReply) error
 	QueryClassUserInfo(context.Context, *ClassReq, *QueryClassUserInfoReply) error
 	SearchClassesInfo(context.Context, *SearchClassesInfoReq, *SearchClassesInfoReply) error
+	QueryFormList(context.Context, *api.Empty, *QueryFormListReply) error
 	CreateInvitaion(context.Context, *InvitationReq, *api.Empty) error
 	StopInvitaion(context.Context, *InvitationReq, *api.Empty) error
 	InvitaionInfo(context.Context, *InvitationReq, *ClassReply) error
@@ -177,6 +189,7 @@ func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.Han
 		UserClassInfo(ctx context.Context, in *api.UserReq, out *UserClassReply) error
 		QueryClassUserInfo(ctx context.Context, in *ClassReq, out *QueryClassUserInfoReply) error
 		SearchClassesInfo(ctx context.Context, in *SearchClassesInfoReq, out *SearchClassesInfoReply) error
+		QueryFormList(ctx context.Context, in *api.Empty, out *QueryFormListReply) error
 		CreateInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error
 		StopInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error
 		InvitaionInfo(ctx context.Context, in *InvitationReq, out *ClassReply) error
@@ -214,6 +227,10 @@ func (h *classHandler) QueryClassUserInfo(ctx context.Context, in *ClassReq, out
 
 func (h *classHandler) SearchClassesInfo(ctx context.Context, in *SearchClassesInfoReq, out *SearchClassesInfoReply) error {
 	return h.ClassHandler.SearchClassesInfo(ctx, in, out)
+}
+
+func (h *classHandler) QueryFormList(ctx context.Context, in *api.Empty, out *QueryFormListReply) error {
+	return h.ClassHandler.QueryFormList(ctx, in, out)
 }
 
 func (h *classHandler) CreateInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error {

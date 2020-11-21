@@ -11,6 +11,7 @@ service Class {
     rpc UserClassInfo(UserReq)returns (UserClassReply){}//查询所有班级
     rpc QueryClassUserInfo(ClassReq)returns(QueryClassUserInfoReply){}//查询班内所有学生
     rpc SearchClassesInfo(SearchClassesInfoReq)returns(SearchClassesInfoReply){}//通过课程查班级
+    rpc QueryFormList(Empty)returns(QueryFormListReply){}
     rpc CreateInvitaion(InvitationReq)returns (Empty){}
     rpc StopInvitaion(InvitationReq)returns (Empty){}
     rpc InvitaionInfo(InvitationReq)returns (ClassReply){}
@@ -83,4 +84,10 @@ message SearchClassesInfoReply{
     repeated ClassReply classes = 1;
     int64 currentpage = 2[(gogoproto.moretags) = "form:\"currentpage\""];
     int64 totalpage = 3[(gogoproto.moretags) = "form:\"totalpage\""];
+}
+
+message QueryFormListReply{
+    repeated string colleges = 1[(gogoproto.moretags) = "form:\"colleges\""];
+    repeated string subjects = 2[(gogoproto.moretags) = "form:\"subjects\""];
+    repeated string courses = 3[(gogoproto.moretags) = "form:\"courses\""];
 }

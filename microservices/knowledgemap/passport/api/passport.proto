@@ -13,17 +13,18 @@ import "knowledgemap_backend/microservices/knowledgemap/user/api/user.proto";
 service Passport {
     rpc Register(RegisterReq) returns (PassportUserReply) {}
 	rpc Login(LoginReq) returns (PassportUserReply) {}
-    rpc CheckSToken(SessionTokenReq) returns (Empty) {}
+    rpc CheckSToken(SessionTokenReq) returns (UserReply) {}
     rpc ChangePassword(ChangePasswordReq) returns (Empty) {}
-    rpc ChangeUserInfo(ChangeUserInfoReq) returns (PassportUserReply) {}
-    rpc CheckIndentify(UserReq) returns (IndentifyReply){}
+    rpc ChangeUserInfo(ChangeUserInfoReq) returns (UserInfoReply) {}
+    rpc CheckIndentify(UserReq) returns (IdentifyReply){}
 }
 
 
 message SessionTokenReq {
-    string uid = 1;
-    string stoken = 2;
-    Indentify type = 3 ;
+    // string uid = 1;
+    // string stoken = 2;
+    // Identify type = 3 ;
+    string cookie = 1;
 }
 
 message PassportUserReply {
@@ -33,7 +34,7 @@ message PassportUserReply {
 }
 
 message RegisterReq {
-    Indentify rtype = 1 [(gogoproto.moretags) = "form:\"rtype\""];
+    Identify rtype = 1 [(gogoproto.moretags) = "form:\"rtype\""];
     string  name = 2 [(gogoproto.moretags) = "form:\"name\""];
     string  major = 3 [(gogoproto.moretags) = "form:\"major\""];
     string  sex = 4 [(gogoproto.moretags) = "form:\"sex\""];
@@ -47,33 +48,28 @@ message RegisterReq {
 }
 
 message LoginReq{
-    Indentify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
+    Identify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
     string  account = 2 [(gogoproto.moretags) = "form:\"account\""];
     string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
 }
 
 message ChangePasswordReq{
-    string  account = 1 [(gogoproto.moretags) = "form:\"account\""];
+    string  userid = 1 [(gogoproto.moretags) = "form:\"userid\""];
     string  password = 2 [(gogoproto.moretags) = "form:\"password\""];
+    Identify  identify = 3 [(gogoproto.moretags) = "form:\"identify\""];
 }
 
-enum Indentify{
-    STUDENT = 0;
-    TEACHER = 1;
-    SECRETARY = 2;
-    NOTFOUND = -1;
-}
 
-message IndentifyReply{
-    Indentify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
+message IdentifyReply{
+    Identify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
 }
 
 message ChangeUserInfoReq{
     string  userid = 1 [(gogoproto.moretags) = "form:\"userid\""];
-    Indentify  usertype = 2 [(gogoproto.moretags) = "form:\"usertype\""];
-    string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
-    string  major = 4 [(gogoproto.moretags) = "form:\"major\""];
-    string  college = 5 [(gogoproto.moretags) = "form:\"college\""];
-    string  sex = 6 [(gogoproto.moretags) = "form:\"sex\""];
-    string  name = 7 [(gogoproto.moretags) = "form:\"name\""];
+    Identify  usertype = 2 [(gogoproto.moretags) = "form:\"usertype\""];
+    // string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
+    string  major = 3 [(gogoproto.moretags) = "form:\"major\""];
+    string  college = 4 [(gogoproto.moretags) = "form:\"college\""];
+    string  sex = 5 [(gogoproto.moretags) = "form:\"sex\""];
+    string  name = 6 [(gogoproto.moretags) = "form:\"name\""];
 }

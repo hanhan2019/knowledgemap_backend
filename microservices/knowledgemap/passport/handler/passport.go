@@ -21,24 +21,27 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 		return errors.New("CheckAccount error")
 	}
 	switch req.Rtype {
-	case api.Indentify_STUDENT:
+	case uapi.Identify_STUDENT:
 		gdao.NewStudent(ctx, req)
 		if err := gdao.FillStudentByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
-		return gdao.GenerateLoginToken(ctx, &rsp)
-	case api.Indentify_TEACHER:
+		rsp.User.Usertype = int64(req.Rtype)
+		return gdao.GenerateLoginToken(ctx, int(req.Rtype), &rsp)
+	case uapi.Identify_TEACHER:
 		gdao.NewTeacher(ctx, req)
 		if err := gdao.FillTeacherByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
-		return gdao.GenerateLoginToken(ctx, &rsp)
-	case api.Indentify_SECRETARY:
+		rsp.User.Usertype = int64(req.Rtype)
+		return gdao.GenerateLoginToken(ctx, int(req.Rtype), &rsp)
+	case uapi.Identify_SECRETARY:
 		gdao.NewTeacher(ctx, req)
 		if err := gdao.FillTeacherByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
-		return gdao.GenerateLoginToken(ctx, &rsp)
+		rsp.User.Usertype = int64(req.Rtype)
+		return gdao.GenerateLoginToken(ctx, int(req.Rtype), &rsp)
 	default:
 		fmt.Println("账号类型错误")
 		return errors.New("rtype error")
@@ -80,7 +83,8 @@ func (s *PassportService) Login(ctx context.Context, req *api.LoginReq, rsp *api
 		logrus.Infof("password err!")
 		return errors.New("password weong")
 	}
-	return gdao.GenerateLoginToken(ctx, &rsp)
+	rsp.User.Password = ""
+	return gdao.GenerateLoginToken(ctx, int(req.Ltype), &rsp)
 }
 
 func checkPassWord(in, orign string) bool {
@@ -90,14 +94,14 @@ func checkPassWord(in, orign string) bool {
 		return false
 	}
 }
-func FindUserByLtypeAndAccount(ctx context.Context, account string, ltype api.Indentify, rsp *api.PassportUserReply) error {
+func FindUserByLtypeAndAccount(ctx context.Context, account string, ltype uapi.Identify, rsp *api.PassportUserReply) error {
 	var err error
 	switch ltype {
-	case api.Indentify_STUDENT:
+	case uapi.Identify_STUDENT:
 		err = gdao.FillStudentByAccount(ctx, account, &rsp.User)
-	case api.Indentify_TEACHER:
+	case uapi.Identify_TEACHER:
 		err = gdao.FillTeacherByAccount(ctx, account, &rsp.User)
-	case api.Indentify_SECRETARY:
+	case uapi.Identify_SECRETARY:
 		err = gdao.FillSecretaryByAccount(ctx, account, &rsp.User)
 	default:
 		return errors.New("unknow ltype")
@@ -108,22 +112,22 @@ func FindUserByLtypeAndAccount(ctx context.Context, account string, ltype api.In
 	return nil
 }
 
-func (s *PassportService) CheckSToken(ctx context.Context, req *api.SessionTokenReq, rsp *uapi.Empty) error {
+func (s *PassportService) CheckSToken(ctx context.Context, req *api.SessionTokenReq, rsp *uapi.UserReply) error {
 	logrus.Infof("check token req is %v ", req)
 	//FindUserById(ctx, req.Type, req.Uid, rsp)
-	return gdao.CheckSessionToken(ctx, req.Uid, req.Stoken)
+	return gdao.CheckSessionToken(ctx, req.Cookie, rsp)
 }
 
 func (s *PassportService) ChangePassword(ctx context.Context, req *api.ChangePasswordReq, rsp *uapi.Empty) error {
 	logrus.Infof("change password req is %v ", req)
-	return gdao.ChangePassword(ctx, req.Account, req.Password, &rsp)
+	return gdao.ChangePassword(ctx, req.Userid, req.Password, req.Identify, &rsp)
 }
 
-func (s *PassportService) CheckIndentify(ctx context.Context, req *uapi.UserReq, rsp *api.IndentifyReply) error {
+func (s *PassportService) CheckIndentify(ctx context.Context, req *uapi.UserReq, rsp *api.IdentifyReply) error {
 	logrus.Infof("check indentify req is %v ", req)
-	indentify := FindUserIndentifyById(ctx, bson.ObjectIdHex(req.Userid))
-	fmt.Println("indentify is", indentify)
-	rsp.Ltype = api.Indentify(indentify)
+	identify := FindUserIndentifyById(ctx, bson.ObjectIdHex(req.Userid))
+	fmt.Println("indentify is", identify)
+	rsp.Ltype = uapi.Identify(identify)
 	return nil
 }
 
@@ -138,21 +142,25 @@ func FindUserIndentifyById(ctx context.Context, id bson.ObjectId) int64 {
 	}
 	return -1
 }
-func FindUserById(ctx context.Context, indentify api.Indentify, uid string, rsp *api.PassportUserReply) {
+
+func FindUserById(ctx context.Context, indentify uapi.Identify, uid string, rsp **uapi.UserReply) {
 	switch indentify {
-	case api.Indentify_STUDENT:
-		gdao.FillStudentById(ctx, bson.ObjectIdHex(uid), &rsp.User)
-	case api.Indentify_TEACHER:
-		gdao.FillTeacherById(ctx, bson.ObjectIdHex(uid), &rsp.User)
-	case api.Indentify_SECRETARY:
-		gdao.FillSecretaryById(ctx, bson.ObjectIdHex(uid), &rsp.User)
+	case uapi.Identify_STUDENT:
+		gdao.FillStudentById(ctx, bson.ObjectIdHex(uid), rsp)
+	case uapi.Identify_TEACHER:
+		gdao.FillTeacherById(ctx, bson.ObjectIdHex(uid), rsp)
+	case uapi.Identify_SECRETARY:
+		gdao.FillSecretaryById(ctx, bson.ObjectIdHex(uid), rsp)
 	}
 	return
 }
-func (s *PassportService) ChangeUserInfo(ctx context.Context, req *api.ChangeUserInfoReq, rsp *api.PassportUserReply) error {
+
+func (s *PassportService) ChangeUserInfo(ctx context.Context, req *api.ChangeUserInfoReq, rsp *uapi.UserInfoReply) error {
 	logrus.Infof("change userInfo req is %v ", req)
 	// rsp = FindUserById(ctx, bson.ObjectIdHex(req.Userid))
 	gdao.ChangeUserInfo(ctx, req)
-	FindUserById(ctx, req.Usertype, req.Userid, rsp)
+	FindUserById(ctx, req.Usertype, req.Userid, &rsp.User)
+	rsp.User.Password = ""
+	rsp.User.Usertype = int64(req.Usertype)
 	return nil
 }

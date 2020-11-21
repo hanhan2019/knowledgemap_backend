@@ -35,7 +35,7 @@ var _ server.Option
 // Client API for User service
 
 type UserService interface {
-	UserInfo(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserReply, error)
+	UserInfo(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserInfoReply, error)
 }
 
 type userService struct {
@@ -56,9 +56,9 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) UserInfo(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserReply, error) {
+func (c *userService) UserInfo(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserInfoReply, error) {
 	req := c.c.NewRequest(c.name, "User.UserInfo", in)
-	out := new(UserReply)
+	out := new(UserInfoReply)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -69,12 +69,12 @@ func (c *userService) UserInfo(ctx context.Context, in *UserReq, opts ...client.
 // Server API for User service
 
 type UserHandler interface {
-	UserInfo(context.Context, *UserReq, *UserReply) error
+	UserInfo(context.Context, *UserReq, *UserInfoReply) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
-		UserInfo(ctx context.Context, in *UserReq, out *UserReply) error
+		UserInfo(ctx context.Context, in *UserReq, out *UserInfoReply) error
 	}
 	type User struct {
 		user
@@ -87,6 +87,6 @@ type userHandler struct {
 	UserHandler
 }
 
-func (h *userHandler) UserInfo(ctx context.Context, in *UserReq, out *UserReply) error {
+func (h *userHandler) UserInfo(ctx context.Context, in *UserReq, out *UserInfoReply) error {
 	return h.UserHandler.UserInfo(ctx, in, out)
 }

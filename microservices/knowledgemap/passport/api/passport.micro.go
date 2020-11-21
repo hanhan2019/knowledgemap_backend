@@ -38,10 +38,10 @@ var _ server.Option
 type PassportService interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...client.CallOption) (*PassportUserReply, error)
 	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*PassportUserReply, error)
-	CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.Empty, error)
+	CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.UserReply, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordReq, opts ...client.CallOption) (*api.Empty, error)
-	ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, opts ...client.CallOption) (*PassportUserReply, error)
-	CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IndentifyReply, error)
+	ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, opts ...client.CallOption) (*api.UserInfoReply, error)
+	CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IdentifyReply, error)
 }
 
 type passportService struct {
@@ -82,9 +82,9 @@ func (c *passportService) Login(ctx context.Context, in *LoginReq, opts ...clien
 	return out, nil
 }
 
-func (c *passportService) CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.Empty, error) {
+func (c *passportService) CheckSToken(ctx context.Context, in *SessionTokenReq, opts ...client.CallOption) (*api.UserReply, error) {
 	req := c.c.NewRequest(c.name, "Passport.CheckSToken", in)
-	out := new(api.Empty)
+	out := new(api.UserReply)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -102,9 +102,9 @@ func (c *passportService) ChangePassword(ctx context.Context, in *ChangePassword
 	return out, nil
 }
 
-func (c *passportService) ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, opts ...client.CallOption) (*PassportUserReply, error) {
+func (c *passportService) ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, opts ...client.CallOption) (*api.UserInfoReply, error) {
 	req := c.c.NewRequest(c.name, "Passport.ChangeUserInfo", in)
-	out := new(PassportUserReply)
+	out := new(api.UserInfoReply)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -112,9 +112,9 @@ func (c *passportService) ChangeUserInfo(ctx context.Context, in *ChangeUserInfo
 	return out, nil
 }
 
-func (c *passportService) CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IndentifyReply, error) {
+func (c *passportService) CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IdentifyReply, error) {
 	req := c.c.NewRequest(c.name, "Passport.CheckIndentify", in)
-	out := new(IndentifyReply)
+	out := new(IdentifyReply)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -127,20 +127,20 @@ func (c *passportService) CheckIndentify(ctx context.Context, in *api.UserReq, o
 type PassportHandler interface {
 	Register(context.Context, *RegisterReq, *PassportUserReply) error
 	Login(context.Context, *LoginReq, *PassportUserReply) error
-	CheckSToken(context.Context, *SessionTokenReq, *api.Empty) error
+	CheckSToken(context.Context, *SessionTokenReq, *api.UserReply) error
 	ChangePassword(context.Context, *ChangePasswordReq, *api.Empty) error
-	ChangeUserInfo(context.Context, *ChangeUserInfoReq, *PassportUserReply) error
-	CheckIndentify(context.Context, *api.UserReq, *IndentifyReply) error
+	ChangeUserInfo(context.Context, *ChangeUserInfoReq, *api.UserInfoReply) error
+	CheckIndentify(context.Context, *api.UserReq, *IdentifyReply) error
 }
 
 func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...server.HandlerOption) error {
 	type passport interface {
 		Register(ctx context.Context, in *RegisterReq, out *PassportUserReply) error
 		Login(ctx context.Context, in *LoginReq, out *PassportUserReply) error
-		CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.Empty) error
+		CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.UserReply) error
 		ChangePassword(ctx context.Context, in *ChangePasswordReq, out *api.Empty) error
-		ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, out *PassportUserReply) error
-		CheckIndentify(ctx context.Context, in *api.UserReq, out *IndentifyReply) error
+		ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, out *api.UserInfoReply) error
+		CheckIndentify(ctx context.Context, in *api.UserReq, out *IdentifyReply) error
 	}
 	type Passport struct {
 		passport
@@ -161,7 +161,7 @@ func (h *passportHandler) Login(ctx context.Context, in *LoginReq, out *Passport
 	return h.PassportHandler.Login(ctx, in, out)
 }
 
-func (h *passportHandler) CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.Empty) error {
+func (h *passportHandler) CheckSToken(ctx context.Context, in *SessionTokenReq, out *api.UserReply) error {
 	return h.PassportHandler.CheckSToken(ctx, in, out)
 }
 
@@ -169,10 +169,10 @@ func (h *passportHandler) ChangePassword(ctx context.Context, in *ChangePassword
 	return h.PassportHandler.ChangePassword(ctx, in, out)
 }
 
-func (h *passportHandler) ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, out *PassportUserReply) error {
+func (h *passportHandler) ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, out *api.UserInfoReply) error {
 	return h.PassportHandler.ChangeUserInfo(ctx, in, out)
 }
 
-func (h *passportHandler) CheckIndentify(ctx context.Context, in *api.UserReq, out *IndentifyReply) error {
+func (h *passportHandler) CheckIndentify(ctx context.Context, in *api.UserReq, out *IdentifyReply) error {
 	return h.PassportHandler.CheckIndentify(ctx, in, out)
 }

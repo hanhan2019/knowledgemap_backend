@@ -13,7 +13,7 @@
 		RegisterReq
 		LoginReq
 		ChangePasswordReq
-		IndentifyReply
+		IdentifyReply
 		ChangeUserInfoReq
 */
 package api
@@ -37,37 +37,11 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type Indentify int32
-
-const (
-	Indentify_STUDENT   Indentify = 0
-	Indentify_TEACHER   Indentify = 1
-	Indentify_SECRETARY Indentify = 2
-	Indentify_NOTFOUND  Indentify = -1
-)
-
-var Indentify_name = map[int32]string{
-	0:  "STUDENT",
-	1:  "TEACHER",
-	2:  "SECRETARY",
-	-1: "NOTFOUND",
-}
-var Indentify_value = map[string]int32{
-	"STUDENT":   0,
-	"TEACHER":   1,
-	"SECRETARY": 2,
-	"NOTFOUND":  -1,
-}
-
-func (x Indentify) String() string {
-	return proto.EnumName(Indentify_name, int32(x))
-}
-func (Indentify) EnumDescriptor() ([]byte, []int) { return fileDescriptorPassport, []int{0} }
-
 type SessionTokenReq struct {
-	Uid    string    `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
-	Stoken string    `protobuf:"bytes,2,opt,name=stoken,proto3" json:"stoken,omitempty"`
-	Type   Indentify `protobuf:"varint,3,opt,name=type,proto3,enum=api.Indentify" json:"type,omitempty"`
+	// string uid = 1;
+	// string stoken = 2;
+	// Identify type = 3 ;
+	Cookie string `protobuf:"bytes,1,opt,name=cookie,proto3" json:"cookie,omitempty"`
 }
 
 func (m *SessionTokenReq) Reset()                    { *m = SessionTokenReq{} }
@@ -75,25 +49,11 @@ func (m *SessionTokenReq) String() string            { return proto.CompactTextS
 func (*SessionTokenReq) ProtoMessage()               {}
 func (*SessionTokenReq) Descriptor() ([]byte, []int) { return fileDescriptorPassport, []int{0} }
 
-func (m *SessionTokenReq) GetUid() string {
+func (m *SessionTokenReq) GetCookie() string {
 	if m != nil {
-		return m.Uid
+		return m.Cookie
 	}
 	return ""
-}
-
-func (m *SessionTokenReq) GetStoken() string {
-	if m != nil {
-		return m.Stoken
-	}
-	return ""
-}
-
-func (m *SessionTokenReq) GetType() Indentify {
-	if m != nil {
-		return m.Type
-	}
-	return Indentify_STUDENT
 }
 
 type PassportUserReply struct {
@@ -129,10 +89,10 @@ func (m *PassportUserReply) GetExpires() int64 {
 }
 
 type RegisterReq struct {
-	Rtype Indentify `protobuf:"varint,1,opt,name=rtype,proto3,enum=api.Indentify" json:"rtype,omitempty" form:"rtype"`
-	Name  string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Major string    `protobuf:"bytes,3,opt,name=major,proto3" json:"major,omitempty" form:"major"`
-	Sex   string    `protobuf:"bytes,4,opt,name=sex,proto3" json:"sex,omitempty" form:"sex"`
+	Rtype api1.Identify `protobuf:"varint,1,opt,name=rtype,proto3,enum=api.Identify" json:"rtype,omitempty" form:"rtype"`
+	Name  string        `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
+	Major string        `protobuf:"bytes,3,opt,name=major,proto3" json:"major,omitempty" form:"major"`
+	Sex   string        `protobuf:"bytes,4,opt,name=sex,proto3" json:"sex,omitempty" form:"sex"`
 	// string  origin = 5 [(gogoproto.moretags) = "form:\"origin\""];
 	// string  class = 5 [(gogoproto.moretags) = "form:\"class\""];
 	// string admissontime = 7 [(gogoproto.moretags) = "form:\"admissontime\""];
@@ -146,11 +106,11 @@ func (m *RegisterReq) String() string            { return proto.CompactTextStrin
 func (*RegisterReq) ProtoMessage()               {}
 func (*RegisterReq) Descriptor() ([]byte, []int) { return fileDescriptorPassport, []int{2} }
 
-func (m *RegisterReq) GetRtype() Indentify {
+func (m *RegisterReq) GetRtype() api1.Identify {
 	if m != nil {
 		return m.Rtype
 	}
-	return Indentify_STUDENT
+	return api1.Identify_STUDENT
 }
 
 func (m *RegisterReq) GetName() string {
@@ -196,9 +156,9 @@ func (m *RegisterReq) GetCollege() string {
 }
 
 type LoginReq struct {
-	Ltype    Indentify `protobuf:"varint,1,opt,name=ltype,proto3,enum=api.Indentify" json:"ltype,omitempty" form:"ltype"`
-	Account  string    `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty" form:"account"`
-	Password string    `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty" form:"password"`
+	Ltype    api1.Identify `protobuf:"varint,1,opt,name=ltype,proto3,enum=api.Identify" json:"ltype,omitempty" form:"ltype"`
+	Account  string        `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty" form:"account"`
+	Password string        `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty" form:"password"`
 }
 
 func (m *LoginReq) Reset()                    { *m = LoginReq{} }
@@ -206,11 +166,11 @@ func (m *LoginReq) String() string            { return proto.CompactTextString(m
 func (*LoginReq) ProtoMessage()               {}
 func (*LoginReq) Descriptor() ([]byte, []int) { return fileDescriptorPassport, []int{3} }
 
-func (m *LoginReq) GetLtype() Indentify {
+func (m *LoginReq) GetLtype() api1.Identify {
 	if m != nil {
 		return m.Ltype
 	}
-	return Indentify_STUDENT
+	return api1.Identify_STUDENT
 }
 
 func (m *LoginReq) GetAccount() string {
@@ -228,8 +188,9 @@ func (m *LoginReq) GetPassword() string {
 }
 
 type ChangePasswordReq struct {
-	Account  string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty" form:"account"`
-	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty" form:"password"`
+	Userid   string        `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
+	Password string        `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty" form:"password"`
+	Identify api1.Identify `protobuf:"varint,3,opt,name=identify,proto3,enum=api.Identify" json:"identify,omitempty" form:"identify"`
 }
 
 func (m *ChangePasswordReq) Reset()                    { *m = ChangePasswordReq{} }
@@ -237,9 +198,9 @@ func (m *ChangePasswordReq) String() string            { return proto.CompactTex
 func (*ChangePasswordReq) ProtoMessage()               {}
 func (*ChangePasswordReq) Descriptor() ([]byte, []int) { return fileDescriptorPassport, []int{4} }
 
-func (m *ChangePasswordReq) GetAccount() string {
+func (m *ChangePasswordReq) GetUserid() string {
 	if m != nil {
-		return m.Account
+		return m.Userid
 	}
 	return ""
 }
@@ -251,30 +212,37 @@ func (m *ChangePasswordReq) GetPassword() string {
 	return ""
 }
 
-type IndentifyReply struct {
-	Ltype Indentify `protobuf:"varint,1,opt,name=ltype,proto3,enum=api.Indentify" json:"ltype,omitempty" form:"ltype"`
+func (m *ChangePasswordReq) GetIdentify() api1.Identify {
+	if m != nil {
+		return m.Identify
+	}
+	return api1.Identify_STUDENT
 }
 
-func (m *IndentifyReply) Reset()                    { *m = IndentifyReply{} }
-func (m *IndentifyReply) String() string            { return proto.CompactTextString(m) }
-func (*IndentifyReply) ProtoMessage()               {}
-func (*IndentifyReply) Descriptor() ([]byte, []int) { return fileDescriptorPassport, []int{5} }
+type IdentifyReply struct {
+	Ltype api1.Identify `protobuf:"varint,1,opt,name=ltype,proto3,enum=api.Identify" json:"ltype,omitempty" form:"ltype"`
+}
 
-func (m *IndentifyReply) GetLtype() Indentify {
+func (m *IdentifyReply) Reset()                    { *m = IdentifyReply{} }
+func (m *IdentifyReply) String() string            { return proto.CompactTextString(m) }
+func (*IdentifyReply) ProtoMessage()               {}
+func (*IdentifyReply) Descriptor() ([]byte, []int) { return fileDescriptorPassport, []int{5} }
+
+func (m *IdentifyReply) GetLtype() api1.Identify {
 	if m != nil {
 		return m.Ltype
 	}
-	return Indentify_STUDENT
+	return api1.Identify_STUDENT
 }
 
 type ChangeUserInfoReq struct {
-	Userid   string    `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Usertype Indentify `protobuf:"varint,2,opt,name=usertype,proto3,enum=api.Indentify" json:"usertype,omitempty" form:"usertype"`
-	Password string    `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty" form:"password"`
-	Major    string    `protobuf:"bytes,4,opt,name=major,proto3" json:"major,omitempty" form:"major"`
-	College  string    `protobuf:"bytes,5,opt,name=college,proto3" json:"college,omitempty" form:"college"`
-	Sex      string    `protobuf:"bytes,6,opt,name=sex,proto3" json:"sex,omitempty" form:"sex"`
-	Name     string    `protobuf:"bytes,7,opt,name=name,proto3" json:"name,omitempty" form:"name"`
+	Userid   string        `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
+	Usertype api1.Identify `protobuf:"varint,2,opt,name=usertype,proto3,enum=api.Identify" json:"usertype,omitempty" form:"usertype"`
+	// string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
+	Major   string `protobuf:"bytes,3,opt,name=major,proto3" json:"major,omitempty" form:"major"`
+	College string `protobuf:"bytes,4,opt,name=college,proto3" json:"college,omitempty" form:"college"`
+	Sex     string `protobuf:"bytes,5,opt,name=sex,proto3" json:"sex,omitempty" form:"sex"`
+	Name    string `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty" form:"name"`
 }
 
 func (m *ChangeUserInfoReq) Reset()                    { *m = ChangeUserInfoReq{} }
@@ -289,18 +257,11 @@ func (m *ChangeUserInfoReq) GetUserid() string {
 	return ""
 }
 
-func (m *ChangeUserInfoReq) GetUsertype() Indentify {
+func (m *ChangeUserInfoReq) GetUsertype() api1.Identify {
 	if m != nil {
 		return m.Usertype
 	}
-	return Indentify_STUDENT
-}
-
-func (m *ChangeUserInfoReq) GetPassword() string {
-	if m != nil {
-		return m.Password
-	}
-	return ""
+	return api1.Identify_STUDENT
 }
 
 func (m *ChangeUserInfoReq) GetMajor() string {
@@ -337,9 +298,8 @@ func init() {
 	proto.RegisterType((*RegisterReq)(nil), "api.RegisterReq")
 	proto.RegisterType((*LoginReq)(nil), "api.LoginReq")
 	proto.RegisterType((*ChangePasswordReq)(nil), "api.ChangePasswordReq")
-	proto.RegisterType((*IndentifyReply)(nil), "api.IndentifyReply")
+	proto.RegisterType((*IdentifyReply)(nil), "api.IdentifyReply")
 	proto.RegisterType((*ChangeUserInfoReq)(nil), "api.ChangeUserInfoReq")
-	proto.RegisterEnum("api.Indentify", Indentify_name, Indentify_value)
 }
 func (m *SessionTokenReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
@@ -356,22 +316,11 @@ func (m *SessionTokenReq) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Uid) > 0 {
+	if len(m.Cookie) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintPassport(dAtA, i, uint64(len(m.Uid)))
-		i += copy(dAtA[i:], m.Uid)
-	}
-	if len(m.Stoken) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintPassport(dAtA, i, uint64(len(m.Stoken)))
-		i += copy(dAtA[i:], m.Stoken)
-	}
-	if m.Type != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintPassport(dAtA, i, uint64(m.Type))
+		i = encodeVarintPassport(dAtA, i, uint64(len(m.Cookie)))
+		i += copy(dAtA[i:], m.Cookie)
 	}
 	return i, nil
 }
@@ -524,11 +473,11 @@ func (m *ChangePasswordReq) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Account) > 0 {
+	if len(m.Userid) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintPassport(dAtA, i, uint64(len(m.Account)))
-		i += copy(dAtA[i:], m.Account)
+		i = encodeVarintPassport(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
 	}
 	if len(m.Password) > 0 {
 		dAtA[i] = 0x12
@@ -536,10 +485,15 @@ func (m *ChangePasswordReq) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintPassport(dAtA, i, uint64(len(m.Password)))
 		i += copy(dAtA[i:], m.Password)
 	}
+	if m.Identify != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintPassport(dAtA, i, uint64(m.Identify))
+	}
 	return i, nil
 }
 
-func (m *IndentifyReply) Marshal() (dAtA []byte, err error) {
+func (m *IdentifyReply) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -549,7 +503,7 @@ func (m *IndentifyReply) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *IndentifyReply) MarshalTo(dAtA []byte) (int, error) {
+func (m *IdentifyReply) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -588,32 +542,26 @@ func (m *ChangeUserInfoReq) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintPassport(dAtA, i, uint64(m.Usertype))
 	}
-	if len(m.Password) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintPassport(dAtA, i, uint64(len(m.Password)))
-		i += copy(dAtA[i:], m.Password)
-	}
 	if len(m.Major) > 0 {
-		dAtA[i] = 0x22
+		dAtA[i] = 0x1a
 		i++
 		i = encodeVarintPassport(dAtA, i, uint64(len(m.Major)))
 		i += copy(dAtA[i:], m.Major)
 	}
 	if len(m.College) > 0 {
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x22
 		i++
 		i = encodeVarintPassport(dAtA, i, uint64(len(m.College)))
 		i += copy(dAtA[i:], m.College)
 	}
 	if len(m.Sex) > 0 {
-		dAtA[i] = 0x32
+		dAtA[i] = 0x2a
 		i++
 		i = encodeVarintPassport(dAtA, i, uint64(len(m.Sex)))
 		i += copy(dAtA[i:], m.Sex)
 	}
 	if len(m.Name) > 0 {
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x32
 		i++
 		i = encodeVarintPassport(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
@@ -633,16 +581,9 @@ func encodeVarintPassport(dAtA []byte, offset int, v uint64) int {
 func (m *SessionTokenReq) Size() (n int) {
 	var l int
 	_ = l
-	l = len(m.Uid)
+	l = len(m.Cookie)
 	if l > 0 {
 		n += 1 + l + sovPassport(uint64(l))
-	}
-	l = len(m.Stoken)
-	if l > 0 {
-		n += 1 + l + sovPassport(uint64(l))
-	}
-	if m.Type != 0 {
-		n += 1 + sovPassport(uint64(m.Type))
 	}
 	return n
 }
@@ -717,7 +658,7 @@ func (m *LoginReq) Size() (n int) {
 func (m *ChangePasswordReq) Size() (n int) {
 	var l int
 	_ = l
-	l = len(m.Account)
+	l = len(m.Userid)
 	if l > 0 {
 		n += 1 + l + sovPassport(uint64(l))
 	}
@@ -725,10 +666,13 @@ func (m *ChangePasswordReq) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovPassport(uint64(l))
 	}
+	if m.Identify != 0 {
+		n += 1 + sovPassport(uint64(m.Identify))
+	}
 	return n
 }
 
-func (m *IndentifyReply) Size() (n int) {
+func (m *IdentifyReply) Size() (n int) {
 	var l int
 	_ = l
 	if m.Ltype != 0 {
@@ -746,10 +690,6 @@ func (m *ChangeUserInfoReq) Size() (n int) {
 	}
 	if m.Usertype != 0 {
 		n += 1 + sovPassport(uint64(m.Usertype))
-	}
-	l = len(m.Password)
-	if l > 0 {
-		n += 1 + l + sovPassport(uint64(l))
 	}
 	l = len(m.Major)
 	if l > 0 {
@@ -814,7 +754,7 @@ func (m *SessionTokenReq) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Cookie", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -839,56 +779,8 @@ func (m *SessionTokenReq) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Uid = string(dAtA[iNdEx:postIndex])
+			m.Cookie = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Stoken", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPassport
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPassport
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Stoken = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
-			}
-			m.Type = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPassport
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Type |= (Indentify(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPassport(dAtA[iNdEx:])
@@ -1084,7 +976,7 @@ func (m *RegisterReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Rtype |= (Indentify(b) & 0x7F) << shift
+				m.Rtype |= (api1.Identify(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1327,7 +1219,7 @@ func (m *LoginReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Ltype |= (Indentify(b) & 0x7F) << shift
+				m.Ltype |= (api1.Identify(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1442,7 +1334,7 @@ func (m *ChangePasswordReq) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1467,7 +1359,7 @@ func (m *ChangePasswordReq) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Account = string(dAtA[iNdEx:postIndex])
+			m.Userid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1498,6 +1390,25 @@ func (m *ChangePasswordReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Password = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Identify", wireType)
+			}
+			m.Identify = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPassport
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Identify |= (api1.Identify(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPassport(dAtA[iNdEx:])
@@ -1519,7 +1430,7 @@ func (m *ChangePasswordReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *IndentifyReply) Unmarshal(dAtA []byte) error {
+func (m *IdentifyReply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1542,10 +1453,10 @@ func (m *IndentifyReply) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: IndentifyReply: wiretype end group for non-group")
+			return fmt.Errorf("proto: IdentifyReply: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: IndentifyReply: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: IdentifyReply: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1562,7 +1473,7 @@ func (m *IndentifyReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Ltype |= (Indentify(b) & 0x7F) << shift
+				m.Ltype |= (api1.Identify(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1660,41 +1571,12 @@ func (m *ChangeUserInfoReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Usertype |= (Indentify(b) & 0x7F) << shift
+				m.Usertype |= (api1.Identify(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Password", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPassport
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPassport
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Password = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Major", wireType)
 			}
@@ -1723,7 +1605,7 @@ func (m *ChangeUserInfoReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Major = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field College", wireType)
 			}
@@ -1752,7 +1634,7 @@ func (m *ChangeUserInfoReq) Unmarshal(dAtA []byte) error {
 			}
 			m.College = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
 			}
@@ -1781,7 +1663,7 @@ func (m *ChangeUserInfoReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Sex = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 7:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -1939,53 +1821,49 @@ var (
 func init() { proto.RegisterFile("api/passport.proto", fileDescriptorPassport) }
 
 var fileDescriptorPassport = []byte{
-	// 753 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xcd, 0x4e, 0xdb, 0x4a,
-	0x14, 0xc6, 0xce, 0xff, 0x09, 0x04, 0x33, 0x70, 0x91, 0x95, 0x45, 0x82, 0xe6, 0x4a, 0x57, 0xdc,
-	0xab, 0xdb, 0xb8, 0xa5, 0x2a, 0x8b, 0x6e, 0x2a, 0x12, 0x52, 0x81, 0x5a, 0x01, 0x9a, 0x84, 0x45,
-	0x57, 0xc8, 0x71, 0x26, 0xc6, 0x4d, 0xe2, 0x31, 0xb6, 0x53, 0xe0, 0x4d, 0xba, 0xed, 0xa3, 0x74,
-	0xd7, 0x4d, 0xa5, 0xae, 0xbb, 0x88, 0x2a, 0xfa, 0x06, 0x79, 0x81, 0x56, 0x33, 0xf6, 0x04, 0x13,
-	0x68, 0x0a, 0xcd, 0x26, 0x73, 0xce, 0xf9, 0xce, 0xaf, 0xbe, 0x73, 0x0c, 0xc8, 0xf4, 0x1c, 0xc3,
-	0x33, 0x83, 0xc0, 0x63, 0x7e, 0x58, 0xf3, 0x7c, 0x16, 0x32, 0x94, 0x32, 0x3d, 0xa7, 0xfc, 0xc8,
-	0x76, 0xc2, 0xd3, 0x51, 0xa7, 0x66, 0xb1, 0xa1, 0x61, 0x33, 0x9b, 0x19, 0xc2, 0xd6, 0x19, 0xf5,
-	0x84, 0x24, 0x04, 0xf1, 0x8a, 0x7c, 0xca, 0x8d, 0xbe, 0xcb, 0xce, 0x07, 0xb4, 0x6b, 0xd3, 0xa1,
-	0xe9, 0x9d, 0x74, 0x4c, 0xab, 0x4f, 0xdd, 0xae, 0x31, 0x74, 0x2c, 0x9f, 0x05, 0xd4, 0x7f, 0xe7,
-	0x58, 0x34, 0x30, 0x92, 0x10, 0x63, 0x14, 0x50, 0xdf, 0xe0, 0xc9, 0xf9, 0x23, 0x0a, 0x82, 0x4f,
-	0x60, 0xb9, 0x45, 0x83, 0xc0, 0x61, 0x6e, 0x9b, 0xf5, 0xa9, 0x4b, 0xe8, 0x19, 0xd2, 0x20, 0x35,
-	0x72, 0xba, 0xba, 0xb2, 0xa1, 0x6c, 0x16, 0x08, 0x7f, 0xa2, 0x75, 0xc8, 0x06, 0x21, 0x37, 0xeb,
-	0xaa, 0x50, 0xc6, 0x12, 0xc2, 0x90, 0x0e, 0x2f, 0x3d, 0xaa, 0xa7, 0x36, 0x94, 0xcd, 0xd2, 0x56,
-	0xa9, 0x66, 0x7a, 0x4e, 0x6d, 0xdf, 0xed, 0x52, 0x37, 0x74, 0x7a, 0x97, 0x44, 0xd8, 0xb0, 0x0d,
-	0x2b, 0x47, 0x71, 0xaf, 0xc7, 0x01, 0xf5, 0x09, 0xf5, 0x06, 0x97, 0xdc, 0x91, 0xd7, 0x20, 0x72,
-	0x14, 0x63, 0xc7, 0xa9, 0x95, 0x08, 0x1b, 0x5a, 0x83, 0x4c, 0x32, 0x67, 0x24, 0x20, 0x1d, 0x72,
-	0xf4, 0xc2, 0x73, 0x7c, 0x1a, 0x88, 0xac, 0x29, 0x22, 0x45, 0xfc, 0x51, 0x85, 0x22, 0xa1, 0xb6,
-	0x13, 0x84, 0x3c, 0xce, 0x19, 0xda, 0x86, 0x8c, 0x2f, 0xaa, 0x53, 0xee, 0xaa, 0xae, 0xae, 0x4d,
-	0xc6, 0xd5, 0xc5, 0x1e, 0xf3, 0x87, 0xcf, 0xb1, 0x80, 0x61, 0x12, 0xc1, 0xd1, 0xdf, 0x90, 0x76,
-	0xcd, 0x21, 0x8d, 0xd2, 0xd6, 0x97, 0x27, 0xe3, 0x6a, 0x31, 0x82, 0x71, 0x2d, 0x26, 0xc2, 0x88,
-	0xfe, 0x81, 0xcc, 0xd0, 0x7c, 0xcb, 0x7c, 0x51, 0x44, 0x21, 0x19, 0x4c, 0xa8, 0x31, 0x89, 0xcc,
-	0x68, 0x03, 0x52, 0x01, 0xbd, 0xd0, 0xd3, 0x02, 0x55, 0x9a, 0x8c, 0xab, 0x10, 0xa1, 0x02, 0x7a,
-	0x81, 0x09, 0x37, 0xa1, 0xff, 0x21, 0x67, 0x5a, 0x16, 0x1b, 0xb9, 0xa1, 0x9e, 0x11, 0x28, 0x34,
-	0x19, 0x57, 0x4b, 0x11, 0x2a, 0x36, 0x60, 0x22, 0x21, 0xc8, 0x80, 0x3c, 0x67, 0xce, 0x39, 0xf3,
-	0xbb, 0x7a, 0x56, 0xc0, 0x57, 0x27, 0xe3, 0xea, 0x72, 0x04, 0x97, 0x16, 0x4c, 0xa6, 0x20, 0x1e,
-	0xde, 0x62, 0x83, 0x01, 0xb5, 0xa9, 0x9e, 0x9b, 0x0d, 0x1f, 0x1b, 0x30, 0x91, 0x10, 0xfc, 0x41,
-	0x81, 0xfc, 0x6b, 0x66, 0x3b, 0x6e, 0x3c, 0xc0, 0xc1, 0xfd, 0x06, 0x38, 0x88, 0x07, 0x28, 0xfe,
-	0x93, 0x1d, 0xa9, 0x0f, 0xeb, 0x28, 0x75, 0x8f, 0x8e, 0xb0, 0x0f, 0x2b, 0x8d, 0x53, 0xd3, 0xb5,
-	0xe9, 0x51, 0xac, 0xe1, 0xb5, 0x26, 0x72, 0x2a, 0x0f, 0xcb, 0xa9, 0xde, 0x27, 0xe7, 0x1e, 0x94,
-	0xae, 0x79, 0x2d, 0x18, 0xfc, 0x87, 0xc3, 0xc1, 0x9f, 0x55, 0x59, 0x3e, 0xe7, 0xfb, 0xbe, 0xdb,
-	0x63, 0xbc, 0xfc, 0x7f, 0x21, 0xcb, 0x39, 0x2f, 0xb7, 0xae, 0xbe, 0x32, 0x19, 0x57, 0x97, 0x22,
-	0xf7, 0x48, 0x8f, 0x49, 0x0c, 0x40, 0x2f, 0x20, 0xcf, 0x5f, 0x22, 0xb7, 0x7a, 0x67, 0xee, 0x44,
-	0x2f, 0x12, 0x89, 0xc9, 0xd4, 0xe9, 0xc1, 0x03, 0xbf, 0xe6, 0x7a, 0x7a, 0x3e, 0xd7, 0x13, 0x54,
-	0xcb, 0xfc, 0x96, 0x6a, 0x72, 0x33, 0xb2, 0xbf, 0xde, 0x0c, 0xb9, 0x88, 0xb9, 0x39, 0x8b, 0xf8,
-	0xdf, 0x2b, 0x28, 0x4c, 0x3b, 0x47, 0x45, 0xc8, 0xb5, 0xda, 0xc7, 0xbb, 0xcd, 0x83, 0xb6, 0xb6,
-	0xc0, 0x85, 0x76, 0x73, 0xa7, 0xb1, 0xd7, 0x24, 0x9a, 0x82, 0x96, 0xa0, 0xd0, 0x6a, 0x36, 0x48,
-	0xb3, 0xbd, 0x43, 0xde, 0x68, 0x2a, 0xfa, 0x0b, 0xf2, 0x07, 0x87, 0xed, 0x97, 0x87, 0xc7, 0x07,
-	0xbb, 0xda, 0x0f, 0xf9, 0x53, 0xb6, 0xbe, 0xaa, 0x90, 0x97, 0xc7, 0x0a, 0x6d, 0x43, 0x5e, 0x9e,
-	0x13, 0xa4, 0x89, 0x11, 0x27, 0xae, 0x4b, 0x79, 0x5d, 0x68, 0x6e, 0x5d, 0x36, 0xbc, 0x80, 0x1e,
-	0x43, 0x46, 0xac, 0x10, 0x5a, 0x12, 0x10, 0xb9, 0x4e, 0x73, 0x3c, 0x9e, 0x40, 0xb1, 0x71, 0x4a,
-	0xad, 0x7e, 0x4b, 0x9c, 0x60, 0xb4, 0x26, 0x80, 0x33, 0x57, 0xb9, 0x0c, 0x42, 0xdb, 0x1c, 0x7a,
-	0x21, 0x77, 0xd9, 0x86, 0xd2, 0xcd, 0x25, 0x40, 0x51, 0xf8, 0x5b, 0x9b, 0x31, 0xe3, 0x57, 0x97,
-	0x7e, 0x92, 0x7d, 0x37, 0xfc, 0x12, 0x94, 0x9c, 0x53, 0xee, 0x33, 0x1e, 0x83, 0x5a, 0xfd, 0xeb,
-	0xb9, 0x2f, 0x26, 0x0e, 0xf8, 0x59, 0x79, 0x75, 0xe6, 0x3b, 0x10, 0xb9, 0xd5, 0xb5, 0x4f, 0x57,
-	0x15, 0xe5, 0xcb, 0x55, 0x45, 0xf9, 0x76, 0x55, 0x51, 0xde, 0x7f, 0xaf, 0x2c, 0x74, 0xb2, 0xe2,
-	0x13, 0xf4, 0xf4, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2c, 0x97, 0xf7, 0xa0, 0x11, 0x07, 0x00,
-	0x00,
+	// 695 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xcd, 0x4e, 0xdb, 0x40,
+	0x10, 0x8e, 0xf3, 0x47, 0x98, 0x40, 0x80, 0x2d, 0x42, 0x56, 0x0e, 0x09, 0xda, 0x4a, 0x15, 0x48,
+	0x6d, 0x5c, 0xd1, 0xc2, 0xa1, 0x07, 0x0e, 0x41, 0xad, 0x84, 0xd4, 0x03, 0x5a, 0xda, 0x73, 0xe5,
+	0x38, 0x1b, 0xb3, 0x4d, 0xec, 0x35, 0xb6, 0x53, 0xe0, 0x4d, 0x2a, 0xf5, 0xd2, 0x37, 0xe8, 0x2b,
+	0xf4, 0xd8, 0x63, 0xaf, 0xbd, 0x44, 0x15, 0x7d, 0x83, 0x3c, 0x41, 0xb5, 0xb3, 0xde, 0xc8, 0x01,
+	0x15, 0x42, 0x4f, 0xd9, 0x99, 0xf9, 0xe6, 0x37, 0xdf, 0x8c, 0x81, 0xb8, 0x91, 0x70, 0x22, 0x37,
+	0x49, 0x22, 0x19, 0xa7, 0x9d, 0x28, 0x96, 0xa9, 0x24, 0x25, 0x37, 0x12, 0xcd, 0x67, 0xbe, 0x48,
+	0xcf, 0xc6, 0xbd, 0x8e, 0x27, 0x03, 0xc7, 0x97, 0xbe, 0x74, 0xd0, 0xd6, 0x1b, 0x0f, 0x50, 0x42,
+	0x01, 0x5f, 0xda, 0xa7, 0x79, 0x34, 0x0c, 0xe5, 0xc5, 0x88, 0xf7, 0x7d, 0x1e, 0xb8, 0xd1, 0x87,
+	0x9e, 0xeb, 0x0d, 0x79, 0xd8, 0x77, 0x02, 0xe1, 0xc5, 0x32, 0xe1, 0xf1, 0x27, 0xe1, 0xf1, 0xc4,
+	0xc9, 0x43, 0x9c, 0x71, 0xc2, 0x63, 0x47, 0x25, 0x57, 0x0f, 0x1d, 0x84, 0xee, 0xc2, 0xda, 0x29,
+	0x4f, 0x12, 0x21, 0xc3, 0x77, 0x72, 0xc8, 0x43, 0xc6, 0xcf, 0xc9, 0x16, 0x54, 0x3d, 0x29, 0x87,
+	0x82, 0xdb, 0xd6, 0xb6, 0xb5, 0xb3, 0xcc, 0x32, 0x89, 0xfa, 0xb0, 0x71, 0x92, 0x55, 0xfd, 0x3e,
+	0xe1, 0x31, 0xe3, 0xd1, 0xe8, 0x8a, 0x50, 0x28, 0xab, 0x68, 0x08, 0xad, 0xef, 0x35, 0x3a, 0x6e,
+	0x24, 0x3a, 0x33, 0x2b, 0x43, 0x1b, 0xd9, 0x84, 0x4a, 0xaa, 0x82, 0xdb, 0x45, 0x8c, 0xa7, 0x05,
+	0x62, 0xc3, 0x12, 0xbf, 0x8c, 0x44, 0xcc, 0x13, 0xbb, 0xb4, 0x6d, 0xed, 0x94, 0x98, 0x11, 0xe9,
+	0xf7, 0x22, 0xd4, 0x19, 0xf7, 0x45, 0x92, 0xaa, 0x38, 0xe7, 0x64, 0x1f, 0x2a, 0x71, 0x7a, 0x15,
+	0xe9, 0x7a, 0x1a, 0x7b, 0xab, 0x98, 0xe4, 0xb8, 0xcf, 0xc3, 0x54, 0x0c, 0xae, 0xba, 0xeb, 0xd3,
+	0x49, 0x7b, 0x65, 0x20, 0xe3, 0xe0, 0x15, 0x45, 0x14, 0x65, 0x1a, 0x4d, 0x1e, 0x43, 0x39, 0x74,
+	0x03, 0xae, 0xb3, 0x76, 0xd7, 0xa6, 0x93, 0x76, 0x5d, 0xc3, 0x94, 0x96, 0x32, 0x34, 0x92, 0x27,
+	0x50, 0x09, 0xdc, 0x8f, 0x32, 0xc6, 0x1a, 0x96, 0xf3, 0xc1, 0x50, 0x4d, 0x99, 0x36, 0x93, 0x6d,
+	0x28, 0x25, 0xfc, 0xd2, 0x2e, 0x23, 0xaa, 0x31, 0x9d, 0xb4, 0x41, 0xa3, 0x12, 0x7e, 0x49, 0x99,
+	0x32, 0x91, 0xa7, 0xb0, 0xe4, 0x7a, 0x9e, 0x1c, 0x87, 0xa9, 0x5d, 0x41, 0x14, 0x99, 0x4e, 0xda,
+	0x0d, 0x8d, 0xca, 0x0c, 0x94, 0x19, 0x08, 0x71, 0xa0, 0xa6, 0x28, 0x70, 0x21, 0xe3, 0xbe, 0x5d,
+	0x45, 0xf8, 0xa3, 0xe9, 0xa4, 0xbd, 0xa6, 0xe1, 0xc6, 0x42, 0xd9, 0x0c, 0xa4, 0xc2, 0x7b, 0x72,
+	0x34, 0xe2, 0x3e, 0xb7, 0x97, 0x6e, 0x86, 0xcf, 0x0c, 0x94, 0x19, 0x08, 0xfd, 0x6a, 0x41, 0xed,
+	0xad, 0xf4, 0x45, 0x98, 0xcd, 0x6f, 0xb4, 0xd0, 0xfc, 0x46, 0xd9, 0xfc, 0xf0, 0x37, 0xdf, 0x50,
+	0xf1, 0x61, 0x0d, 0x95, 0x16, 0x68, 0x88, 0x7e, 0xb3, 0x60, 0xe3, 0xe8, 0xcc, 0x0d, 0x7d, 0x7e,
+	0x92, 0xa9, 0x54, 0xad, 0xbb, 0x50, 0x55, 0x9c, 0x11, 0x7d, 0x4d, 0xbe, 0xee, 0xc6, 0x74, 0xd2,
+	0x5e, 0xd5, 0x41, 0xb4, 0x9e, 0xb2, 0x0c, 0x30, 0x97, 0xb1, 0xb8, 0xc8, 0x08, 0x0f, 0xa1, 0x26,
+	0xb2, 0xae, 0xb1, 0xc4, 0x5b, 0xa3, 0xc8, 0xf9, 0x1b, 0x20, 0x65, 0x33, 0x1f, 0xfa, 0x06, 0x56,
+	0x0d, 0x54, 0x93, 0xff, 0xff, 0x06, 0x4b, 0xbf, 0x14, 0x4d, 0xe7, 0x6a, 0x53, 0x8e, 0xc3, 0x81,
+	0x7c, 0x60, 0xe7, 0x87, 0x50, 0x53, 0x2f, 0x4c, 0x5d, 0xbc, 0xa7, 0x11, 0x03, 0xa4, 0x6c, 0xe6,
+	0xb3, 0x30, 0xe9, 0x73, 0x9c, 0x2b, 0xdf, 0xcb, 0x39, 0xb3, 0x22, 0x95, 0x7f, 0xaf, 0x88, 0xd9,
+	0xc8, 0xea, 0x1d, 0x1b, 0xb9, 0xf7, 0xab, 0x08, 0x35, 0x73, 0x67, 0xc8, 0x01, 0xd4, 0xcc, 0x25,
+	0x20, 0xeb, 0xd8, 0x63, 0xee, 0x30, 0x34, 0xb7, 0x50, 0x73, 0xeb, 0x28, 0xd1, 0x02, 0x79, 0x0e,
+	0x15, 0xa4, 0x3f, 0xd1, 0x83, 0x31, 0xab, 0x70, 0x87, 0xc7, 0x3e, 0xd4, 0x8f, 0xce, 0xb8, 0x37,
+	0x3c, 0xc5, 0x3b, 0x48, 0x36, 0x11, 0x78, 0xe3, 0x34, 0x36, 0x6f, 0xdc, 0x37, 0x5a, 0x20, 0x07,
+	0xd0, 0x98, 0x27, 0x31, 0xd1, 0x29, 0x6e, 0x31, 0xbb, 0x09, 0xa8, 0x7f, 0x1d, 0x44, 0xa9, 0xf2,
+	0x3b, 0x34, 0x7e, 0x86, 0x02, 0x73, 0x7e, 0x39, 0x5e, 0x34, 0xc9, 0x2c, 0xa7, 0xd6, 0xe8, 0xbc,
+	0x2f, 0x95, 0x3f, 0xf7, 0x86, 0xc7, 0x61, 0xf6, 0x9f, 0x93, 0x95, 0x5c, 0x6d, 0xc6, 0x6b, 0x8e,
+	0xae, 0xb4, 0xd0, 0x5d, 0xff, 0x71, 0xdd, 0xb2, 0x7e, 0x5e, 0xb7, 0xac, 0xdf, 0xd7, 0x2d, 0xeb,
+	0xf3, 0x9f, 0x56, 0xa1, 0x57, 0xc5, 0xcf, 0xc0, 0x8b, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xec,
+	0x2c, 0xc5, 0xa8, 0x95, 0x06, 0x00, 0x00,
 }

@@ -7,7 +7,7 @@ consul agent -server  -bootstrap-expect 1 -data-dir /tmp/consul -node=172.17.9.1
 公47.95.145.171
 
 所有api要加统一前缀 /api
-所有登录后的操作都需要在header里添加auth-uid为用户id
+所有登录后的操作都需要在header里添加auth-session为用户cookie
 
 ----
 
@@ -59,6 +59,7 @@ param:
 
    - account string 账号
    - password string 密码
+   - ltype 身份枚举 0学生 1老师 2教秘
   
 response:
 
@@ -92,7 +93,6 @@ method:put
 param:
 
    - name string 修改后的用户名
-   - password string 修改后的密码
    - sex string 修改后的性别
    - college string 修改后的学院
    - major string 修改后的专业
@@ -109,12 +109,59 @@ response:
                 "major": "computer_change",
                 "sex": "man_change",
                 "account": "teacher1",
-                "password": "123456",
                 "number": "1",
                 "college": "computer_change"
             }
         }
     }`
+
+----
+
+api:/user/changepassword
+
+desc:修改自己的信息
+
+method:put
+
+param:
+
+   - password string 修改后的密码
+
+response:
+
+  `{
+    "msg": "",
+    "code": 0,
+    "data": {}
+    }`
+
+----
+
+api:/user/query/info
+
+desc:查看自己的信息
+
+method:get
+
+param:
+
+response:
+
+  `{
+    "msg": "",
+    "code": 0,
+    "data": {
+            "userid": "5fb67c5e36d02a6d18e309c9",
+            "username": "teacher1_change",
+            "major": "computer_change",
+            "sex": "man_change",
+            "account": "teacher1",
+            "number": "1",
+            "college": "computer_change",
+            "identify": 1
+        }
+    }`
+
 
 ----
 
@@ -210,7 +257,7 @@ response:
             ]
         }
     }`
-
+/class/query/formlist
 --------
 
 api:/class/query/classinfo/:classid

@@ -131,3 +131,15 @@ func (s *ClassService) SearchClassesInfo(ctx context.Context, req *api.SearchCla
 	rsp.Totalpage = int64(allCount / PageCount)
 	return nil
 }
+
+//TODO 补齐去重查询
+func (s *ClassService) QueryFormList(ctx context.Context, req *uapi.Empty, rsp *api.QueryFormListReply) error {
+	logrus.Infof("QueryFormList req is %v ", req)
+	colleges := []string{"数学科学学院", "中文系", "信息工程学院", "历史学院"}
+	courses := []string{"高数", "线代", "语文", "英语", "c语言"}
+	subjects := []string{"数学", "历史", "语文", "计算机"}
+	rsp.Colleges = colleges
+	rsp.Courses = courses
+	rsp.Subjects = subjects
+	return nil
+}

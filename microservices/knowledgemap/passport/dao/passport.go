@@ -10,13 +10,23 @@ import (
 	"knowledgemap_backend/microservices/knowledgemap/passport/utils"
 	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
 	"knowledgemap_backend/microservices/knowledgemap/user/model"
+	"strconv"
+	"strings"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
 )
 
-func GetLoginTokenRedisKey(uid string) string {
-	return fmt.Sprintf("passport:logintoken:%v", uid)
+// func GetLoginTokenRedisKey(uid string) string {
+// 	return fmt.Sprintf("passport:logintoken:%v", uid)
+// }
+
+// func GetLoginTokenRedisKey(uid string) string {
+// 	return fmt.Sprintf("passport:logintoken:%v", uid)
+// }
+
+func GetLoginTokenRedisKey(uid string, identify int) string {
+	return fmt.Sprintf("%v_%v", uid, identify)
 }
 
 func (d *Dao) CheckIDCardInStudent(ctx context.Context, idCard string) error {
@@ -132,6 +142,7 @@ func createDefaultStudent(req *api.RegisterReq) *model.Student {
 	// user.Origin = req.Origin
 	// user.Class = req.Class
 	user.College = req.College
+	user.Sex = req.Sex
 	//user.AdmissionTime = req.Admissontime
 	user.CreateTime = time.Now().Unix()
 	return user
@@ -161,6 +172,7 @@ func createDefaultSecretary(req *api.RegisterReq) *model.Secretary {
 	user.Account = req.Account
 	user.Password = req.Password
 	user.College = req.College
+	user.Sex = req.Sex
 	user.CreateTime = time.Now().Unix()
 	return user
 }
@@ -206,25 +218,67 @@ func (d *Dao) FillUserByIDCardInTeacher(ctx context.Context, idCard string, rsp 
 	return
 }
 
-func (d *Dao) GenerateLoginToken(ctx context.Context, rsp **api.PassportUserReply) error {
+// func (d *Dao) GenerateLoginToken(ctx context.Context, rsp **api.PassportUserReply) error {
+// 	userid := (*rsp).User.Userid
+// 	token := utils.GenSession(userid)
+// 	(*rsp).Token = token
+// 	expires := 24 * time.Hour
+// 	(*rsp).Expires = time.Now().Add(expires).Unix()
+
+// 	set := d.redis.Set(GetLoginTokenRedisKey(userid), token, expires)
+// 	return set.Err()
+
+// }
+
+func (d *Dao) GenerateLoginToken(ctx context.Context, identify int, rsp **api.PassportUserReply) error {
 	userid := (*rsp).User.Userid
 	token := utils.GenSession(userid)
 	(*rsp).Token = token
 	expires := 24 * time.Hour
 	(*rsp).Expires = time.Now().Add(expires).Unix()
 
-	set := d.redis.Set(GetLoginTokenRedisKey(userid), token, expires)
+	set := d.redis.Set(token, GetLoginTokenRedisKey(userid, identify), expires)
 	return set.Err()
-
 }
 
-func (d *Dao) CheckSessionToken(ctx context.Context, uid, token string) error {
-	res := d.redis.Get(GetLoginTokenRedisKey(uid))
-	if savedToken, err := res.Result(); err != nil {
+// func (d *Dao) CheckSessionToken(ctx context.Context, uid, token string) error {
+// 	res := d.redis.Get(GetLoginTokenRedisKey(uid))
+// 	if savedToken, err := res.Result(); err != nil {
+// 		return err
+// 	} else {
+// 		if savedToken != token {
+// 			fmt.Println("token 不正确", savedToken, token)
+// 			return pmodel.ErrorSessionTokenNotValidate
+// 		}
+// 	}
+// 	return nil
+// }
+
+func (d *Dao) CheckSessionToken(ctx context.Context, token string, user *uapi.UserReply) error {
+	res := d.redis.Get(token)
+	if saved, err := res.Result(); err != nil {
 		return err
 	} else {
-		if savedToken != token {
-			fmt.Println("token 不正确", savedToken, token)
+		data := strings.Split(saved, "_")
+		uid := data[0]
+		identify, _ := strconv.Atoi(data[1])
+
+		// if savedToken != token {
+		// 	fmt.Println("token 不正确", savedToken, token)
+		// 	return pmodel.ErrorSessionTokenNotValidate
+		// }
+		switch uapi.Identify(identify) {
+		case uapi.Identify_STUDENT:
+			d.FillStudentById(ctx, bson.ObjectIdHex(uid), &user)
+			user.Usertype = int64(uapi.Identify_STUDENT)
+		case uapi.Identify_TEACHER:
+			d.FillTeacherById(ctx, bson.ObjectIdHex(uid), &user)
+			user.Usertype = int64(uapi.Identify_TEACHER)
+		case uapi.Identify_SECRETARY:
+			d.FillSecretaryById(ctx, bson.ObjectIdHex(uid), &user)
+			user.Usertype = int64(uapi.Identify_SECRETARY)
+		}
+		if user.Userid == "" {
 			return pmodel.ErrorSessionTokenNotValidate
 		}
 	}
@@ -256,6 +310,7 @@ func (d *Dao) FillTeacherByAccount(ctx context.Context, account string, rsp **ua
 	}
 	return
 }
+
 func (d *Dao) FillSecretaryByAccount(ctx context.Context, account string, rsp **uapi.UserReply) (err error) {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
@@ -307,13 +362,24 @@ func (d *Dao) FillSecretaryById(ctx context.Context, id bson.ObjectId, rsp **uap
 	return
 }
 
-func (d *Dao) ChangePassword(ctx context.Context, account, password string, rsp **uapi.Empty) (err error) {
+func (d *Dao) ChangePassword(ctx context.Context, userid, password string, identify uapi.Identify, rsp **uapi.Empty) (err error) {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
 	if *rsp == nil {
 		*rsp = &uapi.Empty{}
 	}
-	err = db.C(model.STUDENT_COLLECTION_NAME).Update(bson.M{"account": account}, bson.M{
+	dbName := ""
+	switch uapi.Identify(identify) {
+	case uapi.Identify_STUDENT:
+		dbName = model.STUDENT_COLLECTION_NAME
+	case uapi.Identify_TEACHER:
+		dbName = model.TEACHER_COLLECTION_NAME
+	case uapi.Identify_SECRETARY:
+		dbName = model.SECRETARY_COLLECTION_NAME
+	default:
+		return errors.New("errors.wrong_type")
+	}
+	err = db.C(dbName).UpdateId(bson.ObjectIdHex(userid), bson.M{
 		"$set": bson.M{
 			"password": password,
 		},
@@ -326,22 +392,22 @@ func (d *Dao) ChangeUserInfo(ctx context.Context, req *api.ChangeUserInfoReq) (e
 	defer db.Session.Close()
 	dbName := ""
 	switch req.Usertype {
-	case api.Indentify_STUDENT:
+	case uapi.Identify_STUDENT:
 		dbName = model.STUDENT_COLLECTION_NAME
-	case api.Indentify_TEACHER:
+	case uapi.Identify_TEACHER:
 		dbName = model.TEACHER_COLLECTION_NAME
-	case api.Indentify_SECRETARY:
+	case uapi.Identify_SECRETARY:
 		dbName = model.SECRETARY_COLLECTION_NAME
 	default:
 		return errors.New("errors.wrong_type")
 	}
 	err = db.C(dbName).UpdateId(bson.ObjectIdHex(req.Userid), bson.M{
 		"$set": bson.M{
-			"password": req.Password,
-			"major":    req.Major,
-			"college":  req.College,
-			"sex":      req.Sex,
-			"name":     req.Name,
+			// "password": req.Password,
+			"major":   req.Major,
+			"college": req.College,
+			"sex":     req.Sex,
+			"name":    req.Name,
 		},
 	})
 	return
