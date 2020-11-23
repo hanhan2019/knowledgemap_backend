@@ -40,7 +40,7 @@ message UserClassReply {
 }
 
 message CreateClassReq{
-    string  name = 1 [(gogoproto.moretags) = "form:\"classname\""];
+    string  name = 1 [(gogoproto.moretags) = "form:\"name\""];
     string  subject = 2 [(gogoproto.moretags) = "form:\"subject\""];
     string  course = 3 [(gogoproto.moretags) = "form:\"course\""];
     string  college = 4 [(gogoproto.moretags) = "form:\"college\""];

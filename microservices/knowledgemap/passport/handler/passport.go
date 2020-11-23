@@ -20,28 +20,28 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 		fmt.Printf("CheckAccount error %v ", err)
 		return errors.New("CheckAccount error")
 	}
-	switch req.Rtype {
+	switch req.Usertype {
 	case uapi.Identify_STUDENT:
 		gdao.NewStudent(ctx, req)
 		if err := gdao.FillStudentByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
-		rsp.User.Usertype = int64(req.Rtype)
-		return gdao.GenerateLoginToken(ctx, int(req.Rtype), &rsp)
+		rsp.User.Usertype = int64(req.Usertype)
+		return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 	case uapi.Identify_TEACHER:
 		gdao.NewTeacher(ctx, req)
 		if err := gdao.FillTeacherByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
-		rsp.User.Usertype = int64(req.Rtype)
-		return gdao.GenerateLoginToken(ctx, int(req.Rtype), &rsp)
+		rsp.User.Usertype = int64(req.Usertype)
+		return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 	case uapi.Identify_SECRETARY:
 		gdao.NewTeacher(ctx, req)
 		if err := gdao.FillTeacherByAccount(ctx, req.Account, &rsp.User); err != nil {
 			return err
 		}
-		rsp.User.Usertype = int64(req.Rtype)
-		return gdao.GenerateLoginToken(ctx, int(req.Rtype), &rsp)
+		rsp.User.Usertype = int64(req.Usertype)
+		return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 	default:
 		fmt.Println("账号类型错误")
 		return errors.New("rtype error")
@@ -73,18 +73,18 @@ func CheckAccount(ctx context.Context, account string) error {
 func (s *PassportService) Login(ctx context.Context, req *api.LoginReq, rsp *api.PassportUserReply) error {
 	logrus.Infof("Login req is %v ", req)
 	//loginType := FindUserIndentifyByAccount(ctx, req.Account, rsp)
-	logrus.Infof("loginType is %v ", req.Ltype)
+	logrus.Infof("loginType is %v ", req.Usertype)
 	logrus.Infof("login rsp is %v ", rsp)
-	if err := FindUserByLtypeAndAccount(ctx, req.Account, req.Ltype, rsp); err != nil {
+	if err := FindUserByLtypeAndAccount(ctx, req.Account, req.Usertype, rsp); err != nil {
 		return err
 	}
-	rsp.User.Usertype = int64(req.Ltype)
+	rsp.User.Usertype = int64(req.Usertype)
 	if !checkPassWord(req.Password, rsp.User.Password) {
 		logrus.Infof("password err!")
 		return errors.New("password weong")
 	}
 	rsp.User.Password = ""
-	return gdao.GenerateLoginToken(ctx, int(req.Ltype), &rsp)
+	return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 }
 
 func checkPassWord(in, orign string) bool {

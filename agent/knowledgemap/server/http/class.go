@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"knowledgemap_backend/agent/knowledgemap/server/http/comm"
 	"knowledgemap_backend/microservices/common/middlewares"
 	capi "knowledgemap_backend/microservices/knowledgemap/class/api"
@@ -24,7 +25,7 @@ func classCreate(c echo.Context) error {
 		否则，是教秘创建
 	*/
 	if req.Teachername == "" {
-		req.Teacherid = c.Request().Header.Get("auth-uid")
+		req.Teacherid = c.Get("userId").(string)
 		req.Teachername = c.Get("userName").(string)
 	}
 	if res, err := classSrv.CreateClass(context.TODO(), req); err != nil {
@@ -42,7 +43,7 @@ func joinClass(c echo.Context) error {
 		clog.Errorf("参数错误:%v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
-	req.Userid = c.Request().Header.Get("auth-uid")
+	req.Userid = c.Get("userId").(string)
 	req.Username = c.Get("userName").(string)
 	if res, err := classSrv.JoinClass(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
@@ -59,7 +60,7 @@ func queryMyClasses(c echo.Context) error {
 		clog.Errorf("参数错误:%v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
-	req.Userid = c.Request().Header.Get("auth-uid")
+	req.Userid = c.Get("userId").(string)
 	if res, err := classSrv.UserClassInfo(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -95,11 +96,13 @@ func queryClassInfo(c echo.Context) error {
 }
 
 func searchClasses(c echo.Context) error {
+	fmt.Println("进来了")
 	clog := middlewares.Log(c)
 	req := new(capi.SearchClassesInfoReq)
 	req.Course = c.Param("course")
 	req.College = c.Param("college")
 	req.Subject = c.Param("subject")
+	req.Teachername = c.Param("teacher")
 	req.Page, _ = strconv.ParseInt(c.Param("page"), 10, 64)
 
 	if res, err := classSrv.SearchClassesInfo(context.TODO(), req); err != nil {

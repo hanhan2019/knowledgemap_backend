@@ -56,7 +56,7 @@ func userLogin(c echo.Context) error {
 		clog.Errorf("参数错误:%v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
-	fmt.Println(req.Ltype, req.Password, req.Account)
+	fmt.Println(req.Usertype, req.Password, req.Account)
 	if res, err := passportSrv.Login(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))

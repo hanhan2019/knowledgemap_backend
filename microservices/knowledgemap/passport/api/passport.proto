@@ -34,8 +34,8 @@ message PassportUserReply {
 }
 
 message RegisterReq {
-    Identify rtype = 1 [(gogoproto.moretags) = "form:\"rtype\""];
-    string  name = 2 [(gogoproto.moretags) = "form:\"name\""];
+    Identify usertype = 1 [(gogoproto.moretags) = "form:\"usertype\""];
+    string  username = 2 [(gogoproto.moretags) = "form:\"username\""];
     string  major = 3 [(gogoproto.moretags) = "form:\"major\""];
     string  sex = 4 [(gogoproto.moretags) = "form:\"sex\""];
     // string  origin = 5 [(gogoproto.moretags) = "form:\"origin\""];
@@ -48,7 +48,7 @@ message RegisterReq {
 }
 
 message LoginReq{
-    Identify ltype = 1 [(gogoproto.moretags) = "form:\"ltype\""];
+    Identify usertype = 1 [(gogoproto.moretags) = "form:\"usertype\""];
     string  account = 2 [(gogoproto.moretags) = "form:\"account\""];
     string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
 }
@@ -71,5 +71,5 @@ message ChangeUserInfoReq{
     string  major = 3 [(gogoproto.moretags) = "form:\"major\""];
     string  college = 4 [(gogoproto.moretags) = "form:\"college\""];
     string  sex = 5 [(gogoproto.moretags) = "form:\"sex\""];
-    string  name = 6 [(gogoproto.moretags) = "form:\"name\""];
+    string  username = 6 [(gogoproto.moretags) = "form:\"username\""];
 }

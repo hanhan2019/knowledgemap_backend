@@ -115,14 +115,13 @@ func InitRouter(e *echo.Echo) {
 		api.PUT("/user/changeinfo", userChangeInfo, authMid)
 		api.GET("/user/query/info", userInfo, authMid)
 	}
-	api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
 	{
 		api.POST("/class/create", classCreate, authMid, mustTeacherMid)
 		api.PUT("/class/join", joinClass, authMid, mustStudentMid)
 		api.GET("/class/query/myclasses", queryMyClasses, authMid)
 		api.GET("/class/query/alluserinclass/:classid", queryAllUserInClass, authMid)
-		api.GET("/class/query/classinfo/:classid", queryAllUserInClass, authMid)
-		api.GET("/class/query/classes/:college/:subject/:course/:page", searchClasses, authMid)
+		api.GET("/class/query/classinfo/:classid", queryClassInfo, authMid)
+		api.GET("/class/query/classes/:college/:subject/:course/:teacher/:page", searchClasses)
 		api.GET("/class/query/formlist", queryFormList)
 	}
 	// api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
@@ -135,6 +134,7 @@ func InitRouter(e *echo.Echo) {
 	{
 		api.POST("/question/create", createQuestion, authMid, mustTeacherMid)
 		api.GET("/question/query/:kind/:course/:subject/:knowledge", queryQuestion, authMid)
+		api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
 	}
 	{
 		api.POST("/homework/create", createHomeWork, authMid, mustTeacherMid)

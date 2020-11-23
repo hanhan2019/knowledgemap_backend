@@ -134,7 +134,7 @@ func (d *Dao) newSecretary(ctx context.Context, secretary *model.Secretary) erro
 func createDefaultStudent(req *api.RegisterReq) *model.Student {
 	user := new(model.Student)
 	user.ID = bson.NewObjectId()
-	user.Name = req.Name
+	user.Name = req.Username
 	user.Major = req.Major
 	// user.IDCard = req.Idcard
 	user.Account = req.Account
@@ -151,7 +151,7 @@ func createDefaultStudent(req *api.RegisterReq) *model.Student {
 func createDefaultTeacher(req *api.RegisterReq) *model.Teacher {
 	user := new(model.Teacher)
 	user.ID = bson.NewObjectId()
-	user.Name = req.Name
+	user.Name = req.Username
 	user.Major = req.Major
 	//user.IDCard = req.Idcard
 	user.Account = req.Account
@@ -166,7 +166,7 @@ func createDefaultTeacher(req *api.RegisterReq) *model.Teacher {
 func createDefaultSecretary(req *api.RegisterReq) *model.Secretary {
 	user := new(model.Secretary)
 	user.ID = bson.NewObjectId()
-	user.Name = req.Name
+	user.Name = req.Username
 	user.Major = req.Major
 	//user.IDCard = req.Idcard
 	user.Account = req.Account
@@ -407,7 +407,7 @@ func (d *Dao) ChangeUserInfo(ctx context.Context, req *api.ChangeUserInfoReq) (e
 			"major":   req.Major,
 			"college": req.College,
 			"sex":     req.Sex,
-			"name":    req.Name,
+			"name":    req.Username,
 		},
 	})
 	return

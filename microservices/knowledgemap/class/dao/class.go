@@ -76,15 +76,16 @@ func (d *Dao) FillClassByConditions(ctx context.Context, req *api.SearchClassesI
 	}
 	if req.Subject != "" {
 		cont["subject"] = req.Subject
-
 	}
 	if req.Course != "" {
-		cont["courese"] = req.Course
+		cont["course"] = req.Course
 	}
 	if req.Subject != "" {
 		cont["teachername"] = req.Teachername
-
 	}
+	// fmt.Println(cont)
+	// fmt.Println(req.Subject = )
+
 	err = db.C(model.CLASS_COLLECTION_NAME).Find(cont).Sort("-_id").Limit(int(pageCount)).Skip(int(req.Page * pageCount)).All(classes)
 	allCount, err = db.C(model.CLASS_COLLECTION_NAME).Find(cont).Count()
 	return

@@ -315,23 +315,33 @@ response:
 
 --------
 
-api:/class/invitation/create
+api:/class/query/classes/:college/:subject/:course/:teacher/:page
 
-desc:创建班级邀请码
+desc:根据条件检索班级
 
-method:put
+method:get
 
 param:
 
-    - classid  班级id
-    - invitationcode 邀请码
-    - userid 用户id
+    - college  学院
+    - subject 学科
+    - course 课程
+    - teacher 教师
+    - page 当前页数
   
 response:
 
     `{
-    "msg":"",      失败的时候代表失败原因
-    "code":0       0代表成功，1代表失败
+        "msg":"",
+        "code":0,
+        "data":
+            {
+                "classes":
+                    [{"classid":"5fbbc8af36d02ac44f70eb67","name":"高数A","subject":"数学","course":"高数","college":"信息工程学院","teachername":"teacher7","introduction":"这是高数A"},
+                    {"classid":"5fbbc88736d02ac44f70eb65","subject":"数学","course":"高数","college":"信息工程学院","teachername":"teacher7","introduction":"这是高数A"},
+                    {"classid":"5fbbc80036d02ac117cb324f","subject":"数学","course":"高数","college":"信息工程学院","teachername":"teacher7","introduction":"这是高数A"}],
+                    "currentpage":1
+            }
     }`
 
 --------
