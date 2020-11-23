@@ -257,7 +257,7 @@ response:
             ]
         }
     }`
-/class/query/formlist
+
 --------
 
 api:/class/query/classinfo/:classid
