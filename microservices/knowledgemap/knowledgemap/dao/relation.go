@@ -16,3 +16,10 @@ func (d *Dao) QueryRelationByNodeID(ctx context.Context, nodeId bson.ObjectId, r
 	}
 	return nil
 }
+
+func (d *Dao) NewRelation(ctx context.Context, relation *model.Relation) (*model.Relation, error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.RELATION_NAME)
+	return relation, col.Insert(relation)
+}
