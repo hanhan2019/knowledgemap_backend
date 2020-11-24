@@ -346,52 +346,41 @@ response:
 
 --------
 
-api:/class/invitation/drop
+api:/class/query/formlist
 
-desc:删除班级邀请码
+desc:
 
-method:put
+method:get
 
 param:
-
-    - classid  班级id
-    - invitationcode 邀请码
-    - userid 用户id
   
 response:
 
     `{
-    "msg":"",      失败的时候代表失败原因
-    "code":0       0代表成功，1代表失败
-    }`
-
---------
-
-api:/class/invitation/query/:invitationcode
-
-desc:通过邀请码获得班级信息
-
-method:post
-
-param:
-
-    - classid  班级id
-    - invitationcode 邀请码
-    - userid 用户id
-  
-response:
-
-    `{
-        "msg": "",
-        "code": 0,
-        "data": {
-            "classid": "5e97e77936d02a9dbb5ce966",
-            "name": "高等数学A",
-            "major": "math",
-            "college": "computer",
-            "teachername": "李永乐"
-        }
-    }`
+    "msg": "",
+    "code": 0,
+    "data": {
+        "colleges": [
+            "数学科学学院",
+            "中文系",
+            "信息工程学院",
+            "历史学院"
+        ],
+        "subjects": [
+            "数学",
+            "历史",
+            "语文",
+            "计算机"
+        ],
+        "courses": [
+            "高数",
+            "线代",
+            "语文",
+            "英语",
+            "c语言"
+        ]
+    }
+}`
 
 --------
 

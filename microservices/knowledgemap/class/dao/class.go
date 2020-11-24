@@ -80,7 +80,7 @@ func (d *Dao) FillClassByConditions(ctx context.Context, req *api.SearchClassesI
 	if req.Course != "" {
 		cont["course"] = req.Course
 	}
-	if req.Subject != "" {
+	if req.Teachername != "" {
 		cont["teachername"] = req.Teachername
 	}
 	// fmt.Println(cont)

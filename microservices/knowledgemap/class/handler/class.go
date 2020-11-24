@@ -127,7 +127,7 @@ func (s *ClassService) SearchClassesInfo(ctx context.Context, req *api.SearchCla
 		convertClass(v, info)
 		rsp.Classes = append(rsp.Classes, info)
 	}
-	rsp.Currentpage = req.Page + 1
+	rsp.Currentpage = req.Page
 	rsp.Totalpage = int64(allCount / PageCount)
 	return nil
 }
