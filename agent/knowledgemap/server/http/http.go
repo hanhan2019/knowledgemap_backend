@@ -108,6 +108,7 @@ func InitRouter(e *echo.Echo) {
 	mustTeacherMid := CreateMustPositionMid(passportSrv, POSITION_TEACHER)
 	mustStudentMid := CreateMustPositionMid(passportSrv, POSITION_STUDENT)
 	api.GET("/hi", hello)
+	api.GET("/test/protobuf/transport", transport)
 	{
 		api.POST("/user/register", userRegister)
 		api.PUT("/user/login", userLogin)
@@ -121,18 +122,27 @@ func InitRouter(e *echo.Echo) {
 		api.GET("/class/query/myclasses", queryMyClasses, authMid)
 		api.GET("/class/query/alluserinclass/:classid", queryAllUserInClass, authMid)
 		api.GET("/class/query/classinfo/:classid", queryClassInfo, authMid)
-		api.GET("/class/query/classes/:college/:subject/:course/:teacher/:page", searchClasses)
+		api.GET("/class/query/classes/:college/:subject/:course/:teacher/:page", searchClasses, authMid)
 		api.GET("/class/query/formlist", queryFormList)
 	}
 	// api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
 	// api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
 	// api.GET("/class/invitation/query/:invitationcode", queryInvitation, authMid)
 	{
-		api.POST("/knowledge/create", createKnowledge, authMid, mustTeacherMid)
+		api.POST("/practice/create", psCreate, authMid)
+		api.GET("/practice/query/psinfo/:psid", queryPSInfo, authMid)
+		api.GET("/practice/query/psdetailinfo/:psid/:page", queryPSDetailInfo, authMid)
+		api.GET("/practice/query/mypsinfo/:page", queryMyPSInfo, authMid)
+		api.POST("/practice/addquestion", addQuestionInPS, authMid)
+		api.POST("/practice/deletequestion", deleteQuestionInPS, authMid)
+
+	}
+	{
+		api.POST("/knowledge/create", createKnowledge, authMid)
 		api.GET("/knowledge/query/:knowledgeId", queryKnowledge, authMid)
 	}
 	{
-		api.POST("/question/create", createQuestion, authMid, mustTeacherMid)
+		api.POST("/question/create", createQuestion, authMid)
 		api.GET("/question/query/:kind/:course/:subject/:knowledge", queryQuestion, authMid)
 		api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
 	}
@@ -142,7 +152,6 @@ func InitRouter(e *echo.Echo) {
 		api.PUT("/homework/do", doHomeWork, authMid)
 		api.GET("/homework/answerrecord/query/:homeworkid", queryAnswerRecord, authMid, mustTeacherMid)
 		api.GET("/homework/query/info/:classid", queryHomeWorkInClass, authMid)
-
 	}
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

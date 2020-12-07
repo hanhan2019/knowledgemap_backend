@@ -2,7 +2,6 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"knowledgemap_backend/agent/knowledgemap/server/http/comm"
 	"knowledgemap_backend/microservices/common/middlewares"
 	capi "knowledgemap_backend/microservices/knowledgemap/class/api"
@@ -96,13 +95,13 @@ func queryClassInfo(c echo.Context) error {
 }
 
 func searchClasses(c echo.Context) error {
-	fmt.Println("进来了")
 	clog := middlewares.Log(c)
 	req := new(capi.SearchClassesInfoReq)
 	req.Course = c.Param("course")
 	req.College = c.Param("college")
 	req.Subject = c.Param("subject")
 	req.Teachername = c.Param("teacher")
+	req.Userid = c.Get("userId").(string)
 	req.Page, _ = strconv.ParseInt(c.Param("page"), 10, 64)
 
 	if res, err := classSrv.SearchClassesInfo(context.TODO(), req); err != nil {

@@ -15,6 +15,11 @@ const (
 	Essay_Question  Qusetion_Kind = 2
 )
 
+type KnowledgeInfo struct {
+	ID   bson.ObjectId `json:"_id" bson:"_id"`
+	Name string        `json:"name" bson:"name"`
+}
+
 type Qusetion struct {
 	ID         bson.ObjectId `json:"_id" bson:"_id"`
 	Kind       Qusetion_Kind `json:"kind" bson:"kind"`

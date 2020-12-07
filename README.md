@@ -223,7 +223,6 @@ response:
                     "createTime": 1587013497,
                     "number": "10",
                      "introduction": "数学课，必学的"
-
                 }
             ]
         }
@@ -734,3 +733,259 @@ response:
         ]
     }
 }`
+
+
+
+--------
+
+api:/practice/create
+
+desc:创建题库
+
+method:post
+
+param:
+
+    - name string 题库名字
+    - classid string 教师创建的话需绑定课程班级，学生创建则不需要
+    - pstype 枚举 题库类型，0是普通题库，1是收藏题库，2是错题题库
+    - introduction string 题库介绍
+
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "practicesummaryid": "5fcccdbc36d02a1187f6528a"
+    }
+    }`
+
+--------
+
+api:/practice/query/psinfo/:psid
+
+desc:查询题库信息
+
+method:get
+
+param:
+
+    - psid string 题库id
+  
+response:
+
+   `{
+        "msg": "",
+        "code": 0,
+        "data": {
+            "practicesummaryid": "5fcb8c1236d02ab338449039",
+            "name": "题库一",
+            "introduction": "测试创建题库",
+            "pstype": 1
+        }
+    }`
+
+--------
+
+api:/practice/query/psdetailinfo/:psid/:page
+
+desc:查询某个题库中的题目
+
+method:get
+
+param:
+
+    - psid string 题库id
+    - page string 当前分页
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "questions": [
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a3",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6d136d02a17947882a2",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6d136d02a17947882a1",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6d036d02a17947882a0",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6d036d02a179478829f",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6cf36d02a179478829e",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6ce36d02a179478829d",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6ca36d02a179478829c",
+                "kind": 1,
+                "knowledgename": "知识点"
+            },
+            {
+                "questionid": "5fccd6c636d02a179478829b",
+                "kind": 1,
+                "knowledgename": "知识点"
+            }
+        ],
+        "totalpage": 1
+    }
+}`
+
+--------
+
+api:/practice/query/mypsinfo
+
+desc:查询我的题库
+
+method:get
+
+param:
+
+    - page string 当前分页
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "practicesummary": [
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6528f",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6528d",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6528c",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6528b",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6528a",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6527e",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6527d",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6527c",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6527b",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            },
+            {
+                "practicesummaryid": "5fcccdbc36d02a1187f6527a",
+                "name": "题库二",
+                "introduction": "测试创建题库",
+                "pstype": 1
+            }
+        ],
+        "totalpage": 1
+    }
+}`
+
+
+--------
+
+api:/practice/addquestion
+
+desc:往某个题库添加的题目
+
+method:post
+
+param:
+
+    - practicesummaryid string 题库id
+    - questions []string 题目id数组
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {}
+    }`
+
+
+--------
+
+api:/practice/deletequestion
+
+desc:删除某个题库的部分题目
+
+method:post
+
+param:
+
+    - practicesummaryid string 题库id
+    - questions []string 题目id数组
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {}
+    }`

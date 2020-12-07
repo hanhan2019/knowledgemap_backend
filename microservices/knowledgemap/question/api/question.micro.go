@@ -45,6 +45,12 @@ type QuestionService interface {
 	DoHomeWork(ctx context.Context, in *DoHomeWorkReq, opts ...client.CallOption) (*api.Empty, error)
 	QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, opts ...client.CallOption) (*QueryAnswerRecordReply, error)
 	QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, opts ...client.CallOption) (*QueryHomeWorkInClassReply, error)
+	CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, opts ...client.CallOption) (*CreatePracticeSummaryReply, error)
+	QueryPracticeSummaryInfo(ctx context.Context, in *QueryPracticeSummaryReq, opts ...client.CallOption) (*PracticeSummaryInfo, error)
+	GetPracticeSummary(ctx context.Context, in *QueryPracticeSummaryReq, opts ...client.CallOption) (*PracticeSummaryDetailInfo, error)
+	QueryMyPracticeSummary(ctx context.Context, in *QueryMyPracticeSummaryReq, opts ...client.CallOption) (*QueryMyPracticeSummaryReply, error)
+	AddQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error)
+	DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error)
 }
 
 type questionService struct {
@@ -145,6 +151,66 @@ func (c *questionService) QueryHomeWorkInClass(ctx context.Context, in *api1.Cla
 	return out, nil
 }
 
+func (c *questionService) CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, opts ...client.CallOption) (*CreatePracticeSummaryReply, error) {
+	req := c.c.NewRequest(c.name, "Question.CreatePracticeSummary", in)
+	out := new(CreatePracticeSummaryReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) QueryPracticeSummaryInfo(ctx context.Context, in *QueryPracticeSummaryReq, opts ...client.CallOption) (*PracticeSummaryInfo, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryPracticeSummaryInfo", in)
+	out := new(PracticeSummaryInfo)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) GetPracticeSummary(ctx context.Context, in *QueryPracticeSummaryReq, opts ...client.CallOption) (*PracticeSummaryDetailInfo, error) {
+	req := c.c.NewRequest(c.name, "Question.GetPracticeSummary", in)
+	out := new(PracticeSummaryDetailInfo)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) QueryMyPracticeSummary(ctx context.Context, in *QueryMyPracticeSummaryReq, opts ...client.CallOption) (*QueryMyPracticeSummaryReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryMyPracticeSummary", in)
+	out := new(QueryMyPracticeSummaryReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) AddQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Question.AddQuestionInPS", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *questionService) DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Question.DelteQuestionInPS", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Question service
 
 type QuestionHandler interface {
@@ -156,6 +222,12 @@ type QuestionHandler interface {
 	DoHomeWork(context.Context, *DoHomeWorkReq, *api.Empty) error
 	QueryAnswerRecord(context.Context, *QueryAnswerRecordReq, *QueryAnswerRecordReply) error
 	QueryHomeWorkInClass(context.Context, *api1.ClassReq, *QueryHomeWorkInClassReply) error
+	CreatePracticeSummary(context.Context, *CreatePracticeSummaryReq, *CreatePracticeSummaryReply) error
+	QueryPracticeSummaryInfo(context.Context, *QueryPracticeSummaryReq, *PracticeSummaryInfo) error
+	GetPracticeSummary(context.Context, *QueryPracticeSummaryReq, *PracticeSummaryDetailInfo) error
+	QueryMyPracticeSummary(context.Context, *QueryMyPracticeSummaryReq, *QueryMyPracticeSummaryReply) error
+	AddQuestionInPS(context.Context, *ControllQuestionInPSReq, *api.Empty) error
+	DelteQuestionInPS(context.Context, *ControllQuestionInPSReq, *api.Empty) error
 }
 
 func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...server.HandlerOption) error {
@@ -168,6 +240,12 @@ func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...serv
 		DoHomeWork(ctx context.Context, in *DoHomeWorkReq, out *api.Empty) error
 		QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, out *QueryAnswerRecordReply) error
 		QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, out *QueryHomeWorkInClassReply) error
+		CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, out *CreatePracticeSummaryReply) error
+		QueryPracticeSummaryInfo(ctx context.Context, in *QueryPracticeSummaryReq, out *PracticeSummaryInfo) error
+		GetPracticeSummary(ctx context.Context, in *QueryPracticeSummaryReq, out *PracticeSummaryDetailInfo) error
+		QueryMyPracticeSummary(ctx context.Context, in *QueryMyPracticeSummaryReq, out *QueryMyPracticeSummaryReply) error
+		AddQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error
+		DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error
 	}
 	type Question struct {
 		question
@@ -210,4 +288,28 @@ func (h *questionHandler) QueryAnswerRecord(ctx context.Context, in *QueryAnswer
 
 func (h *questionHandler) QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, out *QueryHomeWorkInClassReply) error {
 	return h.QuestionHandler.QueryHomeWorkInClass(ctx, in, out)
+}
+
+func (h *questionHandler) CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, out *CreatePracticeSummaryReply) error {
+	return h.QuestionHandler.CreatePracticeSummary(ctx, in, out)
+}
+
+func (h *questionHandler) QueryPracticeSummaryInfo(ctx context.Context, in *QueryPracticeSummaryReq, out *PracticeSummaryInfo) error {
+	return h.QuestionHandler.QueryPracticeSummaryInfo(ctx, in, out)
+}
+
+func (h *questionHandler) GetPracticeSummary(ctx context.Context, in *QueryPracticeSummaryReq, out *PracticeSummaryDetailInfo) error {
+	return h.QuestionHandler.GetPracticeSummary(ctx, in, out)
+}
+
+func (h *questionHandler) QueryMyPracticeSummary(ctx context.Context, in *QueryMyPracticeSummaryReq, out *QueryMyPracticeSummaryReply) error {
+	return h.QuestionHandler.QueryMyPracticeSummary(ctx, in, out)
+}
+
+func (h *questionHandler) AddQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error {
+	return h.QuestionHandler.AddQuestionInPS(ctx, in, out)
+}
+
+func (h *questionHandler) DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error {
+	return h.QuestionHandler.DelteQuestionInPS(ctx, in, out)
 }

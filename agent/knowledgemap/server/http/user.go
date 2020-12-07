@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"knowledgemap_backend/agent/knowledgemap/server/http/comm"
 	"knowledgemap_backend/microservices/common/middlewares"
 	papi "knowledgemap_backend/microservices/knowledgemap/passport/api"
@@ -97,6 +98,23 @@ func userChangeInfo(c echo.Context) error {
 	req.Userid = c.Get("userId").(string)
 	req.Usertype = uapi.Identify(c.Get("userType").(int64))
 	if res, err := passportSrv.ChangeUserInfo(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func transport(c echo.Context) error {
+	// clog := middlewares.Log(c)
+	clog := middlewares.Log(c)
+	req := new(papi.TransportReq)
+	f, err := ioutil.ReadFile("/Users/firewinggames/Downloads/transport_origin.jpeg")
+	if err != nil {
+		fmt.Println("read fail", err)
+	}
+	req.Content = f
+	if res, err := passportSrv.TestTransport(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
 	} else {

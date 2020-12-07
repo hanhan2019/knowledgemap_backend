@@ -11,7 +11,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-const PageCount = 20
+const PageCount = 10
 
 type ClassService struct{}
 
@@ -47,7 +47,19 @@ func convertClass(class *model.Class, rsp *api.ClassReply) {
 		rsp.Course = class.Course
 		rsp.Subject = class.Sbuject
 		rsp.Introduction = class.Introduction
+		rsp.Inclass = true
 	}
+}
+
+func checkInClass(rsp *api.ClassReply, myClasses *[]*model.ClassUser) {
+	rsp.Inclass = false
+	for _, b := range *myClasses {
+		if rsp.Classid == b.ClassId {
+			rsp.Inclass = true
+			break
+		}
+	}
+	return
 }
 
 func (s *ClassService) ClassInfo(ctx context.Context, req *api.ClassReq, rsp *api.ClassReply) error {
@@ -122,9 +134,12 @@ func (s *ClassService) SearchClassesInfo(ctx context.Context, req *api.SearchCla
 	if err != nil {
 		return err
 	}
+	myClasses := new([]*model.ClassUser)
+	gdao.FillMyAllClass(ctx, req.Userid, myClasses)
 	for _, v := range *classes {
 		info := new(api.ClassReply)
 		convertClass(v, info)
+		checkInClass(info, myClasses)
 		rsp.Classes = append(rsp.Classes, info)
 	}
 	rsp.Currentpage = req.Page

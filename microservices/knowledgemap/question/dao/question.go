@@ -40,3 +40,13 @@ func (d *Dao) FillQuestionById(ctx context.Context, id bson.ObjectId, question *
 	col := db.C(model.QUESTION_COLLECTION_NAME)
 	return col.FindId(id).One(question)
 }
+
+func (d *Dao) QueryMulQuestionInfo(ctx context.Context, questionId []bson.ObjectId, info *[]*model.Qusetion) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	cont := bson.M{
+		"_id": bson.M{"$in": questionId},
+	}
+	err = db.C(model.QUESTION_COLLECTION_NAME).Find(cont).All(info)
+	return
+}

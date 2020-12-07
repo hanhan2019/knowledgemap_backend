@@ -18,10 +18,16 @@ service Question {
 	rpc CreateHomeWork(CreateHomeWorkReq) returns (CreateHomeWorkReply) {}
 	rpc QueryMyHomeWork(QueryMyHomeWorkReq) returns (QueryMyHomeWorkReply) {}
 	rpc DoHomeWork(DoHomeWorkReq) returns (Empty) {}
-	rpc QueryAnswerRecord(QueryAnswerRecordReq)returns (QueryAnswerRecordReply){}
-	rpc QueryHomeWorkInClass(ClassReq) returns(QueryHomeWorkInClassReply){}
+	rpc QueryAnswerRecord(QueryAnswerRecordReq)returns (QueryAnswerRecordReply) {}
+	rpc QueryHomeWorkInClass(ClassReq) returns(QueryHomeWorkInClassReply) {}
+	
+	rpc CreatePracticeSummary(CreatePracticeSummaryReq)returns(CreatePracticeSummaryReply) {}
+	rpc QueryPracticeSummaryInfo(QueryPracticeSummaryReq) returns (PracticeSummaryInfo) {}
+	rpc GetPracticeSummary(QueryPracticeSummaryReq) returns (PracticeSummaryDetailInfo) {}	
+	rpc QueryMyPracticeSummary(QueryMyPracticeSummaryReq) returns (QueryMyPracticeSummaryReply) {}
+	rpc AddQuestionInPS(ControllQuestionInPSReq)returns (Empty) {}	
+	rpc DelteQuestionInPS(ControllQuestionInPSReq)returns (Empty) {}	
 }
-
 message CRqQueryMyQuestionInfoBySubject{
 	string uid = 1;
 	string subject = 2 [(gogoproto.jsontag) = "subject"];
@@ -133,4 +139,70 @@ message QueryAnswerRecordReply{
 
 message QueryHomeWorkInClassReply{
 	repeated HomeWorkInfo homework = 1 [(gogoproto.moretags) = "form:\"homeworkrecord\""] ;
+}
+
+enum PracticeSummaryType{
+	DEFAULT = 0;
+	COLLECTION = 1;
+    MISTAKES = 2;
+}
+
+message CreatePracticeSummaryReq{
+	string name = 1 [(gogoproto.moretags) = "form:\"name\""] ;
+	string ownerid = 2 [(gogoproto.moretags) = "form:\"ownerid\""] ;
+	string classid = 3 [(gogoproto.moretags) = "form:\"classid\""] ; //不为空则是教师创建的题库，否则是学生创建的题库
+	PracticeSummaryType pstype = 4 [(gogoproto.moretags) = "form:\"pstype\""];
+	string introduction = 5 [(gogoproto.moretags) = "form:\"introduction\""] ;	
+	string ownername = 6 [(gogoproto.moretags) = "form:\"ownername\""] ;	
+}
+
+message CreatePracticeSummaryReply{
+	string practicesummaryid = 1 [(gogoproto.moretags) = "form:\"practicesummaryid\""] ;
+}
+
+message QueryPracticeSummaryReq{
+	string practicesummaryid = 1 [(gogoproto.moretags) = "form:\"practicesummaryid\""] ;
+	int64 page = 2 [(gogoproto.moretags) = "form:\"page\""];
+}
+
+// message QueryPracticeSummaryReply{
+// 	repeated PracticeSummaryInfo practicesummary = 1 [(gogoproto.moretags) = "form:\"practicesummary\""] ;
+// }
+
+message PracticeSummaryInfo{
+	string practicesummaryid = 1 [(gogoproto.moretags) = "form:\"practicesummaryid\""] ;
+	string name = 2 [(gogoproto.moretags) = "form:\"name\""] ;
+	string introduction = 3 [(gogoproto.moretags) = "form:\"introduction\""] ;
+	int64 questionnumbers = 4 [(gogoproto.moretags) = "form:\"questionnumbers\""] ;
+	PracticeSummaryType pstype = 5 [(gogoproto.moretags) = "form:\"pstype\""];	
+	string ownername = 6 [(gogoproto.moretags) = "form:\"ownername\""] ;
+	string coursename = 7 [(gogoproto.moretags) = "form:\"coursename\""] ;
+}
+
+message QuestionPre{
+	string questionid = 1 [(gogoproto.moretags) = "form:\"qustionid\""] ;
+	int64 kind = 2 [(gogoproto.moretags) = "form:\"kind\""] ;
+	string knowledgename = 3 [(gogoproto.moretags) = "form:\"knowledgename\""] ;
+}
+
+message PracticeSummaryDetailInfo{
+	repeated QuestionPre questions = 1 [(gogoproto.moretags) = "form:\"questions\""] ;
+	int64 currentpage = 2[(gogoproto.moretags) = "form:\"currentpage\""];
+    int64 totalpage = 3[(gogoproto.moretags) = "form:\"totalpage\""];
+}
+
+message QueryMyPracticeSummaryReq{
+	string userid = 1 [(gogoproto.moretags) = "form:\"userid\""] ;
+	int64 page = 2 [(gogoproto.moretags) = "form:\"page\""];
+}
+
+message QueryMyPracticeSummaryReply{
+	repeated PracticeSummaryInfo practicesummary = 1 [(gogoproto.moretags) = "form:\"practicesummary\""] ;
+	int64 currentpage = 2[(gogoproto.moretags) = "form:\"currentpage\""];
+    int64 totalpage = 3[(gogoproto.moretags) = "form:\"totalpage\""];
+}
+
+message ControllQuestionInPSReq{
+	string practicesummaryid = 1 [(gogoproto.moretags) = "form:\"practicesummaryid\""] ;
+	repeated string questions = 2 [(gogoproto.moretags) = "form:\"questions\""];	
 }

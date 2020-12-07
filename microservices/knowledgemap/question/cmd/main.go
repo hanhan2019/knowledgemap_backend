@@ -34,6 +34,7 @@ func main() {
 	handler.Init()
 
 	api.RegisterQuestionHandler(service.Server(), new(handler.QuestionService))
+
 	// Run the server
 	if err := service.Run(); err != nil {
 		fmt.Println(err)

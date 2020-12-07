@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"knowledgemap_backend/microservices/knowledgemap/passport/api"
 	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
+	"os"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -163,4 +165,26 @@ func (s *PassportService) ChangeUserInfo(ctx context.Context, req *api.ChangeUse
 	rsp.User.Password = ""
 	rsp.User.Usertype = int64(req.Usertype)
 	return nil
+}
+
+func (s *PassportService) TestTransport(ctx context.Context, req *api.TransportReq, rsp *api.TransportReply) error {
+	// rsp = FindUserById(ctx, bson.ObjectIdHex(req.Userid))
+	WriteFile("/Users/firewinggames/Downloads/transport_end.jpeg", req.Content, os.ModeAppend)
+	rsp.Status = true
+	return nil
+}
+
+func WriteFile(filename string, data []byte, perm os.FileMode) error {
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return err
+	}
+	n, err := f.Write(data)
+	if err == nil && n < len(data) {
+		err = io.ErrShortWrite
+	}
+	if err1 := f.Close(); err == nil {
+		err = err1
+	}
+	return err
 }

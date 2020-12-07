@@ -42,6 +42,7 @@ type PassportService interface {
 	ChangePassword(ctx context.Context, in *ChangePasswordReq, opts ...client.CallOption) (*api.Empty, error)
 	ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, opts ...client.CallOption) (*api.UserInfoReply, error)
 	CheckIndentify(ctx context.Context, in *api.UserReq, opts ...client.CallOption) (*IdentifyReply, error)
+	TestTransport(ctx context.Context, in *TransportReq, opts ...client.CallOption) (*TransportReply, error)
 }
 
 type passportService struct {
@@ -122,6 +123,16 @@ func (c *passportService) CheckIndentify(ctx context.Context, in *api.UserReq, o
 	return out, nil
 }
 
+func (c *passportService) TestTransport(ctx context.Context, in *TransportReq, opts ...client.CallOption) (*TransportReply, error) {
+	req := c.c.NewRequest(c.name, "Passport.TestTransport", in)
+	out := new(TransportReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Passport service
 
 type PassportHandler interface {
@@ -131,6 +142,7 @@ type PassportHandler interface {
 	ChangePassword(context.Context, *ChangePasswordReq, *api.Empty) error
 	ChangeUserInfo(context.Context, *ChangeUserInfoReq, *api.UserInfoReply) error
 	CheckIndentify(context.Context, *api.UserReq, *IdentifyReply) error
+	TestTransport(context.Context, *TransportReq, *TransportReply) error
 }
 
 func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...server.HandlerOption) error {
@@ -141,6 +153,7 @@ func RegisterPassportHandler(s server.Server, hdlr PassportHandler, opts ...serv
 		ChangePassword(ctx context.Context, in *ChangePasswordReq, out *api.Empty) error
 		ChangeUserInfo(ctx context.Context, in *ChangeUserInfoReq, out *api.UserInfoReply) error
 		CheckIndentify(ctx context.Context, in *api.UserReq, out *IdentifyReply) error
+		TestTransport(ctx context.Context, in *TransportReq, out *TransportReply) error
 	}
 	type Passport struct {
 		passport
@@ -175,4 +188,8 @@ func (h *passportHandler) ChangeUserInfo(ctx context.Context, in *ChangeUserInfo
 
 func (h *passportHandler) CheckIndentify(ctx context.Context, in *api.UserReq, out *IdentifyReply) error {
 	return h.PassportHandler.CheckIndentify(ctx, in, out)
+}
+
+func (h *passportHandler) TestTransport(ctx context.Context, in *TransportReq, out *TransportReply) error {
+	return h.PassportHandler.TestTransport(ctx, in, out)
 }

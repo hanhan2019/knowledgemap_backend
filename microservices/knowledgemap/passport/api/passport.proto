@@ -17,6 +17,7 @@ service Passport {
     rpc ChangePassword(ChangePasswordReq) returns (Empty) {}
     rpc ChangeUserInfo(ChangeUserInfoReq) returns (UserInfoReply) {}
     rpc CheckIndentify(UserReq) returns (IdentifyReply){}
+    rpc TestTransport(TransportReq) returns (TransportReply){}
 }
 
 
@@ -72,4 +73,12 @@ message ChangeUserInfoReq{
     string  college = 4 [(gogoproto.moretags) = "form:\"college\""];
     string  sex = 5 [(gogoproto.moretags) = "form:\"sex\""];
     string  username = 6 [(gogoproto.moretags) = "form:\"username\""];
+}
+
+message TransportReq{
+    bytes content = 1;
+}
+
+message TransportReply{
+    bool status = 1;
 }

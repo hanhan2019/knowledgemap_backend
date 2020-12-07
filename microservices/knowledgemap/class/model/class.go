@@ -19,9 +19,9 @@ type Class struct {
 	ID           bson.ObjectId `bson:"_id" json:"_id"`
 	Number       string        `bson:"number" json:"number"`
 	Name         string        `bson:"name" json:"name"`
-	College      string        `bson:"college" json:"college"`
-	Sbuject      string        `bson:"subject" json:"subject"`
-	Course       string        `bson:"course" json:"course"`
+	College      string        `bson:"college" json:"college"` //学院
+	Sbuject      string        `bson:"subject" json:"subject"` //学科
+	Course       string        `bson:"course" json:"course"`   //课程
 	TeacherName  string        `bson:"teachername" json:"teachername"`
 	TeacherId    string        `bson:"teacherid" json:"teacherid"`
 	CreateTime   int64         `bson:"createtime" json:"createtime"`

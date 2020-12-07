@@ -234,7 +234,7 @@ func (d *Dao) GenerateLoginToken(ctx context.Context, identify int, rsp **api.Pa
 	userid := (*rsp).User.Userid
 	token := utils.GenSession(userid)
 	(*rsp).Token = token
-	expires := 24 * time.Hour
+	expires := 24 * 365 * time.Hour
 	(*rsp).Expires = time.Now().Add(expires).Unix()
 
 	set := d.redis.Set(token, GetLoginTokenRedisKey(userid, identify), expires)
