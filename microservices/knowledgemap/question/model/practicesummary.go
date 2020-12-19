@@ -38,6 +38,7 @@ type PracticeSummary struct {
 type PracticeQuestion struct {
 	ID           bson.ObjectId `json:"_id" bson:"_id"`
 	PSId         bson.ObjectId `json:"psid" bson:"psid"`
+	QuestionName string        `json:"questionname" bson:"questionname"`
 	QuestionId   bson.ObjectId `json:"questionid" bson:"questionid"`
 	QuestionKind Qusetion_Kind `json:"questionkind" bson:"questionkind"`
 	KnowlegeId   bson.ObjectId `json:"knowlegeid" bson:"knowlegeid"`

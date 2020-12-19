@@ -809,52 +809,62 @@ response:
         "questions": [
             {
                 "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
+                "kind": 1,题目类型枚举，1选择题，2简答题
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6d236d02a17947882a3",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6d136d02a17947882a2",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6d136d02a17947882a1",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6d036d02a17947882a0",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6d036d02a179478829f",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6cf36d02a179478829e",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6ce36d02a179478829d",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6ca36d02a179478829c",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             },
             {
                 "questionid": "5fccd6c636d02a179478829b",
                 "kind": 1,
+                "name":"鸡兔同笼",
                 "knowledgename": "知识点"
             }
         ],

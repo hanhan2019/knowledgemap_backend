@@ -35,13 +35,14 @@ func (s *QuestionService) GetMyQuestionInfo(ctx context.Context, req *api.CRqQue
 func (s *QuestionService) CreateQuestion(ctx context.Context, req *api.CreateQuestionReq, rsp *api.QuestionInfoReply) error {
 	logrus.Infof("CreateQuestion req is %v ", req)
 	id := bson.NewObjectId()
-	question := &model.Qusetion{id, model.Qusetion_Kind(req.Kind), req.Content, req.Option, req.Answer, req.Subject, req.Course, bson.ObjectIdHex(req.Knowledge), time.Now().Unix()}
+	question := &model.Qusetion{id, req.Name, model.Qusetion_Kind(req.Kind), req.Content, req.Option, req.Answer, req.Subject, req.Course, bson.ObjectIdHex(req.Knowledge), time.Now().Unix()}
 	if err := gdao.NewQuestion(ctx, question); err != nil {
 		fmt.Println("create question error", err)
 		return fmt.Errorf("创建题目失败")
 	} else {
 		rsp.Id = id.Hex()
 		rsp.Kind = req.Kind
+		rsp.Name = req.Name
 		rsp.Knowledge = req.Knowledge
 		rsp.Option = req.Option
 		rsp.Subject = req.Subject
@@ -62,6 +63,7 @@ func (s *QuestionService) QueryQuestion(ctx context.Context, req *api.QueryQuest
 		for _, v := range *questions {
 			info := new(api.QuestionInfoReply)
 			info.Id = v.ID.Hex()
+			info.Name = v.Name
 			info.Kind = int64(v.Kind)
 			info.Subject = v.Subject
 			info.Content = v.Content

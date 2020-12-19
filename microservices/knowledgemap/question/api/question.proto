@@ -39,13 +39,14 @@ message CRpMyQuestionInfoBySubject{
 }
 
 message CreateQuestionReq{
-    int64  kind = 1 [(gogoproto.moretags) = "form:\"kind\""];
-    string  content = 2 [(gogoproto.moretags) = "form:\"content\""];
-    repeated string  option = 3 [(gogoproto.moretags) = "form:\"option\""];
-    repeated string answer = 4 [(gogoproto.moretags) = "form:\"answer\""];
-	string  subject = 5 [(gogoproto.moretags) = "form:\"subject\""];
-	string  course = 6 [(gogoproto.moretags) = "form:\"course\""];
-    string  knowledge = 7 [(gogoproto.moretags) = "form:\"knowledge\""];
+	int64  kind = 1 [(gogoproto.moretags) = "form:\"kind\""];
+	string  name = 2 [(gogoproto.moretags) = "form:\"name\""];
+    string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
+    repeated string  option = 4 [(gogoproto.moretags) = "form:\"option\""];
+    repeated string answer = 5 [(gogoproto.moretags) = "form:\"answer\""];
+	string  subject = 6 [(gogoproto.moretags) = "form:\"subject\""];
+	string  course = 7 [(gogoproto.moretags) = "form:\"course\""];
+    string  knowledge = 8 [(gogoproto.moretags) = "form:\"knowledge\""];
 }
 
 message QuestionInfoReply{
@@ -56,7 +57,8 @@ message QuestionInfoReply{
     repeated string answer = 5 [(gogoproto.moretags) = "form:\"answer\""];
 	string  subject = 6 [(gogoproto.moretags) = "form:\"subject\""];
 	string  course = 7 [(gogoproto.moretags) = "form:\"course\""];
-    string  knowledge = 8 [(gogoproto.moretags) = "form:\"knowledge\""];
+	string  knowledge = 8 [(gogoproto.moretags) = "form:\"knowledge\""];
+	string  name = 9 [(gogoproto.moretags) = "form:\"name\""];
 }
 
 message QueryQuestionReq{
@@ -183,6 +185,7 @@ message QuestionPre{
 	string questionid = 1 [(gogoproto.moretags) = "form:\"qustionid\""] ;
 	int64 kind = 2 [(gogoproto.moretags) = "form:\"kind\""] ;
 	string knowledgename = 3 [(gogoproto.moretags) = "form:\"knowledgename\""] ;
+	string name = 4 [(gogoproto.moretags) = "form:\"name\""] ;
 }
 
 message PracticeSummaryDetailInfo{

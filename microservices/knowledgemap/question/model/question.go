@@ -22,6 +22,7 @@ type KnowledgeInfo struct {
 
 type Qusetion struct {
 	ID         bson.ObjectId `json:"_id" bson:"_id"`
+	Name       string        `json:"name" bson:"name"`
 	Kind       Qusetion_Kind `json:"kind" bson:"kind"`
 	Content    string        `json:"content" bson:"content"`
 	Option     []string      `json:"option" json:"option"`
