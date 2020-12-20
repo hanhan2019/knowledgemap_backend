@@ -120,9 +120,9 @@ func InitRouter(e *echo.Echo) {
 		api.POST("/class/create", classCreate, authMid, mustTeacherMid)
 		api.PUT("/class/join", joinClass, authMid, mustStudentMid)
 		api.GET("/class/query/myclasses", queryMyClasses, authMid)
-		api.GET("/class/query/alluserinclass/:classid", queryAllUserInClass, authMid)
-		api.GET("/class/query/classinfo/:classid", queryClassInfo, authMid)
-		api.GET("/class/query/classes/:college/:subject/:course/:teacher/:page", searchClasses, authMid)
+		api.GET("/class/query/alluserinclass", queryAllUserInClass, authMid)
+		api.GET("/class/query/classinfo", queryClassInfo, authMid)
+		api.GET("/class/query/classes", searchClasses, authMid)
 		api.GET("/class/query/formlist", queryFormList)
 	}
 	// api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
@@ -130,28 +130,28 @@ func InitRouter(e *echo.Echo) {
 	// api.GET("/class/invitation/query/:invitationcode", queryInvitation, authMid)
 	{
 		api.POST("/practice/create", psCreate, authMid)
-		api.GET("/practice/query/psinfo/:psid", queryPSInfo, authMid)
-		api.GET("/practice/query/psdetailinfo/:psid/:page", queryPSDetailInfo, authMid)
-		api.GET("/practice/query/mypsinfo/:page", queryMyPSInfo, authMid)
+		api.GET("/practice/query/psinfo", queryPSInfo, authMid)
+		api.GET("/practice/query/psdetailinfo", queryPSDetailInfo, authMid)
+		api.GET("/practice/query/mypsinfo", queryMyPSInfo, authMid)
 		api.POST("/practice/addquestion", addQuestionInPS, authMid)
 		api.POST("/practice/deletequestion", deleteQuestionInPS, authMid)
 
 	}
 	{
 		api.POST("/knowledge/create", createKnowledge, authMid)
-		api.GET("/knowledge/query/:knowledgeId", queryKnowledge, authMid)
+		api.GET("/knowledge/query", queryKnowledge, authMid)
 	}
 	{
 		api.POST("/question/create", createQuestion, authMid)
-		api.GET("/question/query/:kind/:course/:subject/:knowledge", queryQuestion, authMid)
-		api.GET("/user/knowledgemap/:uid/:subject/:endtime", queryUserKnowledgeMap)
+		api.GET("/question/query", queryQuestion, authMid)
+		api.GET("/user/knowledgemap", queryUserKnowledgeMap)
 	}
 	{
 		api.POST("/homework/create", createHomeWork, authMid, mustTeacherMid)
-		api.GET("/homework/query/:userid/:classid", queryHomeWork, authMid)
+		api.GET("/homework/query", queryHomeWork, authMid)
 		api.PUT("/homework/do", doHomeWork, authMid)
-		api.GET("/homework/answerrecord/query/:homeworkid", queryAnswerRecord, authMid, mustTeacherMid)
-		api.GET("/homework/query/info/:classid", queryHomeWorkInClass, authMid)
+		api.GET("/homework/answerrecord/query", queryAnswerRecord, authMid, mustTeacherMid)
+		api.GET("/homework/query/info", queryHomeWorkInClass, authMid)
 	}
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

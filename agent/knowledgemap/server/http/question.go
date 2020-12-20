@@ -31,11 +31,11 @@ func createQuestion(c echo.Context) error {
 func queryQuestion(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryQuestionReq)
-	kind, _ := strconv.ParseInt(c.Param("kind"), 10, 64)
+	kind, _ := strconv.ParseInt(c.QueryParam("kind"), 10, 64)
 	req.Kind = kind
-	req.Course = c.Param("course")
-	req.Subject = c.Param("subject")
-	req.Knowledge = c.Param("knowledge")
+	req.Course = c.QueryParam("course")
+	req.Subject = c.QueryParam("subject")
+	req.Knowledge = c.QueryParam("knowledge")
 	if res, err := questionSrv.QueryQuestion(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -62,8 +62,8 @@ func createHomeWork(c echo.Context) error {
 func queryHomeWork(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryMyHomeWorkReq)
-	req.Userid = c.Param("userid")
-	req.Classid = c.Param("classid")
+	req.Userid = c.QueryParam("userid")
+	req.Classid = c.QueryParam("classid")
 	if res, err := questionSrv.QueryMyHomeWork(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -91,7 +91,7 @@ func doHomeWork(c echo.Context) error {
 func queryAnswerRecord(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryAnswerRecordReq)
-	req.Homeworkid = c.Param("homeworkid")
+	req.Homeworkid = c.QueryParam("homeworkid")
 	if res, err := questionSrv.QueryAnswerRecord(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -103,7 +103,7 @@ func queryAnswerRecord(c echo.Context) error {
 func queryHomeWorkInClass(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(capi.ClassReq)
-	req.Classid = c.Param("classid")
+	req.Classid = c.QueryParam("classid")
 	if res, err := questionSrv.QueryHomeWorkInClass(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))

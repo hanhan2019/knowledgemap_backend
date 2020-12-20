@@ -19,9 +19,9 @@ func hello(c echo.Context) error {
 
 func queryUserKnowledgeMap(c echo.Context) error {
 	clog := middlewares.Log(c)
-	uid := c.Param("uid")
-	subject := c.Param("subject")
-	endTimeStr := c.Param("endtime")
+	uid := c.QueryParam("uid")
+	subject := c.QueryParam("subject")
+	endTimeStr := c.QueryParam("endtime")
 	endTime, _ := strconv.ParseInt(endTimeStr, 10, 64)
 	req := &kapi.CRqQueryMyMapBySubject{
 		Uid:     uid,
@@ -60,7 +60,7 @@ func createKnowledge(c echo.Context) error {
 func queryKnowledge(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(kapi.QueryKnowledegeInfoReq)
-	req.Id = c.Param("knowledgeId")
+	req.Id = c.QueryParam("knowledgeId")
 	if res, err := knowledgeMapSrv.QueryKnowledegeInfo(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))

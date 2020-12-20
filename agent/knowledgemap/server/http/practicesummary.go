@@ -32,7 +32,7 @@ func psCreate(c echo.Context) error {
 func queryPSInfo(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryPracticeSummaryReq)
-	req.Practicesummaryid = c.Param("psid")
+	req.Practicesummaryid = c.QueryParam("psid")
 	if res, err := questionSrv.QueryPracticeSummaryInfo(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -45,8 +45,8 @@ func queryPSInfo(c echo.Context) error {
 func queryPSDetailInfo(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryPracticeSummaryReq)
-	req.Practicesummaryid = c.Param("psid")
-	req.Page, _ = strconv.ParseInt(c.Param("page"), 10, 64)
+	req.Practicesummaryid = c.QueryParam("psid")
+	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
 	if res, err := questionSrv.GetPracticeSummary(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -60,6 +60,7 @@ func queryMyPSInfo(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryMyPracticeSummaryReq)
 	req.Userid = c.Get("userId").(string)
+	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
 	if res, err := questionSrv.QueryMyPracticeSummary(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
