@@ -5,6 +5,8 @@
 redis地址 /usr/local/redis/
 consul agent -server  -bootstrap-expect 1 -data-dir /tmp/consul -node=172.17.9.156
 公47.95.145.171
+cd  /usr/local/consul/
+nohup ./consul agent -dev -ui -node=consul-dev -client=0.0.0.0 > consul.log 2>&1 &
 
 所有api要加统一前缀 /api
 所有登录后的操作都需要在header里添加auth-session为用户cookie
