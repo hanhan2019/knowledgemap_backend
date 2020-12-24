@@ -40,7 +40,7 @@ message UserReply {
 	string  password = 7;
 	string  number=8;
 	string college = 9;
-	string imagepath = 10;
+	string imagePath = 10;
 	//Identify identify = 10;
 }
 
