@@ -31,3 +31,15 @@ func (d *Dao) FillAnserRecordByIdAndQuestionId(ctx context.Context, Idname, Id s
 	}
 	return col.Find(cont).All(records)
 }
+
+func (d *Dao) FillAnserRecordById(ctx context.Context, Idname, Id string, userid bson.ObjectId, records *[]*model.AnswerRecord) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.ANSWER_RECORD_COLLECTION_NAME)
+	cont := bson.M{
+		Idname: Id,
+		// "question": questionId,
+		"userid": userid,
+	}
+	return col.Find(cont).All(records)
+}

@@ -274,6 +274,7 @@ message DoPaperReq{
 
 message QueryPaperAnswerRecordReq{
 	string paperid = 1  [(gogoproto.moretags) = "form:\"paperid\""] ;
+	string userid = 2  [(gogoproto.moretags) = "form:\"userid\""] ;
 }
 
 message QueryPaperAnswerRecordReply{

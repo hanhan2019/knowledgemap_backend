@@ -22,7 +22,7 @@ func (d *Dao) FillPaperByClassId(ctx context.Context, classid string, paper *[]*
 		"classid": classid,
 	}
 	err = col.Find(cont).Sort("-_id").Limit(int(pageCount)).Skip(int(page * pageCount)).All(paper)
-	if err != nil {
+	if err == nil {
 		allCount, err = col.Find(cont).Count()
 	}
 	return

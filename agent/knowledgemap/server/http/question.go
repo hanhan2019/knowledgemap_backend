@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"knowledgemap_backend/agent/knowledgemap/server/http/comm"
 	"knowledgemap_backend/microservices/common/middlewares"
 	capi "knowledgemap_backend/microservices/knowledgemap/class/api"
@@ -130,7 +131,7 @@ func createPaper(c echo.Context) error {
 func queryPaper(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryPaperInClassReq)
-	req.Userid = c.QueryParam("userid")
+	req.Userid = c.Get("userId").(string)
 	req.Classid = c.QueryParam("classid")
 	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
 	if res, err := questionSrv.QueryPaperInClass(context.TODO(), req); err != nil {
@@ -149,6 +150,9 @@ func doPaper(c echo.Context) error {
 		clog.Errorf("参数错误:%v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
 	}
+	req.Userid = c.Get("userId").(string)
+	req.Username = c.Get("userName").(string)
+	fmt.Println(req.Userid, req.Username)
 	if res, err := questionSrv.DoPaper(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -161,6 +165,7 @@ func queryPaperAnswerRecord(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryPaperAnswerRecordReq)
 	req.Paperid = c.QueryParam("paperid")
+	req.Userid = c.Get("userId").(string)
 	if res, err := questionSrv.QueryMyPaperAnswerRecord(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))

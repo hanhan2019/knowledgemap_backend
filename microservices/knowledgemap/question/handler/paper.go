@@ -111,28 +111,30 @@ func (s *QuestionService) QueryMyPaperAnswerRecord(ctx context.Context, req *api
 	} else {
 		paperNeedCheck := false
 		paperGetScore := int64(0)
-		for _, v := range paper.Questions {
-			question := new(model.Qusetion)
-			if err := gdao.FillQuestionById(ctx, bson.ObjectIdHex(v.Questionid), question); err != nil {
-				fmt.Println("QueryMyPaperAnswerRecord 查找题目 %v 失败", v)
-				continue
-			}
-			records := new([]*model.AnswerRecord)
-			if err := gdao.FillAnserRecordByIdAndQuestionId(ctx, "paperid", req.Paperid, bson.ObjectIdHex(v.Questionid), records); err != nil {
-				return fmt.Errorf("QueryMyPaperAnswerRecord: 查找试卷%v 题目 %v 的答题记录失败", req.Paperid, v.Questionid)
-				continue
-			}
-			for _, i := range *records {
-				paperGetScore = paperGetScore + i.Score
-				NEEDCHECK := false
-				if i.IsTrue == model.WAITTINGCHECK {
-					NEEDCHECK = true
-					paperNeedCheck = true
-				}
-				oneQuestionAnswerRecord := &api.UserPaperAnswerInfo{v.Questionid, int64(question.Kind), question.Name, question.Content, question.QImage, question.Option, question.OImage, question.Answer, question.AImage, i.Answer, i.AImage, NEEDCHECK}
-				rsp.Paperrecord = append(rsp.Paperrecord, oneQuestionAnswerRecord)
-			}
+		records := new([]*model.AnswerRecord)
+		// if err := gdao.FillAnserRecordById(ctx, "paperid", req.Paperid, bson.ObjectIdHex(req.Userid), bson.ObjectIdHex(v.Questionid), records); err != nil {
+		if err := gdao.FillAnserRecordById(ctx, "paperid", req.Paperid, bson.ObjectIdHex(req.Userid), records); err != nil {
+			// return fmt.Errorf("QueryMyPaperAnswerRecord: 查找试卷%v 题目 %v 的答题记录失败", req.Paperid, v.Questionid)
+			return fmt.Errorf("QueryMyPaperAnswerRecord: 查找试卷%v 题目", req.Paperid)
 		}
+
+		fmt.Printf("len of records is %v\n", len(*records))
+		for _, i := range *records {
+			question := new(model.Qusetion)
+			if err := gdao.FillQuestionById(ctx, i.QuestionID, question); err != nil {
+				fmt.Println("QueryMyPaperAnswerRecord 查找题目 %v 失败", i.QuestionID.Hex())
+				continue
+			}
+			paperGetScore = paperGetScore + i.Score
+			NEEDCHECK := false
+			if i.IsTrue == model.WAITTINGCHECK {
+				NEEDCHECK = true
+				paperNeedCheck = true
+			}
+			oneQuestionAnswerRecord := &api.UserPaperAnswerInfo{i.QuestionID.Hex(), int64(question.Kind), question.Name, question.Content, question.QImage, question.Option, question.OImage, question.Answer, question.AImage, i.Answer, i.AImage, NEEDCHECK}
+			rsp.Paperrecord = append(rsp.Paperrecord, oneQuestionAnswerRecord)
+		}
+
 		rsp.Paperid = req.Paperid
 		rsp.Papername = paper.Name
 		rsp.Totalscore = paper.Totalscore
@@ -156,5 +158,6 @@ func (s *QuestionService) QueryPaperInClass(ctx context.Context, req *api.QueryP
 	}
 	rsp.Currentpage = req.Page
 	rsp.Totalpage = int64(allCount / PageCount)
+	fmt.Println(allCount, rsp.Currentpage, rsp.Totalpage)
 	return nil
 }
