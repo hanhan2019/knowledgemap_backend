@@ -131,7 +131,7 @@ func (s *QuestionService) QueryMyPaperAnswerRecord(ctx context.Context, req *api
 				NEEDCHECK = true
 				paperNeedCheck = true
 			}
-			oneQuestionAnswerRecord := &api.UserPaperAnswerInfo{i.QuestionID.Hex(), int64(question.Kind), question.Name, question.Content, question.QImage, question.Option, question.OImage, question.Answer, question.AImage, i.Answer, i.AImage, NEEDCHECK}
+			oneQuestionAnswerRecord := &api.UserPaperAnswerInfo{i.QuestionID.Hex(), int64(question.Kind), question.Name, question.Content, question.QImage, question.Option, question.OImage, question.Answer, question.AImage, i.Answer, i.AImage, NEEDCHECK, question.Explain, question.Star}
 			rsp.Paperrecord = append(rsp.Paperrecord, oneQuestionAnswerRecord)
 		}
 

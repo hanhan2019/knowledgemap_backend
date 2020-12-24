@@ -37,6 +37,7 @@ func queryQuestion(c echo.Context) error {
 	req.Course = c.QueryParam("course")
 	req.Subject = c.QueryParam("subject")
 	req.Knowledge = c.QueryParam("knowledge")
+	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
 	if res, err := questionSrv.QueryQuestion(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))

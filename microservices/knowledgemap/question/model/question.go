@@ -35,4 +35,6 @@ type Qusetion struct {
 	Knowledge  bson.ObjectId `json:"knowledge" bson:"knowledge"`
 	CreateTime int64         `json:"createtime" bson:"createtime"`
 	NeedCheck  bool          `json:"needcheck" bson:"needcheck"`
+	Explain    string        `json:"explain" bson:"explain"`
+	Star       int64         `json:"star" bson:"star"`
 }

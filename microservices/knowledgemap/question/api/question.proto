@@ -35,7 +35,7 @@ service Question {
 
 }
 message CRqQueryMyQuestionInfoBySubject{
-	string uid = 1;
+	string uid = 1[(gogoproto.jsontag) = "uid"];
 	string subject = 2 [(gogoproto.jsontag) = "subject"];
 	int64 endtime = 3 [(gogoproto.jsontag) = "endtime"];
 }
@@ -57,6 +57,9 @@ message CreateQuestionReq{
 	string  course = 10 [(gogoproto.moretags) = "form:\"course\""];
 	string  knowledge = 11 [(gogoproto.moretags) = "form:\"knowledge\""];
 	bool needcheck  = 12 [(gogoproto.moretags) = "form:\"needcheck\""];
+	string explain  = 13 [(gogoproto.moretags) = "form:\"explain\""];
+	int64 star = 14 [(gogoproto.moretags) = "form:\"star\""];
+
 }
 
 message QuestionInfoReply{
@@ -72,17 +75,23 @@ message QuestionInfoReply{
 	string  course = 10 [(gogoproto.moretags) = "form:\"course\""];
 	string  knowledge = 11 [(gogoproto.moretags) = "form:\"knowledge\""];
 	string  name = 12 [(gogoproto.moretags) = "form:\"name\""];
+	bool needcheck  = 13 [(gogoproto.moretags) = "form:\"needcheck\""];
+	string explain  = 14 [(gogoproto.moretags) = "form:\"explain\""];
+	int64 star = 15 [(gogoproto.moretags) = "form:\"star\""];
 }
 
 message QueryQuestionReq{
     int64  kind = 1 [(gogoproto.moretags) = "form:\"kind\""];
 	string  subject = 2 [(gogoproto.moretags) = "form:\"subject\""];
 	string  course = 3 [(gogoproto.moretags) = "form:\"course\""];
-    string  knowledge = 4 [(gogoproto.moretags) = "form:\"knowledge\""];
+	string  knowledge = 4 [(gogoproto.moretags) = "form:\"knowledge\""];
+	int64 page = 5 [(gogoproto.moretags) = "form:\"page\""];
 }
 
 message QueryQuestionReply{
-    repeated QuestionInfoReply questions = 1 [(gogoproto.moretags) = "form:\"questions\""];
+	repeated QuestionInfoReply questions = 1 [(gogoproto.moretags) = "form:\"questions\""];
+	int64 currentpage = 2[(gogoproto.moretags) = "form:\"currentpage\""];
+    int64 totalpage = 3[(gogoproto.moretags) = "form:\"totalpage\""];
 }
 
 message CreateHomeWorkReq{
@@ -299,4 +308,6 @@ message UserPaperAnswerInfo{
 	repeated string useranswer = 10 [(gogoproto.moretags) = "form:\"useranswer\""];
 	bool uaimage  = 11 [(gogoproto.moretags) = "form:\"uaimage\""];
 	bool needcheck  = 12 [(gogoproto.moretags) = "form:\"needcheck\""];
+	string explain  = 13 [(gogoproto.moretags) = "form:\"explain\""];
+	int64 star = 14 [(gogoproto.moretags) = "form:\"star\""];
 }
