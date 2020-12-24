@@ -161,3 +161,26 @@ func (s *QuestionService) QueryPaperInClass(ctx context.Context, req *api.QueryP
 	fmt.Println(allCount, rsp.Currentpage, rsp.Totalpage)
 	return nil
 }
+
+func (s *QuestionService) QueryPaperQuestions(ctx context.Context, req *api.QueryPaperQuestionsReq, rsp *api.QueryPaperQuestionsReply) error {
+	logrus.Infof("QueryPaperQuestions req is %v ", req)
+	paper := new(model.Paper)
+	err := gdao.FillPaperById(ctx, bson.ObjectIdHex(req.Paperid), paper)
+	if err != nil {
+		fmt.Println("query paper error", err)
+		return fmt.Errorf("查找试卷失败")
+	} else {
+		for _, v := range paper.Questions {
+			question := new(model.Qusetion)
+			if err := gdao.FillQuestionById(ctx, bson.ObjectIdHex(v.Questionid), question); err != nil {
+				fmt.Println("QueryMyPaperAnswerRecord 查找题目 %v 失败", v.Questionid)
+				continue
+			}
+			rsp.Paper = append(rsp.Paper, &api.QuestionInfo{v.Questionid, int64(question.Kind), question.Content, question.QImage, question.OImage, question.Option, v.Score})
+		}
+	}
+	rsp.Name = paper.Name
+	rsp.Totalscore = paper.Totalscore
+	rsp.Continuingtime = paper.ContinuingTime
+	return nil
+}

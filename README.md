@@ -1001,3 +1001,514 @@ response:
     "code": 0,
     "data": {}
     }`
+
+
+--------
+
+api:/paper/create
+
+desc:教师为班级创建试卷
+
+method:post
+
+param:
+
+    `{
+	"name":"期中试卷试卷", //string 试卷名
+	"classid":"5fbbc8af36d02ac44f70eb67", //string 班级id
+	"continuingtime":3600, //in64 答题时长，单位秒
+	"questions":[
+		{
+			"questionid":"5fccd6d236d02a17947882a4",//string 试题id
+			"score":10,//int64 试题分数
+			"needcheck":false //bool 是否需要人工判题
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"score":10,
+			"needcheck":false
+		}
+		]
+}`
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "paperid": "5fe478b3a541ddbf7e479508" // string  试卷id
+    }
+    }`
+
+--------
+
+api:/paper/query
+
+desc:查询班级下拥有的试卷
+
+method:get
+
+param:
+
+    - classid string 班级id
+    - page string 当前页数
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "paper": [
+            {
+                "paperid": "5fe47805a541ddbf7e4794fe",//试卷id
+                "name": "期中试卷试卷",// 试卷名
+                "totalscore": 110, // 试卷总分
+                "continuingtime": 3600 // 答卷时长限制
+            }
+        ],
+        "currentpage": 1,
+        "totalpage": 1
+    }
+    }`
+
+--------
+
+api:/paper/query/questions
+
+desc:根据试卷id查询试卷内容
+
+method:Get
+
+param:
+
+    - paperid string 试卷id
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "paper": [
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "content": "测试",
+                "qimage":false,
+                "oimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "score": 10
+            }
+        ],
+        "name": "期中试卷试卷",
+        "totalscore": 110,
+        "continuingtime": 3600
+    }
+}`
+
+--------
+
+api:/paper/do
+
+desc:答卷
+
+method:PUT
+
+param:
+
+    `{
+	"paperid":"5fe47805a541ddbf7e4794fe",// string 试卷id
+	"answer":[
+		{
+			"questionid":"5fccd6d236d02a17947882a4", // 题目id
+			"answer":["1"],// 答题
+			"aimage":false// 是否是图片
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"answer":["2"],
+			"aimage":false
+		},
+		{
+			"questionid":"5fccd6d236d02a17947882a4",
+			"answer":["1"],
+			"aimage":false
+		}
+		]
+    }`
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {}
+    }`
+
+--------
+
+api:/paper/answerrecord/query
+
+desc:查询答卷记录
+
+method:Get
+
+param:
+
+    - paperid string 试卷id
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "paperid": "5fe47805a541ddbf7e4794fe",
+        "papername": "期中试卷试卷",
+        "totalscore": 110, //试卷总分
+        "getscore": 40, //答卷得分
+        "needcheck": false,//是否需要人工判卷，为true则不显示具体信息，提示用户等待判卷即可
+        "paperrecord": [
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "name":"测试名",
+                "content": "测试",
+                "qimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "oimage":false,
+                "rightanswer": [
+                    "1"
+                ],
+                "raimage":false,
+                "useranswer": [
+                    "1"
+                ],
+                "uimage":false,
+                "needcheck":false,
+                "explain":"答案解析",
+                "star":3//题目星级，最高为5
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "name":"测试名",
+                "content": "测试",
+                "qimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "oimage":false,
+                "rightanswer": [
+                    "1"
+                ],
+                "raimage":false,
+                "useranswer": [
+                    "2"
+                ],
+                "uimage":false,
+                "needcheck":false,
+                "explain":"答案解析",
+                "star":3//题目星级，最高为5
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "name":"测试名",
+                "content": "测试",
+                "qimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "oimage":false,
+                "rightanswer": [
+                    "1"
+                ],
+                "raimage":false,
+                "useranswer": [
+                    "1"
+                ],
+                "uimage":false,
+                "needcheck":false,
+                "explain":"答案解析",
+                "star":3//题目星级，最高为5
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "name":"测试名",
+                "content": "测试",
+                "qimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "oimage":false,
+                "rightanswer": [
+                    "1"
+                ],
+                "raimage":false,
+                "useranswer": [
+                    "2"
+                ],
+                "uimage":false,
+                "needcheck":false,
+                "explain":"答案解析",
+                "star":3//题目星级，最高为5
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "name":"测试名",
+                "content": "测试",
+                "qimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "oimage":false,
+                "rightanswer": [
+                    "1"
+                ],
+                "raimage":false,
+                "useranswer": [
+                    "1"
+                ],
+                "uimage":false,
+                "needcheck":false,
+                "explain":"答案解析",
+                "star":3//题目星级，最高为5
+            },
+            {
+                "questionid": "5fccd6d236d02a17947882a4",
+                "kind": 1,
+                "name":"测试名",
+                "content": "测试",
+                "qimage":false,
+                "option": [
+                    "1",
+                    "2",
+                    "3",
+                    "4"
+                ],
+                "oimage":false,
+                "rightanswer": [
+                    "1"
+                ],
+                "raimage":false,
+                "useranswer": [
+                    "2"
+                ],
+                "uimage":false,
+                "needcheck":false,
+                "explain":"答案解析",
+                "star":3//题目星级，最高为5
+            }
+        ]
+    }
+}`

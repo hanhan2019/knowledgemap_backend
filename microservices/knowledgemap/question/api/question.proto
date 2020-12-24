@@ -30,6 +30,7 @@ service Question {
 	
 	rpc CreatePaper(CreatePaperReq) returns (CreatePaperReply) {}
 	rpc QueryPaperInClass(QueryPaperInClassReq) returns (QueryPaperInClassReply) {}
+	rpc QueryPaperQuestions(QueryPaperQuestionsReq) returns (QueryPaperQuestionsReply) {}
 	rpc DoPaper(DoPaperReq) returns (Empty) {}
 	rpc QueryMyPaperAnswerRecord(QueryPaperAnswerRecordReq)returns (QueryPaperAnswerRecordReply) {}
 
@@ -212,6 +213,7 @@ message QuestionPre{
 	int64 kind = 2 [(gogoproto.moretags) = "form:\"kind\""] ;
 	string knowledgename = 3 [(gogoproto.moretags) = "form:\"knowledgename\""] ;
 	string name = 4 [(gogoproto.moretags) = "form:\"name\""] ;
+	int64 star = 5 [(gogoproto.moretags) = "form:\"star\""] ;
 }
 
 message PracticeSummaryDetailInfo{
@@ -264,6 +266,18 @@ message QueryPaperInClassReply{
 	repeated PaperInfo paper = 1 [(gogoproto.moretags) = "form:\"paper\""] ;
 	int64 currentpage = 2[(gogoproto.moretags) = "form:\"currentpage\""];
     int64 totalpage = 3[(gogoproto.moretags) = "form:\"totalpage\""];
+}
+
+message QueryPaperQuestionsReq{
+	string paperid = 1 [(gogoproto.moretags) = "form:\"paperid\""] ;
+}
+
+
+message QueryPaperQuestionsReply{
+	repeated QuestionInfo paper = 1 [(gogoproto.moretags) = "form:\"paper\""] ;
+	string name = 2 [(gogoproto.moretags) = "form:\"name\""] ;
+	int64 totalscore = 3 [(gogoproto.moretags) = "form:\"totalscore\""] ;
+	int64 continuingtime = 4 [(gogoproto.moretags) = "form:\"continuingtime\""] ;
 }
 
 message PaperInfo{

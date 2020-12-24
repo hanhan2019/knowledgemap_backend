@@ -44,4 +44,5 @@ type PracticeQuestion struct {
 	KnowlegeId   bson.ObjectId `json:"knowlegeid" bson:"knowlegeid"`
 	KnowlegeName string        `json:"knowlegename" bson:"knowlegename"`
 	CreateTime   int64         `json:"createtime" bson:"createtime"`
+	Star         int64         `json:"star" bson:"star"`
 }

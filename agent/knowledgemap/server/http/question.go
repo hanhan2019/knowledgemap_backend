@@ -144,6 +144,19 @@ func queryPaper(c echo.Context) error {
 	return c.JSON(http.StatusOK, comm.Data(nil))
 }
 
+func queryPaperQuestion(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(qapi.QueryPaperQuestionsReq)
+	req.Paperid = c.QueryParam("paperid")
+	if res, err := questionSrv.QueryPaperQuestions(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+	return c.JSON(http.StatusOK, comm.Data(nil))
+}
+
 func doPaper(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.DoPaperReq)

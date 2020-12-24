@@ -90,6 +90,7 @@ func (s *QuestionService) GetPracticeSummary(ctx context.Context, req *api.Query
 		question.Questionid = v.QuestionId.Hex()
 		question.Kind = int64(v.QuestionKind)
 		question.Knowledgename = v.KnowlegeName
+		question.Star = v.Star
 		rsp.Questions = append(rsp.Questions, question)
 	}
 	rsp.Currentpage = req.Page
@@ -142,7 +143,7 @@ func (s *QuestionService) AddQuestionInPS(ctx context.Context, req *api.Controll
 				knowledgeName = res.GetName()
 			}
 		}
-		psQuestion := &model.PracticeQuestion{bson.NewObjectId(), bson.ObjectIdHex(req.Practicesummaryid), oneQuestion.Name, oneQuestion.ID, oneQuestion.Kind, oneQuestion.Knowledge, knowledgeName, time.Now().Unix()}
+		psQuestion := &model.PracticeQuestion{bson.NewObjectId(), bson.ObjectIdHex(req.Practicesummaryid), oneQuestion.Name, oneQuestion.ID, oneQuestion.Kind, oneQuestion.Knowledge, knowledgeName, time.Now().Unix(), oneQuestion.Star}
 		if err := gdao.NewPracticeQuestion(ctx, psQuestion); err != nil {
 			logrus.Error("create practice question error", err)
 			continue
