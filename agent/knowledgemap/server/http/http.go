@@ -153,5 +153,11 @@ func InitRouter(e *echo.Echo) {
 		api.GET("/homework/answerrecord/query", queryAnswerRecord, authMid, mustTeacherMid)
 		api.GET("/homework/query/info", queryHomeWorkInClass, authMid)
 	}
+	{
+		api.POST("/paper/create", createPaper, authMid, mustTeacherMid)
+		api.GET("/paper/query", queryPaper, authMid) //根据班级号查试卷
+		api.PUT("/paper/do", doPaper, authMid)
+		api.GET("/paper/answerrecord/query", queryPaperAnswerRecord, authMid)
+	}
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

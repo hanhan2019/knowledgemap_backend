@@ -35,7 +35,7 @@ func (s *QuestionService) GetMyQuestionInfo(ctx context.Context, req *api.CRqQue
 func (s *QuestionService) CreateQuestion(ctx context.Context, req *api.CreateQuestionReq, rsp *api.QuestionInfoReply) error {
 	logrus.Infof("CreateQuestion req is %v ", req)
 	id := bson.NewObjectId()
-	question := &model.Qusetion{id, req.Name, model.Qusetion_Kind(req.Kind), req.Content, req.Option, req.Answer, req.Subject, req.Course, bson.ObjectIdHex(req.Knowledge), time.Now().Unix()}
+	question := &model.Qusetion{id, req.Name, model.Qusetion_Kind(req.Kind), req.Content, req.Qimage, req.Option, req.Oimage, req.Answer, req.Aimage, req.Subject, req.Course, bson.ObjectIdHex(req.Knowledge), time.Now().Unix(), req.Needcheck}
 	if err := gdao.NewQuestion(ctx, question); err != nil {
 		fmt.Println("create question error", err)
 		return fmt.Errorf("创建题目失败")

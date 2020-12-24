@@ -47,7 +47,7 @@ func (s *QuestionService) QueryMyHomeWork(ctx context.Context, req *api.QueryMyH
 				for _, questionId := range v.Questions {
 					question := new(model.Qusetion)
 					gdao.FillQuestionById(ctx, bson.ObjectIdHex(questionId), question)
-					info := &api.QuestionInfo{question.ID.Hex(), int64(question.Kind), question.Content, question.Option}
+					info := &api.QuestionInfo{question.ID.Hex(), int64(question.Kind), question.Content, false, false, question.Option, 10}
 					questionsInfo = append(questionsInfo, info)
 				}
 				homeWorkInfo := &api.HomeWorkInfo{v.ID.Hex(), v.Name, questionsInfo}
@@ -76,8 +76,10 @@ func (s *QuestionService) DoHomeWork(ctx context.Context, req *api.DoHomeWorkReq
 				fmt.Println("DoHomeWork 查找题目 %v 失败", v.Questionid)
 				continue
 			}
-			isTrue := StringSliceReflectEqual(question.Answer, v.Answer)
-			record := &model.AnswerRecord{bson.NewObjectId(), bson.ObjectIdHex(req.Userid), req.Username, bson.ObjectIdHex(v.Questionid), v.Answer, isTrue, question.Subject, req.Homeworkid, time.Now().Unix()}
+			// isTrue := StringSliceReflectEqual(question.Answer, v.Answer)
+			result := model.WRONG
+			score := int64(10)
+			record := &model.AnswerRecord{bson.NewObjectId(), bson.ObjectIdHex(req.Userid), req.Username, bson.ObjectIdHex(v.Questionid), v.Answer, question.AImage, result, question.Subject, req.Homeworkid, "", score, time.Now().Unix()}
 			gdao.NewAnswerRecord(ctx, record)
 		}
 		completeStudents = homeWork.CompleteStudents
@@ -106,7 +108,7 @@ func (s *QuestionService) QueryAnswerRecord(ctx context.Context, req *api.QueryA
 				continue
 			}
 			records := new([]*model.AnswerRecord)
-			if err := gdao.FillAnserRecordByHomeWorkIdAndQuestionId(ctx, req.Homeworkid, bson.ObjectIdHex(v), records); err != nil {
+			if err := gdao.FillAnserRecordByIdAndQuestionId(ctx, "homeworkid", req.Homeworkid, bson.ObjectIdHex(v), records); err != nil {
 				return fmt.Errorf("QueryAnswerRecord: 查找题目 %v 的答题记录失败", v)
 				continue
 			}

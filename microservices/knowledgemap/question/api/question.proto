@@ -26,7 +26,13 @@ service Question {
 	rpc GetPracticeSummary(QueryPracticeSummaryReq) returns (PracticeSummaryDetailInfo) {}	
 	rpc QueryMyPracticeSummary(QueryMyPracticeSummaryReq) returns (QueryMyPracticeSummaryReply) {}
 	rpc AddQuestionInPS(ControllQuestionInPSReq)returns (Empty) {}	
-	rpc DelteQuestionInPS(ControllQuestionInPSReq)returns (Empty) {}	
+	rpc DelteQuestionInPS(ControllQuestionInPSReq)returns (Empty) {}
+	
+	rpc CreatePaper(CreatePaperReq) returns (CreatePaperReply) {}
+	rpc QueryPaperInClass(QueryPaperInClassReq) returns (QueryPaperInClassReply) {}
+	rpc DoPaper(DoPaperReq) returns (Empty) {}
+	rpc QueryMyPaperAnswerRecord(QueryPaperAnswerRecordReq)returns (QueryPaperAnswerRecordReply) {}
+
 }
 message CRqQueryMyQuestionInfoBySubject{
 	string uid = 1;
@@ -41,24 +47,31 @@ message CRpMyQuestionInfoBySubject{
 message CreateQuestionReq{
 	int64  kind = 1 [(gogoproto.moretags) = "form:\"kind\""];
 	string  name = 2 [(gogoproto.moretags) = "form:\"name\""];
-    string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
-    repeated string  option = 4 [(gogoproto.moretags) = "form:\"option\""];
-    repeated string answer = 5 [(gogoproto.moretags) = "form:\"answer\""];
-	string  subject = 6 [(gogoproto.moretags) = "form:\"subject\""];
-	string  course = 7 [(gogoproto.moretags) = "form:\"course\""];
-    string  knowledge = 8 [(gogoproto.moretags) = "form:\"knowledge\""];
+	string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
+	bool qimage  = 4 [(gogoproto.moretags) = "form:\"qimage\""];
+	repeated string  option = 5 [(gogoproto.moretags) = "form:\"option\""];
+	bool oimage  = 6 [(gogoproto.moretags) = "form:\"oimage\""];
+	repeated string answer = 7 [(gogoproto.moretags) = "form:\"answer\""];
+	bool aimage  = 8 [(gogoproto.moretags) = "form:\"aimage\""];
+	string  subject = 9 [(gogoproto.moretags) = "form:\"subject\""];
+	string  course = 10 [(gogoproto.moretags) = "form:\"course\""];
+	string  knowledge = 11 [(gogoproto.moretags) = "form:\"knowledge\""];
+	bool needcheck  = 12 [(gogoproto.moretags) = "form:\"needcheck\""];
 }
 
 message QuestionInfoReply{
 	string id = 1[(gogoproto.moretags) = "form:\"id\""];
     int64  kind = 2 [(gogoproto.moretags) = "form:\"kind\""];
-    string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
-    repeated string  option = 4 [(gogoproto.moretags) = "form:\"option\""];
-    repeated string answer = 5 [(gogoproto.moretags) = "form:\"answer\""];
-	string  subject = 6 [(gogoproto.moretags) = "form:\"subject\""];
-	string  course = 7 [(gogoproto.moretags) = "form:\"course\""];
-	string  knowledge = 8 [(gogoproto.moretags) = "form:\"knowledge\""];
-	string  name = 9 [(gogoproto.moretags) = "form:\"name\""];
+	string  content = 3 [(gogoproto.moretags) = "form:\"content\""];
+	bool qimage = 4 [(gogoproto.moretags) = "form:\"qimage\""];
+	repeated string  option = 5 [(gogoproto.moretags) = "form:\"option\""];
+	bool oimage = 6 [(gogoproto.moretags) = "form:\"oimage\""];
+	repeated string answer = 7 [(gogoproto.moretags) = "form:\"answer\""];
+	bool aimage  = 8 [(gogoproto.moretags) = "form:\"aimage\""];
+	string  subject = 9 [(gogoproto.moretags) = "form:\"subject\""];
+	string  course = 10 [(gogoproto.moretags) = "form:\"course\""];
+	string  knowledge = 11 [(gogoproto.moretags) = "form:\"knowledge\""];
+	string  name = 12 [(gogoproto.moretags) = "form:\"name\""];
 }
 
 message QueryQuestionReq{
@@ -92,7 +105,10 @@ message QuestionInfo{
 	string questionid = 1 [(gogoproto.moretags) = "form:\"qustionid\""] ;
 	int64 kind = 2 [(gogoproto.moretags) = "form:\"kind\""] ;
 	string content = 3 [(gogoproto.moretags) = "form:\"content\""] ;
-	repeated string option = 4 [(gogoproto.moretags) = "form:\"option\""] ;
+	bool qimage = 4 [(gogoproto.moretags) = "form:\"qimage\""] ;
+	bool oimage = 5 [(gogoproto.moretags) = "form:\"oimage\""] ;
+	repeated string option = 6 [(gogoproto.moretags) = "form:\"option\""] ;
+	int64 score = 7 [(gogoproto.moretags) = "form:\"socre\""] ;
 }
 
 message HomeWorkInfo{
@@ -105,16 +121,17 @@ message QueryMyHomeWorkReply{
 	repeated HomeWorkInfo homework = 1 [(gogoproto.moretags) = "form:\"homework\""] ;
 }
 
-message DoHomeWorkInfo{
+message DoQuestionInfo{
 	string questionid = 1  [(gogoproto.moretags) = "form:\"questionid\""] ;
 	repeated string answer = 2 [(gogoproto.moretags) = "form:\"answer\""] ;
+	bool aimage = 3 [(gogoproto.moretags) = "form:\"aimage\""] ;
 }
 
 message DoHomeWorkReq{
 	string homeworkid = 1  [(gogoproto.moretags) = "form:\"homeworkid\""] ;
 	string userid = 2 [(gogoproto.moretags) = "form:\"userid\""] ;
 	string username= 3 [(gogoproto.moretags) = "form:\"username\""] ;
-	repeated DoHomeWorkInfo answer =4 [(gogoproto.moretags) = "form:\"answer\""] ;
+	repeated DoQuestionInfo answer =4 [(gogoproto.moretags) = "form:\"answer\""] ;
 }
 
 message QueryAnswerRecordReq{
@@ -208,4 +225,77 @@ message QueryMyPracticeSummaryReply{
 message ControllQuestionInPSReq{
 	string practicesummaryid = 1 [(gogoproto.moretags) = "form:\"practicesummaryid\""] ;
 	repeated string questions = 2 [(gogoproto.moretags) = "form:\"questions\""];	
+}
+
+
+message CreatePaperReq{
+	message QuestionsInPaper{
+		string questionid = 1 [(gogoproto.moretags) = "form:\"questionid\""] ;
+		int64 score = 2 [(gogoproto.moretags) = "form:\"score\""] ;
+		bool needcheck = 3 [(gogoproto.moretags) = "form:\"needcheck\""] ;
+	}
+	string name = 1 [(gogoproto.moretags) = "form:\"name\""] ;
+	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
+	repeated QuestionsInPaper questions =4 [(gogoproto.moretags) = "form:\"questions\""];
+	int64 continuingtime = 5 [(gogoproto.moretags) = "form:\"continuingtime\""] ;
+}
+
+message CreatePaperReply{
+	string paperid = 1 [(gogoproto.moretags) = "form:\"paperid\""] ;
+}
+
+message QueryPaperInClassReq{
+	string userid = 1 [(gogoproto.moretags) = "form:\"userid\""] ;
+	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
+	int64 page = 3 [(gogoproto.moretags) = "form:\"page\""] ;
+}
+
+
+message QueryPaperInClassReply{
+	repeated PaperInfo paper = 1 [(gogoproto.moretags) = "form:\"paper\""] ;
+	int64 currentpage = 2[(gogoproto.moretags) = "form:\"currentpage\""];
+    int64 totalpage = 3[(gogoproto.moretags) = "form:\"totalpage\""];
+}
+
+message PaperInfo{
+	string paperid = 1 [(gogoproto.moretags) = "form:\"paperid\""] ;
+	string name = 2 [(gogoproto.moretags) = "form:\"name\""] ;
+	int64 totalscore = 3 [(gogoproto.moretags) = "form:\"totalscore\""] ;
+	// repeated QuestionInfo questions = 4 [(gogoproto.moretags) = "form:\"questions\""] ;
+	int64 continuingtime = 4 [(gogoproto.moretags) = "form:\"continuingtime\""] ;
+}
+
+message DoPaperReq{
+	string paperid = 1  [(gogoproto.moretags) = "form:\"paperid\""] ;
+	string userid = 2 [(gogoproto.moretags) = "form:\"userid\""] ;
+	string username= 3 [(gogoproto.moretags) = "form:\"username\""] ;
+	repeated DoQuestionInfo answer = 4 [(gogoproto.moretags) = "form:\"answer\""] ;
+}
+
+message QueryPaperAnswerRecordReq{
+	string paperid = 1  [(gogoproto.moretags) = "form:\"paperid\""] ;
+}
+
+message QueryPaperAnswerRecordReply{
+	string paperid = 1  [(gogoproto.moretags) = "form:\"paperid\""] ;
+	string papername = 2  [(gogoproto.moretags) = "form:\"papername\""] ;
+	int64 totalscore = 3  [(gogoproto.moretags) = "form:\"totalscore\""] ;
+	int64 getscore = 4  [(gogoproto.moretags) = "form:\"getscore\""] ;
+	bool needcheck = 5 [(gogoproto.moretags) = "form:\"needcheck\""] ;
+	repeated UserPaperAnswerInfo paperrecord= 6  [(gogoproto.moretags) = "form:\"homeworkrecord\""] ;
+}
+
+message UserPaperAnswerInfo{
+	string questionid = 1  [(gogoproto.moretags) = "form:\"questionid\""] ;
+	int64  kind = 2 [(gogoproto.moretags) = "form:\"kind\""];
+	string  name = 3 [(gogoproto.moretags) = "form:\"name\""];
+	string  content = 4 [(gogoproto.moretags) = "form:\"content\""];
+	bool qimage  = 5 [(gogoproto.moretags) = "form:\"qimage\""];
+	repeated string  option = 6 [(gogoproto.moretags) = "form:\"option\""];
+	bool oimage  = 7 [(gogoproto.moretags) = "form:\"oimage\""];
+	repeated string rightanswer = 8 [(gogoproto.moretags) = "form:\"rightanswer\""];
+	bool raimage  = 9 [(gogoproto.moretags) = "form:\"raimage\""];
+	repeated string useranswer = 10 [(gogoproto.moretags) = "form:\"useranswer\""];
+	bool uaimage  = 11 [(gogoproto.moretags) = "form:\"uaimage\""];
+	bool needcheck  = 12 [(gogoproto.moretags) = "form:\"needcheck\""];
 }

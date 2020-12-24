@@ -111,3 +111,60 @@ func queryHomeWorkInClass(c echo.Context) error {
 		return c.JSON(http.StatusOK, comm.Data(res))
 	}
 }
+
+func createPaper(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(qapi.CreatePaperReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	if res, err := questionSrv.CreatePaper(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func queryPaper(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(qapi.QueryPaperInClassReq)
+	req.Userid = c.QueryParam("userid")
+	req.Classid = c.QueryParam("classid")
+	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
+	if res, err := questionSrv.QueryPaperInClass(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+	return c.JSON(http.StatusOK, comm.Data(nil))
+}
+
+func doPaper(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(qapi.DoPaperReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	if res, err := questionSrv.DoPaper(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func queryPaperAnswerRecord(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(qapi.QueryPaperAnswerRecordReq)
+	req.Paperid = c.QueryParam("paperid")
+	if res, err := questionSrv.QueryMyPaperAnswerRecord(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}

@@ -21,6 +21,7 @@ func (u *UserService) UserInfo(ctx context.Context, req *api.UserReq, rsp *api.U
 	}
 	rsp.User.Password = ""
 	rsp.User.Usertype = int64(req.Identify)
+	rsp.User.Imagepath = "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1028479771,2944343576&fm=26&gp=0.jpg"
 	return nil
 	// if err := gdao.FillUserById(ctx, bson.ObjectIdHex(req.Userid), &rsp); err != nil {
 	// 	logrus.Errorf("GetUserById error %v ", err)
