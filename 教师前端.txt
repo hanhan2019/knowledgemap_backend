@@ -195,7 +195,7 @@ response:
         }
     }`
 
-1、根据班级获取所有学生列表接口
+2、根据班级获取所有学生列表接口
 --------
 
 api:/class/query/alluserinclass/:classid
@@ -323,7 +323,7 @@ response:
     }
 }`
 
-2、根据用户名查询学生接口
+3、根据用户名查询学生接口
 --------
 
 api:/class/query/student
@@ -362,7 +362,7 @@ response:
     }
 }`
 
-3、从班级删除学生接口
+4、从班级删除学生接口
 --------
 
 api:/class/deletestudent
