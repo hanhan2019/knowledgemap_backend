@@ -55,7 +55,7 @@ func (d *Dao) CheckInClass(ctx context.Context, userId, classId string) error {
 	return nil
 }
 
-func (d *Dao) FillAllStudentsById(ctx context.Context, classid string, classes *[]*model.ClassUser) error {
+func (d *Dao) FillAllStudentsById(ctx context.Context, classid string, classes *[]*model.ClassUser, page, pageCount int) (err error, allCount int) {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
 	col := db.C(model.CLASS_USER_COLLECTION_NAME)
@@ -63,5 +63,32 @@ func (d *Dao) FillAllStudentsById(ctx context.Context, classid string, classes *
 		"classid": classid,
 		"status":  model.Student,
 	}
-	return col.Find(cont).All(classes)
+	err = col.Find(cont).Sort("-_id").Limit(int(pageCount)).Skip(int(page * pageCount)).All(classes)
+	if err == nil {
+		allCount, err = col.Find(cont).Count()
+	}
+	return
+}
+func (d *Dao) FillStudentsByUserName(ctx context.Context, classid string, classes *[]*model.ClassUser, page, pageCount int, userName string) (err error, allCount int) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.CLASS_USER_COLLECTION_NAME)
+	cont := bson.M{
+		"classid":  classid,
+		"status":   model.Student,
+		"username": userName,
+	}
+	err = col.Find(cont).Sort("-_id").Limit(int(pageCount)).Skip(int(page * pageCount)).All(classes)
+	if err == nil {
+		allCount, err = col.Find(cont).Count()
+	}
+	return
+}
+
+func (d *Dao) DeleteStudenInClass(ctx context.Context, classId, userId string) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.CLASS_USER_COLLECTION_NAME)
+	cont := bson.M{"classid": classId, "userid": userId}
+	return col.Remove(cont)
 }

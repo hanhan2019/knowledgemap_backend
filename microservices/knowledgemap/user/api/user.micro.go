@@ -36,6 +36,7 @@ var _ server.Option
 
 type UserService interface {
 	UserInfo(ctx context.Context, in *UserReq, opts ...client.CallOption) (*UserInfoReply, error)
+	QueryUserInfo(ctx context.Context, in *QueryUserInfoReq, opts ...client.CallOption) (*QueryUserInfoReply, error)
 }
 
 type userService struct {
@@ -66,15 +67,27 @@ func (c *userService) UserInfo(ctx context.Context, in *UserReq, opts ...client.
 	return out, nil
 }
 
+func (c *userService) QueryUserInfo(ctx context.Context, in *QueryUserInfoReq, opts ...client.CallOption) (*QueryUserInfoReply, error) {
+	req := c.c.NewRequest(c.name, "User.QueryUserInfo", in)
+	out := new(QueryUserInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	UserInfo(context.Context, *UserReq, *UserInfoReply) error
+	QueryUserInfo(context.Context, *QueryUserInfoReq, *QueryUserInfoReply) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		UserInfo(ctx context.Context, in *UserReq, out *UserInfoReply) error
+		QueryUserInfo(ctx context.Context, in *QueryUserInfoReq, out *QueryUserInfoReply) error
 	}
 	type User struct {
 		user
@@ -89,4 +102,8 @@ type userHandler struct {
 
 func (h *userHandler) UserInfo(ctx context.Context, in *UserReq, out *UserInfoReply) error {
 	return h.UserHandler.UserInfo(ctx, in, out)
+}
+
+func (h *userHandler) QueryUserInfo(ctx context.Context, in *QueryUserInfoReq, out *QueryUserInfoReply) error {
+	return h.UserHandler.QueryUserInfo(ctx, in, out)
 }

@@ -2,14 +2,19 @@ package handler
 
 import (
 	"knowledgemap_backend/library/database/mongo"
+	"knowledgemap_backend/microservices/common/namespace"
 	"knowledgemap_backend/microservices/knowledgemap/class/dao"
+	uapi "knowledgemap_backend/microservices/knowledgemap/user/api"
+
+	mclient "github.com/micro/go-micro/client"
 
 	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 )
 
 var (
-	gdao *dao.Dao
+	gdao    *dao.Dao
+	userSrv uapi.UserService
 )
 
 func Init() {
@@ -29,4 +34,6 @@ func Init() {
 	}
 
 	gdao = dao.InitDao(db, client)
+	userSrv = uapi.NewUserService(namespace.GetName("microservices.knowledgemap.user"), mclient.DefaultClient)
+
 }

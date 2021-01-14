@@ -29,6 +29,12 @@ func (d *Dao) FillStudentById(ctx context.Context, id bson.ObjectId, rsp **api.U
 	}
 	return
 }
+func (d *Dao) FillStudentByName(ctx context.Context, name string, rsp *[]*api.UserReply) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	err = db.C(model.STUDENT_COLLECTION_NAME).Find(bson.M{"username": name}).All(*rsp)
+	return
+}
 
 func (d *Dao) FillTeacherById(ctx context.Context, id bson.ObjectId, rsp **api.UserReply) (err error) {
 	db := d.mdb.Copy()
@@ -42,6 +48,14 @@ func (d *Dao) FillTeacherById(ctx context.Context, id bson.ObjectId, rsp **api.U
 	}
 	return
 }
+
+func (d *Dao) FillTeacherByName(ctx context.Context, name string, rsp *[]*api.UserReply) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	err = db.C(model.TEACHER_COLLECTION_NAME).Find(bson.M{"username": name}).All(*rsp)
+	return
+}
+
 func (d *Dao) FillSecretaryById(ctx context.Context, id bson.ObjectId, rsp **api.UserReply) (err error) {
 	db := d.mdb.Copy()
 	defer db.Session.Close()
@@ -52,6 +66,13 @@ func (d *Dao) FillSecretaryById(ctx context.Context, id bson.ObjectId, rsp **api
 	if err == nil {
 		(*rsp).Userid = bson.ObjectId((*rsp).Userid).Hex()
 	}
+	return
+}
+
+func (d *Dao) FillSecretaryByName(ctx context.Context, name string, rsp *[]*api.UserReply) (err error) {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	err = db.C(model.SECRETARY_COLLECTION_NAME).Find(bson.M{"username": name}).All(*rsp)
 	return
 }
 

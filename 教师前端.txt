@@ -1,0 +1,507 @@
+一、注册、登录界面
+1、注册接口
+----
+
+api:/user/register
+
+desc:注册
+
+method:post
+
+param:
+
+    - usertype 身份枚举 0学生 1老师 2教秘
+    - name string 真实姓名 
+    - major string 专业
+    - sex string 性别
+    - account string 账号
+    - password string 密码
+    - college string 学院
+
+response:
+
+    `{
+    "msg": "",
+    "code": 0,
+    "data": {
+            "user": {
+                "userid": "5fb665f436d02a366cae5b0f",
+                "username": "teacher1",
+                "major": "computer",
+                "sex": "man",
+                "account": "teacher1",
+                "password": "123456",
+                "number": "1"
+            },
+            "token": "55Tfjb56Y6O58fo453M6yd40N2cas3j6I6xc6aLeN5obI0if",
+            "expires": 1605875572
+        }
+    }`
+
+2、登录接口
+----
+
+api:/user/login
+
+desc:用户登录
+
+method:put
+
+param:
+
+   - account string 账号
+   - password string 密码
+   - usertype 身份枚举 0学生 1老师 2教秘
+  
+response:
+
+    `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "user": {
+                "userid": "5fb666c836d02a366cae5b10",
+                "username": "teacher1",
+                "usertype": 1,
+                "major": "computer",
+                "sex": "man",
+                "account": "teacher1",
+                "password": "123456",
+                "number": "1"
+            },
+            "token": "T5vfMbR666c6EcM8M3Q6jdv0h2Qag3z646DcEaDeT51b81M0",
+            "expires": 1605875825
+        }
+    }`
+
+二、教师用户信息界面
+1、修改信息
+----
+
+api:/user/changeinfo
+
+desc:修改自己的信息
+
+method:put
+
+param:
+
+   - name string 修改后的用户名
+   - sex string 修改后的性别
+   - college string 修改后的学院
+   - major string 修改后的专业
+
+response:
+
+  `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "user": {
+                "userid": "5fb67c5e36d02a6d18e309c9",
+                "username": "teacher1_change",
+                "major": "computer_change",
+                "sex": "man_change",
+                "account": "teacher1",
+                "number": "1",
+                "college": "computer_change"
+            }
+        }
+    }`
+
+2、修改密码
+----
+
+api:/user/changepassword
+
+desc:修改自己的密码
+
+method:put
+
+param:
+
+   - password string 修改后的密码
+
+response:
+
+  `{
+    "msg": "",
+    "code": 0,
+    "data": {}
+    }`
+
+----
+
+api:/user/query/info
+
+desc:查看自己的信息
+
+method:get
+
+param:
+
+response:
+
+  `{
+    "msg": "",
+    "code": 0,
+    "data": {
+            "userid": "5fb67c5e36d02a6d18e309c9",
+            "username": "teacher1_change",
+            "major": "computer_change",
+            "sex": "man_change",
+            "account": "teacher1",
+            "number": "1",
+            "college": "computer_change",
+            "identify": 1
+        }
+    }`
+
+
+三、主页
+1、获取试卷、作业、题目、答卷、答题总数接口
+2、获取答题分布折线图接口
+3、获取答题分布学科饼状图接口
+
+
+四、用户管理界面-学生管理
+1、获得教师所在班级的接口
+--------
+
+api:/class/query/myclasses
+
+desc:学生、教师查询自己所有加入的班级
+
+method:get
+  
+response:
+
+    `{
+        "msg": "",
+        "code": 0,
+        "data": {
+            "classes": [
+                {
+                    "classid": "5e97e77936d02a9dbb5ce966",
+                    "name": "高等数学A",
+                    "major": "math",
+                    "college": "computer",
+                    "teachername": "李永乐",
+                    "createTime": 1587013497,
+                    "number": "10",
+                    "introduction": "数学课，必学的"
+                }
+            ]
+        }
+    }`
+
+1、根据班级获取所有学生列表接口
+--------
+
+api:/class/query/alluserinclass/:classid
+
+desc:查询班级所有学生信息
+
+method:get
+
+param:
+
+    - classid string 班级id 
+    - page string 分页
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "classid": "",
+        "students": [
+            {
+                "userid": "5fdee86255a8d148cdc91ae2",
+                "username": "张十一",
+                "number": "18",
+                "account": "e2",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1 //状态，1是活跃，2是封禁
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ae1",
+                "username": "张十",
+                "number": "17",
+                "account": "e1",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad9",
+                "username": "张九",
+                "number": "16",
+                "account": "d9",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad8",
+                "username": "张八",
+                "number": "15",
+                "account": "d8",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad7",
+                "username": "张七",
+                "number": "14",
+                "account": "d7",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad6",
+                "username": "张六",
+                "number": "13",
+                "account": "d6",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad5",
+                "username": "张五",
+                "number": "12",
+                "account": "d5",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad4",
+                "username": "张四",
+                "number": "11",
+                "account": "d4",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad3",
+                "username": "张三",
+                "number": "10",
+                "account": "d3",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1 
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad2",
+                "username": "张二",
+                "number": "8",
+                "account": "d2",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            }
+        ],
+        "currentpage": 0,
+        "totalpage": 1
+    }
+}`
+
+2、根据用户名查询学生接口
+--------
+
+api:/class/query/student
+
+desc:在班级中以用户名查询学生
+
+method:get
+
+param:
+    - classid string 班级id
+    - username string 学生用户名
+    - page string 分页
+
+  
+response:
+
+    `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "classid": "",
+        "students": [
+            {
+                "userid": "5fdee86255a8d148cdc91ad3",
+                "username": "张三",
+                "number": "10",
+                "account": "d3",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            }
+        ],
+        "currentpage": 0,
+        "totalpage": 0
+    }
+}`
+
+3、从班级删除学生接口
+--------
+
+api:/class/deletestudent
+
+desc:在班级中删除学生
+
+method:post
+
+param:
+    - classid string 班级id
+    - userid string 学生id
+
+response:
+
+    ``
+
+
+
+五、班级管理
+（1）班级列表
+1、获取自己所创班级接口
+--------
+
+api:/class/query/myclasses
+
+desc:学生、教师查询自己所有加入的班级
+
+method:get
+  
+response:
+
+    `{
+        "msg": "",
+        "code": 0,
+        "data": {
+            "classes": [
+                {
+                    "classid": "5e97e77936d02a9dbb5ce966",
+                    "name": "高等数学A",
+                    "major": "math",
+                    "college": "computer",
+                    "teachername": "李永乐",
+                    "createTime": 1587013497,
+                    "number": "10",
+                    "introduction": "数学课，必学的"
+                }
+            ]
+        }
+    }`
+
+2、删除自己所创班级接口
+
+（2）班级创编
+
+1、获取所在学科接口
+
+2、新建班级接口
+api:/class/create
+
+desc:教师或者教秘，创建班级
+
+method:post
+
+param:
+
+   - classname string 课程名
+   - major string 专业名
+   - college string 学院
+   - teachername string 教师名,教师创建必不填，教秘创建必填
+   - teacherid string 教师id编号，教秘创建必填
+   - introdution string 课程介绍
+
+response:
+
+    `{
+        "msg": "",
+        "code": 0,
+        "data": {
+            "classid": "5e97e77936d02a9dbb5ce966",
+            "name": "高等数学A",
+            "major": "math",
+            "college": "computer",
+            "teachername": "李永乐",
+            "introduction": "数学课，必学的"
+        }
+    }`
+
+六、知识点管理界面
+（1）知识点列表
+1、获取所教学科列表接口
+2、获取知识点列表接口
+（2）知识点创编
+1、新增知识点接口
+
+七、试卷管理界面
+（1）试卷列表
+1、获取所教学科试卷接口
+（2）试卷创编
+1、获取所教学科接口
+2、分题型获取所教学科所有题目接口
+3、创建试卷接口
+
+八、作业管理界面
+（1）作业列表
+1、获取所教学科作业接口
+（2）作业创编
+1、获取所教学科接口
+2、分题型获取所教学科所有题目接口
+3、获取所教班级接口
+4、获取所教学生接口
+5、创建作业接口
+
+
+九、题库管理
+（1）题目列表
+1、分题型获取所有题目接口
+（2）题目创编
+1、获取所教学科接口
+2、获取学科课程对应知识点接口
+3、分题型创建题目接口
+
+十、答卷管理
+（1）批改列表
+1、获取所教学科接口
+2、分学科课程获得待批改试卷、作业列表
+3、批改作业接口
+（2）统计列表
+1、获取所教学科接口
+2、分学科课程获得试卷、作业列表
+3、分试卷、作业获得答题情况统计
+4、根据试卷、作业题号获得对应题目的情况统计
+
+十一、学生掌握情况统计
+（1）学生掌握情况
+1、获取所教学科接口
+2、分学科获取所教学生接口
+3、根据学生获得其掌握知识点的情况
+（2）知识点掌握情况
+1、获取所教学科接口
+2、分学科获取所有知识点接口
+3、根据知识点获得掌握的学生情况接口
+

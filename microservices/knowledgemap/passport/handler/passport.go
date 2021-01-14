@@ -22,7 +22,6 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 		fmt.Printf("CheckAccount error %v ", err)
 		return errors.New("CheckAccount error")
 	}
-	rsp.User.Imagepath = "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1028479771,2944343576&fm=26&gp=0.jpg"
 	switch req.Usertype {
 	case uapi.Identify_STUDENT:
 		gdao.NewStudent(ctx, req)
@@ -30,6 +29,7 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 			return err
 		}
 		rsp.User.Usertype = int64(req.Usertype)
+		rsp.User.Imagepath = "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1028479771,2944343576&fm=26&gp=0.jpg"
 		return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 	case uapi.Identify_TEACHER:
 		gdao.NewTeacher(ctx, req)
@@ -37,6 +37,8 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 			return err
 		}
 		rsp.User.Usertype = int64(req.Usertype)
+		rsp.User.Imagepath = "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1028479771,2944343576&fm=26&gp=0.jpg"
+
 		return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 	case uapi.Identify_SECRETARY:
 		gdao.NewTeacher(ctx, req)
@@ -44,6 +46,8 @@ func (s *PassportService) Register(ctx context.Context, req *api.RegisterReq, rs
 			return err
 		}
 		rsp.User.Usertype = int64(req.Usertype)
+		rsp.User.Imagepath = "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1028479771,2944343576&fm=26&gp=0.jpg"
+
 		return gdao.GenerateLoginToken(ctx, int(req.Usertype), &rsp)
 	default:
 		fmt.Println("账号类型错误")

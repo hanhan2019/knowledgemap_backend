@@ -14,10 +14,13 @@
 		CreateClassReq
 		JoinClassReq
 		InvitationReq
+		StudentInfo
 		QueryClassUserInfoReply
 		SearchClassesInfoReq
 		SearchClassesInfoReply
 		QueryFormListReply
+		DeleteStudentReq
+		QueryStudentInClassReq
 */
 package api
 
@@ -41,7 +44,8 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type ClassReq struct {
-	Classid string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
+	Classid string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Page    int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page" form:"page"`
 }
 
 func (m *ClassReq) Reset()                    { *m = ClassReq{} }
@@ -56,18 +60,25 @@ func (m *ClassReq) GetClassid() string {
 	return ""
 }
 
+func (m *ClassReq) GetPage() int64 {
+	if m != nil {
+		return m.Page
+	}
+	return 0
+}
+
 type ClassReply struct {
-	Classid      string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid,omitempty" bson:"_id",form:"_id"`
-	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Subject      string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
-	Course       string `protobuf:"bytes,4,opt,name=course,proto3" json:"course,omitempty"`
-	College      string `protobuf:"bytes,5,opt,name=college,proto3" json:"college,omitempty"`
-	Teachername  string `protobuf:"bytes,6,opt,name=teachername,proto3" json:"teachername,omitempty"`
-	Createtime   int64  `protobuf:"varint,7,opt,name=createtime,proto3" json:"createtime,omitempty"`
-	Number       string `protobuf:"bytes,8,opt,name=number,proto3" json:"number,omitempty"`
-	Introduction string `protobuf:"bytes,9,opt,name=introduction,proto3" json:"introduction,omitempty"`
-	Teacherid    string `protobuf:"bytes,10,opt,name=teacherid,proto3" json:"teacherid,omitempty"`
-	Inclass      bool   `protobuf:"varint,11,opt,name=inclass,proto3" json:"inclass,omitempty"`
+	Classid      string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid" bson:"_id",form:"_id"`
+	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name"`
+	Subject      string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject"`
+	Course       string `protobuf:"bytes,4,opt,name=course,proto3" json:"course"`
+	College      string `protobuf:"bytes,5,opt,name=college,proto3" json:"college"`
+	Teachername  string `protobuf:"bytes,6,opt,name=teachername,proto3" json:"teachername"`
+	Createtime   int64  `protobuf:"varint,7,opt,name=createtime,proto3" json:"createtime"`
+	Number       string `protobuf:"bytes,8,opt,name=number,proto3" json:"number"`
+	Introduction string `protobuf:"bytes,9,opt,name=introduction,proto3" json:"introduction"`
+	Teacherid    string `protobuf:"bytes,10,opt,name=teacherid,proto3" json:"teacherid"`
+	Inclass      bool   `protobuf:"varint,11,opt,name=inclass,proto3" json:"inclass"`
 }
 
 func (m *ClassReply) Reset()                    { *m = ClassReply{} }
@@ -153,7 +164,7 @@ func (m *ClassReply) GetInclass() bool {
 }
 
 type UserClassReply struct {
-	Classes []*ClassReply `protobuf:"bytes,1,rep,name=classes" json:"classes,omitempty"`
+	Classes []*ClassReply `protobuf:"bytes,1,rep,name=classes" json:"classes"`
 }
 
 func (m *UserClassReply) Reset()                    { *m = UserClassReply{} }
@@ -169,13 +180,13 @@ func (m *UserClassReply) GetClasses() []*ClassReply {
 }
 
 type CreateClassReq struct {
-	Name         string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Subject      string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty" form:"subject"`
-	Course       string `protobuf:"bytes,3,opt,name=course,proto3" json:"course,omitempty" form:"course"`
-	College      string `protobuf:"bytes,4,opt,name=college,proto3" json:"college,omitempty" form:"college"`
-	Teachername  string `protobuf:"bytes,5,opt,name=teachername,proto3" json:"teachername,omitempty" form:"teachername"`
-	Teacherid    string `protobuf:"bytes,6,opt,name=teacherid,proto3" json:"teacherid,omitempty" form:"teacherid"`
-	Introduction string `protobuf:"bytes,7,opt,name=introduction,proto3" json:"introduction,omitempty" form:"introduction"`
+	Name         string `protobuf:"bytes,1,opt,name=name,proto3" json:"name" form:"name"`
+	Subject      string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject" form:"subject"`
+	Course       string `protobuf:"bytes,3,opt,name=course,proto3" json:"course" form:"course"`
+	College      string `protobuf:"bytes,4,opt,name=college,proto3" json:"college" form:"college"`
+	Teachername  string `protobuf:"bytes,5,opt,name=teachername,proto3" json:"teachername" form:"teachername"`
+	Teacherid    string `protobuf:"bytes,6,opt,name=teacherid,proto3" json:"teacherid" form:"teacherid"`
+	Introduction string `protobuf:"bytes,7,opt,name=introduction,proto3" json:"introduction" form:"introduction"`
 }
 
 func (m *CreateClassReq) Reset()                    { *m = CreateClassReq{} }
@@ -234,9 +245,9 @@ func (m *CreateClassReq) GetIntroduction() string {
 
 type JoinClassReq struct {
 	Userid    string `protobuf:"bytes,1,opt,name=userid,proto3" json:"uid" form:"userid"`
-	Classid   string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
-	Username  string `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty" form:"username"`
-	Indentify string `protobuf:"bytes,4,opt,name=indentify,proto3" json:"indentify,omitempty" form:"indentify"`
+	Classid   string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Username  string `protobuf:"bytes,3,opt,name=username,proto3" json:"username" form:"username"`
+	Indentify string `protobuf:"bytes,4,opt,name=indentify,proto3" json:"indentify" form:"indentify"`
 }
 
 func (m *JoinClassReq) Reset()                    { *m = JoinClassReq{} }
@@ -273,9 +284,9 @@ func (m *JoinClassReq) GetIndentify() string {
 }
 
 type InvitationReq struct {
-	Classid       string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
-	Invitaioncode string `protobuf:"bytes,2,opt,name=invitaioncode,proto3" json:"invitaioncode,omitempty" form:"invitationcode"`
-	Userid        string `protobuf:"bytes,3,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
+	Classid       string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Invitaioncode string `protobuf:"bytes,2,opt,name=invitaioncode,proto3" json:"invitaioncode" form:"invitationcode"`
+	Userid        string `protobuf:"bytes,3,opt,name=userid,proto3" json:"userid" form:"userid"`
 }
 
 func (m *InvitationReq) Reset()                    { *m = InvitationReq{} }
@@ -304,15 +315,89 @@ func (m *InvitationReq) GetUserid() string {
 	return ""
 }
 
+type StudentInfo struct {
+	Userid     string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid"`
+	Username   string `protobuf:"bytes,2,opt,name=username,proto3" json:"username"`
+	Number     string `protobuf:"bytes,3,opt,name=number,proto3" json:"number"`
+	Account    string `protobuf:"bytes,4,opt,name=account,proto3" json:"account"`
+	Sex        string `protobuf:"bytes,5,opt,name=sex,proto3" json:"sex"`
+	College    string `protobuf:"bytes,6,opt,name=college,proto3" json:"college"`
+	Createtime int64  `protobuf:"varint,7,opt,name=createtime,proto3" json:"createtime"`
+	Status     int64  `protobuf:"varint,8,opt,name=status,proto3" json:"status"`
+}
+
+func (m *StudentInfo) Reset()                    { *m = StudentInfo{} }
+func (m *StudentInfo) String() string            { return proto.CompactTextString(m) }
+func (*StudentInfo) ProtoMessage()               {}
+func (*StudentInfo) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{6} }
+
+func (m *StudentInfo) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *StudentInfo) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *StudentInfo) GetNumber() string {
+	if m != nil {
+		return m.Number
+	}
+	return ""
+}
+
+func (m *StudentInfo) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+func (m *StudentInfo) GetSex() string {
+	if m != nil {
+		return m.Sex
+	}
+	return ""
+}
+
+func (m *StudentInfo) GetCollege() string {
+	if m != nil {
+		return m.College
+	}
+	return ""
+}
+
+func (m *StudentInfo) GetCreatetime() int64 {
+	if m != nil {
+		return m.Createtime
+	}
+	return 0
+}
+
+func (m *StudentInfo) GetStatus() int64 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
 type QueryClassUserInfoReply struct {
-	Classid  string                                 `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid,omitempty"`
-	Students []*QueryClassUserInfoReply_StudentInfo `protobuf:"bytes,2,rep,name=students" json:"students,omitempty"`
+	Classid     string         `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid"`
+	Students    []*StudentInfo `protobuf:"bytes,2,rep,name=students" json:"students"`
+	Currentpage int64          `protobuf:"varint,3,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage   int64          `protobuf:"varint,4,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
 }
 
 func (m *QueryClassUserInfoReply) Reset()                    { *m = QueryClassUserInfoReply{} }
 func (m *QueryClassUserInfoReply) String() string            { return proto.CompactTextString(m) }
 func (*QueryClassUserInfoReply) ProtoMessage()               {}
-func (*QueryClassUserInfoReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{6} }
+func (*QueryClassUserInfoReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{7} }
 
 func (m *QueryClassUserInfoReply) GetClassid() string {
 	if m != nil {
@@ -321,52 +406,40 @@ func (m *QueryClassUserInfoReply) GetClassid() string {
 	return ""
 }
 
-func (m *QueryClassUserInfoReply) GetStudents() []*QueryClassUserInfoReply_StudentInfo {
+func (m *QueryClassUserInfoReply) GetStudents() []*StudentInfo {
 	if m != nil {
 		return m.Students
 	}
 	return nil
 }
 
-type QueryClassUserInfoReply_StudentInfo struct {
-	Userid   string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty"`
-	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
-}
-
-func (m *QueryClassUserInfoReply_StudentInfo) Reset()         { *m = QueryClassUserInfoReply_StudentInfo{} }
-func (m *QueryClassUserInfoReply_StudentInfo) String() string { return proto.CompactTextString(m) }
-func (*QueryClassUserInfoReply_StudentInfo) ProtoMessage()    {}
-func (*QueryClassUserInfoReply_StudentInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptorClass, []int{6, 0}
-}
-
-func (m *QueryClassUserInfoReply_StudentInfo) GetUserid() string {
+func (m *QueryClassUserInfoReply) GetCurrentpage() int64 {
 	if m != nil {
-		return m.Userid
+		return m.Currentpage
 	}
-	return ""
+	return 0
 }
 
-func (m *QueryClassUserInfoReply_StudentInfo) GetUsername() string {
+func (m *QueryClassUserInfoReply) GetTotalpage() int64 {
 	if m != nil {
-		return m.Username
+		return m.Totalpage
 	}
-	return ""
+	return 0
 }
 
 type SearchClassesInfoReq struct {
-	Page        int64  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty" form:"page"`
-	Course      string `protobuf:"bytes,2,opt,name=course,proto3" json:"course,omitempty" form:"course"`
-	Subject     string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty" form:"subject"`
-	College     string `protobuf:"bytes,4,opt,name=college,proto3" json:"college,omitempty" form:"college"`
-	Teachername string `protobuf:"bytes,5,opt,name=teachername,proto3" json:"teachername,omitempty" form:"teachername"`
-	Userid      string `protobuf:"bytes,6,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
+	Page        int64  `protobuf:"varint,1,opt,name=page,proto3" json:"page" form:"page"`
+	Course      string `protobuf:"bytes,2,opt,name=course,proto3" json:"course" form:"course"`
+	Subject     string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject" form:"subject"`
+	College     string `protobuf:"bytes,4,opt,name=college,proto3" json:"college" form:"college"`
+	Teachername string `protobuf:"bytes,5,opt,name=teachername,proto3" json:"teachername" form:"teachername"`
+	Userid      string `protobuf:"bytes,6,opt,name=userid,proto3" json:"userid" form:"userid"`
 }
 
 func (m *SearchClassesInfoReq) Reset()                    { *m = SearchClassesInfoReq{} }
 func (m *SearchClassesInfoReq) String() string            { return proto.CompactTextString(m) }
 func (*SearchClassesInfoReq) ProtoMessage()               {}
-func (*SearchClassesInfoReq) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{7} }
+func (*SearchClassesInfoReq) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{8} }
 
 func (m *SearchClassesInfoReq) GetPage() int64 {
 	if m != nil {
@@ -411,15 +484,15 @@ func (m *SearchClassesInfoReq) GetUserid() string {
 }
 
 type SearchClassesInfoReply struct {
-	Classes     []*ClassReply `protobuf:"bytes,1,rep,name=classes" json:"classes,omitempty"`
-	Currentpage int64         `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage,omitempty" form:"currentpage"`
-	Totalpage   int64         `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage,omitempty" form:"totalpage"`
+	Classes     []*ClassReply `protobuf:"bytes,1,rep,name=classes" json:"classes"`
+	Currentpage int64         `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage   int64         `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
 }
 
 func (m *SearchClassesInfoReply) Reset()                    { *m = SearchClassesInfoReply{} }
 func (m *SearchClassesInfoReply) String() string            { return proto.CompactTextString(m) }
 func (*SearchClassesInfoReply) ProtoMessage()               {}
-func (*SearchClassesInfoReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{8} }
+func (*SearchClassesInfoReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{9} }
 
 func (m *SearchClassesInfoReply) GetClasses() []*ClassReply {
 	if m != nil {
@@ -443,15 +516,15 @@ func (m *SearchClassesInfoReply) GetTotalpage() int64 {
 }
 
 type QueryFormListReply struct {
-	Colleges []string `protobuf:"bytes,1,rep,name=colleges" json:"colleges,omitempty" form:"colleges"`
-	Subjects []string `protobuf:"bytes,2,rep,name=subjects" json:"subjects,omitempty" form:"subjects"`
-	Courses  []string `protobuf:"bytes,3,rep,name=courses" json:"courses,omitempty" form:"courses"`
+	Colleges []string `protobuf:"bytes,1,rep,name=colleges" json:"colleges" form:"colleges"`
+	Subjects []string `protobuf:"bytes,2,rep,name=subjects" json:"subjects" form:"subjects"`
+	Courses  []string `protobuf:"bytes,3,rep,name=courses" json:"courses" form:"courses"`
 }
 
 func (m *QueryFormListReply) Reset()                    { *m = QueryFormListReply{} }
 func (m *QueryFormListReply) String() string            { return proto.CompactTextString(m) }
 func (*QueryFormListReply) ProtoMessage()               {}
-func (*QueryFormListReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{9} }
+func (*QueryFormListReply) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{10} }
 
 func (m *QueryFormListReply) GetColleges() []string {
 	if m != nil {
@@ -474,6 +547,62 @@ func (m *QueryFormListReply) GetCourses() []string {
 	return nil
 }
 
+type DeleteStudentReq struct {
+	Userid  string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Classid string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid" form:"classid"`
+}
+
+func (m *DeleteStudentReq) Reset()                    { *m = DeleteStudentReq{} }
+func (m *DeleteStudentReq) String() string            { return proto.CompactTextString(m) }
+func (*DeleteStudentReq) ProtoMessage()               {}
+func (*DeleteStudentReq) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{11} }
+
+func (m *DeleteStudentReq) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *DeleteStudentReq) GetClassid() string {
+	if m != nil {
+		return m.Classid
+	}
+	return ""
+}
+
+type QueryStudentInClassReq struct {
+	Classid  string `protobuf:"bytes,1,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Page     int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page" form:"page"`
+	Username string `protobuf:"bytes,3,opt,name=username,proto3" json:"username" form:"username"`
+}
+
+func (m *QueryStudentInClassReq) Reset()                    { *m = QueryStudentInClassReq{} }
+func (m *QueryStudentInClassReq) String() string            { return proto.CompactTextString(m) }
+func (*QueryStudentInClassReq) ProtoMessage()               {}
+func (*QueryStudentInClassReq) Descriptor() ([]byte, []int) { return fileDescriptorClass, []int{12} }
+
+func (m *QueryStudentInClassReq) GetClassid() string {
+	if m != nil {
+		return m.Classid
+	}
+	return ""
+}
+
+func (m *QueryStudentInClassReq) GetPage() int64 {
+	if m != nil {
+		return m.Page
+	}
+	return 0
+}
+
+func (m *QueryStudentInClassReq) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*ClassReq)(nil), "api.ClassReq")
 	proto.RegisterType((*ClassReply)(nil), "api.ClassReply")
@@ -481,11 +610,13 @@ func init() {
 	proto.RegisterType((*CreateClassReq)(nil), "api.CreateClassReq")
 	proto.RegisterType((*JoinClassReq)(nil), "api.JoinClassReq")
 	proto.RegisterType((*InvitationReq)(nil), "api.InvitationReq")
+	proto.RegisterType((*StudentInfo)(nil), "api.StudentInfo")
 	proto.RegisterType((*QueryClassUserInfoReply)(nil), "api.QueryClassUserInfoReply")
-	proto.RegisterType((*QueryClassUserInfoReply_StudentInfo)(nil), "api.QueryClassUserInfoReply.StudentInfo")
 	proto.RegisterType((*SearchClassesInfoReq)(nil), "api.SearchClassesInfoReq")
 	proto.RegisterType((*SearchClassesInfoReply)(nil), "api.SearchClassesInfoReply")
 	proto.RegisterType((*QueryFormListReply)(nil), "api.QueryFormListReply")
+	proto.RegisterType((*DeleteStudentReq)(nil), "api.DeleteStudentReq")
+	proto.RegisterType((*QueryStudentInClassReq)(nil), "api.QueryStudentInClassReq")
 }
 func (m *ClassReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
@@ -507,6 +638,11 @@ func (m *ClassReq) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintClass(dAtA, i, uint64(len(m.Classid)))
 		i += copy(dAtA[i:], m.Classid)
+	}
+	if m.Page != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(m.Page))
 	}
 	return i, nil
 }
@@ -766,6 +902,70 @@ func (m *InvitationReq) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *StudentInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *StudentInfo) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Username) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Username)))
+		i += copy(dAtA[i:], m.Username)
+	}
+	if len(m.Number) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Number)))
+		i += copy(dAtA[i:], m.Number)
+	}
+	if len(m.Account) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Account)))
+		i += copy(dAtA[i:], m.Account)
+	}
+	if len(m.Sex) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Sex)))
+		i += copy(dAtA[i:], m.Sex)
+	}
+	if len(m.College) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.College)))
+		i += copy(dAtA[i:], m.College)
+	}
+	if m.Createtime != 0 {
+		dAtA[i] = 0x38
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(m.Createtime))
+	}
+	if m.Status != 0 {
+		dAtA[i] = 0x40
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(m.Status))
+	}
+	return i, nil
+}
+
 func (m *QueryClassUserInfoReply) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -799,35 +999,15 @@ func (m *QueryClassUserInfoReply) MarshalTo(dAtA []byte) (int, error) {
 			i += n
 		}
 	}
-	return i, nil
-}
-
-func (m *QueryClassUserInfoReply_StudentInfo) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryClassUserInfoReply_StudentInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Userid) > 0 {
-		dAtA[i] = 0xa
+	if m.Currentpage != 0 {
+		dAtA[i] = 0x18
 		i++
-		i = encodeVarintClass(dAtA, i, uint64(len(m.Userid)))
-		i += copy(dAtA[i:], m.Userid)
+		i = encodeVarintClass(dAtA, i, uint64(m.Currentpage))
 	}
-	if len(m.Username) > 0 {
-		dAtA[i] = 0x12
+	if m.Totalpage != 0 {
+		dAtA[i] = 0x20
 		i++
-		i = encodeVarintClass(dAtA, i, uint64(len(m.Username)))
-		i += copy(dAtA[i:], m.Username)
+		i = encodeVarintClass(dAtA, i, uint64(m.Totalpage))
 	}
 	return i, nil
 }
@@ -988,6 +1168,71 @@ func (m *QueryFormListReply) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *DeleteStudentReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeleteStudentReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Classid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Classid)))
+		i += copy(dAtA[i:], m.Classid)
+	}
+	return i, nil
+}
+
+func (m *QueryStudentInClassReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryStudentInClassReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Classid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Classid)))
+		i += copy(dAtA[i:], m.Classid)
+	}
+	if m.Page != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(m.Page))
+	}
+	if len(m.Username) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintClass(dAtA, i, uint64(len(m.Username)))
+		i += copy(dAtA[i:], m.Username)
+	}
+	return i, nil
+}
+
 func encodeVarintClass(dAtA []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
@@ -1003,6 +1248,9 @@ func (m *ClassReq) Size() (n int) {
 	l = len(m.Classid)
 	if l > 0 {
 		n += 1 + l + sovClass(uint64(l))
+	}
+	if m.Page != 0 {
+		n += 1 + sovClass(uint64(m.Page))
 	}
 	return n
 }
@@ -1141,6 +1389,42 @@ func (m *InvitationReq) Size() (n int) {
 	return n
 }
 
+func (m *StudentInfo) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Number)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Account)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Sex)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.College)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	if m.Createtime != 0 {
+		n += 1 + sovClass(uint64(m.Createtime))
+	}
+	if m.Status != 0 {
+		n += 1 + sovClass(uint64(m.Status))
+	}
+	return n
+}
+
 func (m *QueryClassUserInfoReply) Size() (n int) {
 	var l int
 	_ = l
@@ -1154,19 +1438,11 @@ func (m *QueryClassUserInfoReply) Size() (n int) {
 			n += 1 + l + sovClass(uint64(l))
 		}
 	}
-	return n
-}
-
-func (m *QueryClassUserInfoReply_StudentInfo) Size() (n int) {
-	var l int
-	_ = l
-	l = len(m.Userid)
-	if l > 0 {
-		n += 1 + l + sovClass(uint64(l))
+	if m.Currentpage != 0 {
+		n += 1 + sovClass(uint64(m.Currentpage))
 	}
-	l = len(m.Username)
-	if l > 0 {
-		n += 1 + l + sovClass(uint64(l))
+	if m.Totalpage != 0 {
+		n += 1 + sovClass(uint64(m.Totalpage))
 	}
 	return n
 }
@@ -1242,6 +1518,37 @@ func (m *QueryFormListReply) Size() (n int) {
 	return n
 }
 
+func (m *DeleteStudentReq) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	l = len(m.Classid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryStudentInClassReq) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Classid)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	if m.Page != 0 {
+		n += 1 + sovClass(uint64(m.Page))
+	}
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovClass(uint64(l))
+	}
+	return n
+}
+
 func sovClass(x uint64) (n int) {
 	for {
 		n++
@@ -1313,6 +1620,25 @@ func (m *ClassReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Classid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
+			}
+			m.Page = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Page |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipClass(dAtA[iNdEx:])
@@ -2321,117 +2647,7 @@ func (m *InvitationReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryClassUserInfoReply) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowClass
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryClassUserInfoReply: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryClassUserInfoReply: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowClass
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthClass
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Classid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Students", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowClass
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthClass
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Students = append(m.Students, &QueryClassUserInfoReply_StudentInfo{})
-			if err := m.Students[len(m.Students)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipClass(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthClass
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryClassUserInfoReply_StudentInfo) Unmarshal(dAtA []byte) error {
+func (m *StudentInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2518,6 +2734,308 @@ func (m *QueryClassUserInfoReply_StudentInfo) Unmarshal(dAtA []byte) error {
 			}
 			m.Username = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Number", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Number = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Account = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sex = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field College", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.College = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Createtime", wireType)
+			}
+			m.Createtime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Createtime |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipClass(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthClass
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryClassUserInfoReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowClass
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryClassUserInfoReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryClassUserInfoReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Classid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Students", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Students = append(m.Students, &StudentInfo{})
+			if err := m.Students[len(m.Students)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Currentpage", wireType)
+			}
+			m.Currentpage = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Currentpage |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Totalpage", wireType)
+			}
+			m.Totalpage = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Totalpage |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipClass(dAtA[iNdEx:])
@@ -3009,6 +3527,241 @@ func (m *QueryFormListReply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *DeleteStudentReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowClass
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeleteStudentReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeleteStudentReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Classid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipClass(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthClass
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryStudentInClassReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowClass
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryStudentInClassReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryStudentInClassReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Classid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
+			}
+			m.Page = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Page |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowClass
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthClass
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipClass(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthClass
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func skipClass(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3117,70 +3870,78 @@ var (
 func init() { proto.RegisterFile("api/class.proto", fileDescriptorClass) }
 
 var fileDescriptorClass = []byte{
-	// 1029 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xf6, 0xda, 0xa9, 0x63, 0x3f, 0xc7, 0x71, 0x33, 0x29, 0xc9, 0xd6, 0x54, 0xb6, 0x35, 0x5c,
-	0x5c, 0x29, 0xb5, 0x21, 0xa1, 0x55, 0xd5, 0x1e, 0x10, 0x36, 0x20, 0x05, 0xc1, 0x81, 0x8d, 0x38,
-	0x47, 0xeb, 0xf5, 0xc4, 0x19, 0xea, 0xdd, 0x59, 0xf6, 0x47, 0x51, 0xfe, 0x13, 0xfe, 0x00, 0x24,
-	0xc4, 0x91, 0x3b, 0x67, 0xc4, 0x11, 0x89, 0x03, 0xb7, 0x15, 0x0a, 0x07, 0x24, 0x8e, 0xfe, 0x0b,
-	0xd0, 0xbc, 0xd9, 0x1f, 0xb3, 0x4e, 0x9a, 0x90, 0x4b, 0x6f, 0x33, 0xf3, 0xbd, 0x37, 0xf3, 0xfc,
-	0x7d, 0xef, 0x7b, 0x6b, 0xe8, 0xd8, 0x3e, 0x1f, 0x3b, 0x4b, 0x3b, 0x0c, 0x47, 0x7e, 0x20, 0x22,
-	0x41, 0x6a, 0xb6, 0xcf, 0xbb, 0x4f, 0x16, 0x3c, 0x3a, 0x8f, 0x67, 0x23, 0x47, 0xb8, 0xe3, 0x85,
-	0x58, 0x88, 0x31, 0x62, 0xb3, 0xf8, 0x0c, 0x77, 0xb8, 0xc1, 0x95, 0xca, 0xe9, 0x4e, 0x5f, 0x79,
-	0xe2, 0xbb, 0x25, 0x9b, 0x2f, 0x98, 0x6b, 0xfb, 0xa7, 0x33, 0xdb, 0x79, 0xc5, 0xbc, 0xf9, 0xd8,
-	0xe5, 0x4e, 0x20, 0x42, 0x16, 0xbc, 0xe6, 0x0e, 0x0b, 0xc7, 0x7a, 0xc8, 0x38, 0x0e, 0x59, 0x30,
-	0x96, 0x2f, 0xcb, 0x85, 0xba, 0x84, 0x3e, 0x87, 0xc6, 0x54, 0xd6, 0x61, 0xb1, 0x6f, 0xc9, 0x01,
-	0x6c, 0x62, 0x4d, 0x7c, 0x6e, 0x1a, 0x03, 0x63, 0xd8, 0x9c, 0x90, 0x55, 0xd2, 0xdf, 0x3e, 0x13,
-	0x81, 0xfb, 0x82, 0xa6, 0x00, 0xb5, 0xb2, 0x10, 0xfa, 0x67, 0x15, 0x20, 0x4d, 0xf5, 0x97, 0x17,
-	0xe4, 0x68, 0x3d, 0xf9, 0xe1, 0x2a, 0xe9, 0xbf, 0x33, 0x0b, 0x85, 0xf7, 0x82, 0x9e, 0xf2, 0x39,
-	0x3d, 0x50, 0xf7, 0x9c, 0xea, 0x77, 0x10, 0x02, 0x1b, 0x9e, 0xed, 0x32, 0xb3, 0x2a, 0x33, 0x2c,
-	0x5c, 0x13, 0x13, 0x36, 0xc3, 0x78, 0xf6, 0x0d, 0x73, 0x22, 0xb3, 0x86, 0xc7, 0xd9, 0x96, 0xec,
-	0x41, 0xdd, 0x11, 0x71, 0x10, 0x32, 0x73, 0x03, 0x81, 0x74, 0x27, 0x33, 0x1c, 0xb1, 0x5c, 0xb2,
-	0x05, 0x33, 0xef, 0xa9, 0x8c, 0x74, 0x4b, 0x06, 0xd0, 0x8a, 0x98, 0xed, 0x9c, 0xb3, 0x00, 0x9f,
-	0xa9, 0x23, 0xaa, 0x1f, 0x91, 0x1e, 0x80, 0x13, 0x30, 0x3b, 0x62, 0x11, 0x77, 0x99, 0xb9, 0x39,
-	0x30, 0x86, 0x35, 0x4b, 0x3b, 0x91, 0x6f, 0x7a, 0xb1, 0x3b, 0x63, 0x81, 0xd9, 0x50, 0x6f, 0xaa,
-	0x1d, 0xa1, 0xb0, 0xc5, 0xbd, 0x28, 0x10, 0xf3, 0xd8, 0x89, 0xb8, 0xf0, 0xcc, 0x26, 0xa2, 0xa5,
-	0x33, 0xf2, 0x08, 0x9a, 0xe9, 0x53, 0x7c, 0x6e, 0x02, 0x06, 0x14, 0x07, 0xb2, 0x6a, 0xee, 0x21,
-	0x11, 0x66, 0x6b, 0x60, 0x0c, 0x1b, 0x56, 0xb6, 0xa5, 0x2f, 0x61, 0xfb, 0xeb, 0x90, 0x05, 0x1a,
-	0xb9, 0x8f, 0x53, 0x72, 0x59, 0x68, 0x1a, 0x83, 0xda, 0xb0, 0x75, 0xd8, 0x19, 0xd9, 0x3e, 0x1f,
-	0x15, 0x11, 0x56, 0x86, 0xd3, 0x7f, 0xaa, 0xb0, 0x3d, 0xc5, 0xfa, 0x73, 0x5d, 0xdf, 0x4b, 0x59,
-	0x56, 0xba, 0x74, 0x56, 0x49, 0xbf, 0xa5, 0xc4, 0x90, 0xa7, 0x34, 0xa5, 0xfd, 0xa0, 0xa0, 0xbd,
-	0xba, 0x2e, 0x7e, 0x0a, 0xd0, 0x42, 0x8a, 0xc7, 0xb9, 0x14, 0xa8, 0xd1, 0x64, 0x67, 0x95, 0xf4,
-	0xdb, 0x69, 0xa7, 0xe0, 0x39, 0xcd, 0xd5, 0x39, 0x28, 0xd4, 0xd9, 0xb8, 0xd2, 0x55, 0x0a, 0xa0,
-	0x85, 0x62, 0xcf, 0xcb, 0x8a, 0xa1, 0x9e, 0x93, 0xbd, 0x55, 0xd2, 0x27, 0x2a, 0x43, 0x03, 0x69,
-	0x59, 0xc9, 0x43, 0x9d, 0x6d, 0x54, 0x7a, 0xf2, 0x60, 0x95, 0xf4, 0xef, 0x97, 0xf2, 0x64, 0xf7,
-	0x69, 0x1a, 0xbc, 0x5c, 0x53, 0x71, 0x13, 0xd3, 0xf6, 0x57, 0x49, 0x7f, 0x57, 0xa5, 0xe9, 0x28,
-	0x2d, 0xcb, 0x4b, 0xff, 0x30, 0x60, 0xeb, 0x73, 0xc1, 0xbd, 0x9c, 0xe7, 0xf7, 0xa1, 0x2e, 0x9d,
-	0x95, 0x3b, 0xc0, 0xfc, 0x37, 0xe9, 0xd7, 0x62, 0x3e, 0x2f, 0xb8, 0x51, 0x30, 0xb5, 0xd2, 0x38,
-	0xdd, 0x71, 0xd5, 0x5b, 0x1d, 0x47, 0xc6, 0xd0, 0x90, 0x79, 0x48, 0x8c, 0xa2, 0x7d, 0x77, 0x95,
-	0xf4, 0x3b, 0xc5, 0xd5, 0x8a, 0x95, 0x3c, 0x48, 0x52, 0xc2, 0xbd, 0x39, 0xf3, 0x22, 0x7e, 0x76,
-	0x91, 0x92, 0xaf, 0x51, 0x92, 0x43, 0xd4, 0x2a, 0xc2, 0xe8, 0x4f, 0x06, 0xb4, 0x8f, 0xbd, 0xd7,
-	0x3c, 0xb2, 0xe5, 0x8f, 0xbc, 0xf3, 0x58, 0x20, 0x1f, 0x41, 0x9b, 0x63, 0x3a, 0x17, 0x9e, 0x23,
-	0xe6, 0xa9, 0xb7, 0xd5, 0x34, 0xc8, 0xde, 0xcd, 0x6e, 0x97, 0x38, 0xb5, 0xca, 0xf1, 0xb2, 0xb5,
-	0x52, 0x16, 0xaf, 0xb4, 0xd6, 0x1a, 0x7d, 0xf4, 0x17, 0x03, 0xf6, 0xbf, 0x8a, 0x59, 0x70, 0x81,
-	0x12, 0x48, 0xcf, 0x1c, 0x7b, 0x67, 0x42, 0x59, 0xc6, 0x5c, 0xab, 0xba, 0xa8, 0xf0, 0x13, 0x68,
-	0x84, 0x51, 0x2c, 0x7f, 0x6f, 0x68, 0x56, 0xd1, 0x4d, 0x43, 0x74, 0xd3, 0x1b, 0x6e, 0x1a, 0x9d,
-	0xa8, 0x60, 0x3c, 0xc8, 0x33, 0xbb, 0x1f, 0x43, 0x4b, 0x03, 0xe4, 0x9c, 0xd0, 0xb5, 0xcf, 0x15,
-	0xee, 0x6a, 0x9a, 0xa9, 0x29, 0x97, 0xef, 0xe9, 0x8f, 0x55, 0x78, 0x70, 0xc2, 0xec, 0xc0, 0x39,
-	0x9f, 0x2a, 0xf3, 0xaa, 0x37, 0xd1, 0xb0, 0xbe, 0xbd, 0x50, 0x86, 0xad, 0xe9, 0x86, 0x95, 0xa7,
-	0xd4, 0x42, 0x50, 0xb3, 0x60, 0xf5, 0x7f, 0x58, 0xb0, 0x34, 0x52, 0x6f, 0xf6, 0xf6, 0xdb, 0x32,
-	0x6c, 0x21, 0x74, 0xfd, 0x36, 0xa1, 0x7f, 0x36, 0x60, 0xef, 0x1a, 0xa6, 0xee, 0x36, 0x1a, 0x65,
-	0xa9, 0x4e, 0x1c, 0x04, 0xcc, 0x8b, 0x90, 0xdd, 0x2a, 0xb2, 0xab, 0x95, 0xaa, 0x81, 0xd4, 0xd2,
-	0x43, 0x71, 0xb6, 0x88, 0xc8, 0x5e, 0x62, 0x5e, 0x0d, 0xf3, 0xf4, 0xd9, 0x92, 0x41, 0x72, 0xb6,
-	0xe4, 0xeb, 0x1f, 0x0c, 0x20, 0xd8, 0x52, 0x9f, 0x89, 0xc0, 0xfd, 0x82, 0x87, 0x91, 0xaa, 0x77,
-	0x0c, 0x8d, 0x94, 0x3a, 0x55, 0x70, 0xc9, 0xc4, 0x19, 0x42, 0xad, 0x3c, 0x48, 0x26, 0xa4, 0xca,
-	0xa8, 0x76, 0x2d, 0x25, 0x64, 0x08, 0xb5, 0xf2, 0x20, 0xa5, 0x9f, 0xd4, 0x3d, 0x34, 0x6b, 0x18,
-	0x5f, 0xd2, 0x0f, 0x01, 0xd4, 0x0f, 0x57, 0x87, 0xbf, 0x6e, 0xc0, 0x3d, 0x24, 0x8b, 0x3c, 0x85,
-	0x96, 0xf6, 0xe1, 0x20, 0xbb, 0x8a, 0xc7, 0xd2, 0xa7, 0xa4, 0xbb, 0x4e, 0x2e, 0xad, 0x90, 0x27,
-	0xd0, 0xc4, 0x3d, 0xda, 0xa0, 0xad, 0xe3, 0xd7, 0x86, 0x3f, 0x85, 0x66, 0x3e, 0x34, 0xc9, 0x0e,
-	0xe2, 0xfa, 0x10, 0xed, 0xaa, 0x67, 0xcb, 0xdf, 0x3f, 0x5a, 0x21, 0x1f, 0x42, 0x3b, 0x3f, 0xc3,
-	0x97, 0xb6, 0xf2, 0xb8, 0x1b, 0xb2, 0xa6, 0xa9, 0x04, 0x25, 0x57, 0xaf, 0x17, 0xf9, 0xe8, 0x26,
-	0xf7, 0xd3, 0x0a, 0xf9, 0x12, 0x76, 0xae, 0xf4, 0x1e, 0x79, 0x88, 0x49, 0xd7, 0xb9, 0xb7, 0xfb,
-	0xee, 0x9b, 0x20, 0x75, 0xdd, 0x33, 0x68, 0x97, 0xda, 0x82, 0x00, 0xc6, 0x7f, 0xea, 0xfa, 0xd1,
-	0x45, 0x77, 0xbf, 0xa8, 0xa5, 0xd4, 0x36, 0xb4, 0x42, 0x8e, 0xa0, 0xa3, 0xc4, 0x38, 0xce, 0xc6,
-	0x25, 0x21, 0x18, 0x5d, 0x9a, 0xd6, 0x5d, 0xed, 0x36, 0x5a, 0x21, 0x1f, 0x40, 0xfb, 0x24, 0x12,
-	0xfe, 0x5d, 0x52, 0x9e, 0x65, 0xf3, 0x9f, 0x0b, 0x0f, 0x7f, 0xea, 0x75, 0x29, 0x57, 0x85, 0x9d,
-	0xdc, 0xff, 0xed, 0xb2, 0x67, 0xfc, 0x7e, 0xd9, 0x33, 0xfe, 0xba, 0xec, 0x19, 0xdf, 0xff, 0xdd,
-	0xab, 0xcc, 0xea, 0xf8, 0x17, 0xf3, 0xe8, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x82, 0xbc, 0x9b,
-	0xb6, 0xee, 0x0a, 0x00, 0x00,
+	// 1162 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0xcd, 0x6e, 0x23, 0x45,
+	0x10, 0xf6, 0xd8, 0x89, 0x63, 0x97, 0xe3, 0xfc, 0x74, 0x76, 0x93, 0x59, 0xef, 0x2a, 0x8e, 0x7a,
+	0x2f, 0x89, 0x94, 0x8d, 0x21, 0xd9, 0x5d, 0xa1, 0xdd, 0x03, 0x92, 0x03, 0x48, 0x41, 0x70, 0x60,
+	0x22, 0x8e, 0x28, 0x1a, 0x8f, 0x3b, 0x4e, 0x13, 0x7b, 0xda, 0x3b, 0x3f, 0x0b, 0x79, 0x13, 0x0e,
+	0x1c, 0x91, 0x10, 0x47, 0xde, 0x82, 0x1b, 0x2b, 0x71, 0xd8, 0x9b, 0x85, 0xc2, 0x01, 0x89, 0xa3,
+	0x9f, 0x00, 0x75, 0x75, 0xcf, 0x4c, 0xcf, 0xc4, 0x9b, 0x1f, 0x04, 0xdc, 0xba, 0xba, 0xaa, 0xba,
+	0x7a, 0xbe, 0xaf, 0xea, 0x6b, 0x1b, 0x96, 0xdd, 0x31, 0xef, 0x78, 0x43, 0x37, 0x0c, 0xf7, 0xc6,
+	0x81, 0x88, 0x04, 0xa9, 0xb8, 0x63, 0xde, 0x7a, 0x32, 0xe0, 0xd1, 0x59, 0xdc, 0xdb, 0xf3, 0xc4,
+	0xa8, 0x33, 0x10, 0x03, 0xd1, 0x41, 0x5f, 0x2f, 0x3e, 0x45, 0x0b, 0x0d, 0x5c, 0xa9, 0x9c, 0xd6,
+	0xe1, 0xb9, 0x2f, 0xbe, 0x19, 0xb2, 0xfe, 0x80, 0x8d, 0xdc, 0xf1, 0x49, 0xcf, 0xf5, 0xce, 0x99,
+	0xdf, 0xef, 0x8c, 0xb8, 0x17, 0x88, 0x90, 0x05, 0xaf, 0xb9, 0xc7, 0xc2, 0x8e, 0x19, 0xd2, 0x89,
+	0x43, 0x16, 0x74, 0x64, 0x65, 0xb9, 0x50, 0x87, 0xd0, 0xaf, 0xa0, 0x76, 0x28, 0xef, 0xe1, 0xb0,
+	0x57, 0x64, 0x17, 0x16, 0xf0, 0x4e, 0xbc, 0x6f, 0x5b, 0x5b, 0xd6, 0x76, 0xbd, 0x4b, 0xa6, 0x93,
+	0xf6, 0xd2, 0xa9, 0x08, 0x46, 0x2f, 0xa8, 0x76, 0x50, 0x27, 0x09, 0x21, 0x8f, 0x61, 0x6e, 0xec,
+	0x0e, 0x98, 0x5d, 0xde, 0xb2, 0xb6, 0x2b, 0xdd, 0xe5, 0xe9, 0xa4, 0xdd, 0x50, 0xa1, 0x72, 0x97,
+	0x3a, 0xe8, 0xa4, 0x6f, 0xcb, 0x00, 0xfa, 0xfc, 0xf1, 0xf0, 0x82, 0x1c, 0x14, 0x2b, 0x3c, 0x98,
+	0x4e, 0xda, 0xf7, 0x7b, 0xa1, 0xf0, 0x5f, 0xd0, 0x13, 0xde, 0xa7, 0xbb, 0xea, 0x84, 0x93, 0x5c,
+	0x21, 0x02, 0x73, 0xbe, 0x3b, 0x52, 0x85, 0xea, 0x0e, 0xae, 0x89, 0x0d, 0x0b, 0x61, 0xdc, 0xfb,
+	0x9a, 0x79, 0x91, 0x5d, 0xc1, 0xed, 0xc4, 0x24, 0xeb, 0x50, 0xf5, 0x44, 0x1c, 0x84, 0xcc, 0x9e,
+	0x43, 0x87, 0xb6, 0x64, 0x86, 0x27, 0x86, 0x43, 0x36, 0x60, 0xf6, 0xbc, 0xca, 0xd0, 0x26, 0xd9,
+	0x82, 0x46, 0xc4, 0x5c, 0xef, 0x8c, 0x05, 0x58, 0xa6, 0x8a, 0x5e, 0x73, 0x8b, 0x6c, 0x02, 0x78,
+	0x01, 0x73, 0x23, 0x16, 0xf1, 0x11, 0xb3, 0x17, 0xe4, 0x07, 0x3b, 0xc6, 0x8e, 0xac, 0xe9, 0xc7,
+	0xa3, 0x1e, 0x0b, 0xec, 0x9a, 0xaa, 0xa9, 0x2c, 0x42, 0x61, 0x91, 0xfb, 0x51, 0x20, 0xfa, 0xb1,
+	0x17, 0x71, 0xe1, 0xdb, 0x75, 0xf4, 0xe6, 0xf6, 0xc8, 0x23, 0xa8, 0xeb, 0x52, 0xbc, 0x6f, 0x03,
+	0x06, 0x64, 0x1b, 0xf2, 0xd6, 0xdc, 0x47, 0x20, 0xec, 0xc6, 0x96, 0xb5, 0x5d, 0x73, 0x12, 0x93,
+	0xbe, 0x84, 0xa5, 0x2f, 0x43, 0x16, 0x18, 0xe0, 0xee, 0x68, 0x70, 0x59, 0x68, 0x5b, 0x5b, 0x95,
+	0xed, 0xc6, 0xfe, 0xf2, 0x9e, 0x3b, 0xe6, 0x7b, 0x59, 0x84, 0x93, 0xf8, 0xe9, 0x9f, 0x65, 0x58,
+	0x3a, 0xc4, 0xfb, 0xa7, 0xe4, 0x3f, 0xd6, 0x28, 0x2b, 0x5e, 0x0c, 0x3a, 0xe5, 0x2e, 0xd5, 0xb0,
+	0xef, 0x66, 0xb0, 0x97, 0x8b, 0x1d, 0xa2, 0x1d, 0x34, 0xa3, 0x62, 0x27, 0xa5, 0x02, 0x39, 0xea,
+	0xae, 0x4e, 0x27, 0xed, 0xa6, 0x6e, 0x27, 0xdc, 0xa7, 0x29, 0x3b, 0xbb, 0x19, 0x3b, 0x73, 0x57,
+	0x5a, 0x4f, 0x39, 0x68, 0xc6, 0xd8, 0x07, 0x79, 0xc6, 0x90, 0xcf, 0xee, 0xfa, 0x74, 0xd2, 0x26,
+	0x2a, 0xc3, 0x70, 0xd2, 0x3c, 0x93, 0xfb, 0x26, 0xda, 0xc8, 0x74, 0xf7, 0xde, 0x74, 0xd2, 0x5e,
+	0xc9, 0xe5, 0xc9, 0xee, 0x33, 0x38, 0x78, 0x59, 0x60, 0x71, 0x01, 0xd3, 0x36, 0xa6, 0x93, 0xf6,
+	0x9a, 0x4a, 0x33, 0xbd, 0x34, 0x4f, 0x2f, 0xfd, 0xcd, 0x82, 0xc5, 0x4f, 0x05, 0xf7, 0x53, 0x9c,
+	0xdf, 0x83, 0xaa, 0x1c, 0xbf, 0x74, 0x02, 0xec, 0xbf, 0x26, 0xed, 0x4a, 0xcc, 0xfb, 0x19, 0x36,
+	0xca, 0x4d, 0x1d, 0x1d, 0x67, 0x8e, 0x65, 0xf9, 0xe6, 0xb1, 0xec, 0x40, 0x4d, 0xe6, 0x21, 0x30,
+	0x0a, 0xf6, 0xb5, 0xe9, 0xa4, 0xbd, 0x9c, 0x1d, 0xad, 0x50, 0x49, 0x83, 0x24, 0x24, 0xdc, 0xef,
+	0x33, 0x3f, 0xe2, 0xa7, 0x17, 0x1a, 0x7c, 0x03, 0x92, 0xd4, 0x45, 0x9d, 0x2c, 0x8c, 0xfe, 0x64,
+	0x41, 0xf3, 0xc8, 0x7f, 0xcd, 0x23, 0x57, 0x7e, 0xe4, 0xdd, 0xb5, 0xe3, 0x43, 0x68, 0x72, 0x4c,
+	0xe7, 0xc2, 0xf7, 0x44, 0x5f, 0xcf, 0xb6, 0x52, 0x83, 0xa4, 0x6e, 0x72, 0xba, 0xf4, 0x53, 0x27,
+	0x1f, 0x2f, 0x5b, 0x4b, 0xa3, 0x78, 0xa5, 0xb5, 0x0a, 0xf0, 0xd1, 0xb7, 0x16, 0x34, 0x8e, 0xa3,
+	0x58, 0x5e, 0xfd, 0xc8, 0x3f, 0x15, 0x72, 0x58, 0x4d, 0x02, 0x52, 0x98, 0x5b, 0x06, 0x70, 0x4a,
+	0x6a, 0x32, 0x8c, 0xb2, 0x01, 0xaf, 0xe4, 0x06, 0xdc, 0x86, 0x05, 0xd7, 0xf3, 0x44, 0xec, 0x47,
+	0x5a, 0x6d, 0x12, 0x93, 0xac, 0x40, 0x25, 0x64, 0xdf, 0x6a, 0xa9, 0x91, 0x4b, 0x53, 0x80, 0xaa,
+	0x79, 0x01, 0xba, 0x85, 0xbc, 0x84, 0x91, 0x1b, 0xc5, 0x21, 0xca, 0x4b, 0xc5, 0xd1, 0x16, 0xfd,
+	0xd5, 0x82, 0x8d, 0x2f, 0x62, 0x16, 0x5c, 0x60, 0x73, 0x49, 0x35, 0x90, 0x1f, 0xa8, 0xc4, 0xc0,
+	0x2e, 0xf0, 0x91, 0x61, 0xbf, 0x0b, 0xb5, 0x50, 0xc1, 0x11, 0xda, 0x65, 0xd4, 0x89, 0x15, 0xd4,
+	0x09, 0x03, 0x23, 0x27, 0x8d, 0x90, 0xa3, 0xe6, 0xc5, 0x41, 0xc0, 0xfc, 0x08, 0xc5, 0xbe, 0x82,
+	0x62, 0x6f, 0x8c, 0x9a, 0xe1, 0xa4, 0x8e, 0x19, 0x8a, 0xa3, 0x26, 0x22, 0x77, 0x88, 0x79, 0x73,
+	0x98, 0x67, 0x8e, 0x5a, 0xe2, 0x92, 0xa3, 0x96, 0xae, 0x7f, 0x2c, 0xc3, 0xbd, 0x63, 0xe6, 0x06,
+	0xde, 0xd9, 0xa1, 0x52, 0x2a, 0xf5, 0x41, 0xaf, 0xd2, 0xc7, 0xc6, 0xba, 0xe6, 0xb1, 0x31, 0xf4,
+	0xa6, 0x7c, 0x0b, 0xbd, 0xc9, 0xbd, 0x1f, 0xd7, 0x0b, 0xd9, 0xff, 0xa5, 0x4e, 0x59, 0x57, 0x57,
+	0x6f, 0xea, 0xea, 0x9f, 0x2d, 0x58, 0x9f, 0x81, 0xd4, 0xdd, 0xde, 0x81, 0x22, 0xbb, 0xe5, 0x7f,
+	0xc8, 0x6e, 0xe5, 0x76, 0xec, 0xfe, 0x60, 0x01, 0xc1, 0x7e, 0xfd, 0x44, 0x04, 0xa3, 0xcf, 0x78,
+	0x18, 0xa9, 0xfb, 0x76, 0xa0, 0xa6, 0xa1, 0x53, 0x17, 0xce, 0x29, 0x56, 0xe2, 0xa1, 0x4e, 0x1a,
+	0x24, 0x13, 0x34, 0x33, 0xaa, 0x83, 0x73, 0x09, 0x89, 0x87, 0x3a, 0x69, 0x90, 0xe2, 0x4f, 0xf2,
+	0x1e, 0xda, 0x15, 0x8c, 0xcf, 0xf1, 0x87, 0x0e, 0xe4, 0x4f, 0xad, 0xce, 0x61, 0xe5, 0x23, 0x36,
+	0x64, 0x11, 0xd3, 0x13, 0x21, 0xfb, 0x6f, 0xa7, 0xa0, 0xda, 0xab, 0xff, 0x92, 0x5c, 0xd3, 0xef,
+	0x2d, 0x58, 0x47, 0x4c, 0xd2, 0xf1, 0xfb, 0x0f, 0x7f, 0x8e, 0xdd, 0xf9, 0x71, 0xd8, 0x7f, 0x33,
+	0x0f, 0xf3, 0x78, 0x21, 0xf2, 0x0c, 0x1a, 0xc6, 0x2f, 0x06, 0xb2, 0xa6, 0x7a, 0x2a, 0xf7, 0x1b,
+	0xa2, 0x55, 0x6c, 0x34, 0x5a, 0x22, 0x4f, 0xa0, 0x8e, 0x36, 0x4a, 0x6f, 0xd3, 0xf4, 0xcf, 0x0c,
+	0x7f, 0x06, 0xf5, 0xf4, 0xb5, 0x24, 0xab, 0xe8, 0x37, 0x5f, 0xcf, 0x96, 0x2a, 0x9b, 0xff, 0xe1,
+	0x43, 0x4b, 0xe4, 0x29, 0x34, 0xd3, 0x3d, 0xac, 0xb4, 0x98, 0xc6, 0x5d, 0x93, 0x75, 0xa8, 0xdb,
+	0x31, 0x27, 0x9f, 0xc5, 0x4b, 0x3e, 0x42, 0xf3, 0x1d, 0x32, 0x4b, 0x4b, 0xe4, 0x73, 0x58, 0xbd,
+	0x32, 0x87, 0xe4, 0x81, 0x52, 0xd4, 0x19, 0x4a, 0xd6, 0x7a, 0xf8, 0x2e, 0x97, 0x3a, 0xee, 0x39,
+	0x34, 0x73, 0x23, 0x42, 0x00, 0xe3, 0x3f, 0x1e, 0x8d, 0xa3, 0x8b, 0xd6, 0x46, 0x76, 0x97, 0xdc,
+	0x08, 0xd1, 0x12, 0x39, 0x80, 0x65, 0x45, 0xc6, 0x51, 0xf2, 0x4e, 0x12, 0x82, 0xd1, 0xb9, 0x67,
+	0xba, 0x65, 0x9c, 0x46, 0x4b, 0xe4, 0x7d, 0x68, 0x1e, 0x47, 0x62, 0x7c, 0x97, 0x94, 0xe7, 0xc9,
+	0xc3, 0xcf, 0x85, 0x8f, 0x9f, 0x3a, 0x2b, 0x65, 0x06, 0xb1, 0x4f, 0xa1, 0x99, 0x1b, 0x2a, 0x72,
+	0x1f, 0x63, 0x8a, 0x83, 0x56, 0xa8, 0xe6, 0xc0, 0xda, 0x8c, 0xe1, 0x20, 0x0f, 0x33, 0x1c, 0xae,
+	0x8c, 0xcd, 0x4d, 0x84, 0x75, 0x57, 0x7e, 0xb9, 0xdc, 0xb4, 0xde, 0x5c, 0x6e, 0x5a, 0xbf, 0x5f,
+	0x6e, 0x5a, 0xdf, 0xfd, 0xb1, 0x59, 0xea, 0x55, 0xf1, 0xaf, 0xd0, 0xc1, 0xdf, 0x01, 0x00, 0x00,
+	0xff, 0xff, 0x6a, 0xda, 0x8f, 0x61, 0x96, 0x0d, 0x00, 0x00,
 }

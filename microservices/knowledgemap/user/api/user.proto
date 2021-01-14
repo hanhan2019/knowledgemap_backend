@@ -5,6 +5,8 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service User {
 	rpc UserInfo(UserReq) returns (UserInfoReply) {}
+	rpc QueryUserInfo(QueryUserInfoReq) returns (QueryUserInfoReply) {}
+
 	// rpc UserClassInfo(ClassReq)returns (ClassReply){}
 }
 
@@ -16,6 +18,14 @@ enum Identify{
     NOTFOUND = -1;
 }
 
+message QueryUserInfoReq {
+	string username = 1 [(gogoproto.moretags) = "form:\"username\""];
+	Identify identify = 2 [(gogoproto.moretags) = "form:\"identify\""];
+}
+
+message QueryUserInfoReply{
+	repeated UserReply users = 1 [(gogoproto.moretags) = "form:\"users\""];
+}
 
 message UserReq {
 	string userid = 1 [(gogoproto.moretags) = "form:\"userid\""];
@@ -41,6 +51,7 @@ message UserReply {
 	string  number=8;
 	string college = 9;
 	string imagepath = 10;
+	int64 createtime = 11;
 	//Identify identify = 10;
 }
 

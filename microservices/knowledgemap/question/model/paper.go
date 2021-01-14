@@ -3,7 +3,8 @@ package model
 import "gopkg.in/mgo.v2/bson"
 
 const (
-	PAPER_COLLECTION_NAME = "paper"
+	EXAM_COLLECTION_NAME     = "exam"
+	HOMEWORK_COLLECTION_NAME = "homework"
 )
 
 type QuestionScore struct {
@@ -19,7 +20,7 @@ type Paper struct {
 	// Students         []string      `json:"students" bson:"students"`
 	Questions []QuestionScore `json:"questions" bson:"questions"`
 	// CompleteStudents []string      `json:"completestudents" bson:"completestudents"`
-	CreateTime     int64 `json:"createtime" bson:"createtime"`
-	Totalscore     int64 `json:"totalscore" bson:"totalscore"`
-	ContinuingTime int64 `json:"stoptime" bson:"stoptime"`
+	CreateTime  int64 `json:"createtime" bson:"createtime"`
+	Totalscore  int64 `json:"totalscore" bson:"totalscore"`
+	SuggestTime int64 `json:"suggesttime" bson:"suggesttime"`
 }

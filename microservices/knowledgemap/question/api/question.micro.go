@@ -7,7 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
-	api1 "knowledgemap_backend/microservices/knowledgemap/class/api"
+	_ "knowledgemap_backend/microservices/knowledgemap/class/api"
 	api "knowledgemap_backend/microservices/knowledgemap/user/api"
 	math "math"
 )
@@ -39,12 +39,9 @@ var _ server.Option
 type QuestionService interface {
 	GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, opts ...client.CallOption) (*CRpMyQuestionInfoBySubject, error)
 	CreateQuestion(ctx context.Context, in *CreateQuestionReq, opts ...client.CallOption) (*QuestionInfoReply, error)
+	QueryQuestionKind(ctx context.Context, in *api.Empty, opts ...client.CallOption) (*QuestionKindInfoReply, error)
 	QueryQuestion(ctx context.Context, in *QueryQuestionReq, opts ...client.CallOption) (*QueryQuestionReply, error)
-	CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, opts ...client.CallOption) (*CreateHomeWorkReply, error)
-	QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, opts ...client.CallOption) (*QueryMyHomeWorkReply, error)
-	DoHomeWork(ctx context.Context, in *DoHomeWorkReq, opts ...client.CallOption) (*api.Empty, error)
-	QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, opts ...client.CallOption) (*QueryAnswerRecordReply, error)
-	QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, opts ...client.CallOption) (*QueryHomeWorkInClassReply, error)
+	DoQuestion(ctx context.Context, in *DoQuestionInfo, opts ...client.CallOption) (*QuestionItems, error)
 	CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, opts ...client.CallOption) (*CreatePracticeSummaryReply, error)
 	QueryPracticeSummaryInfo(ctx context.Context, in *QueryPracticeSummaryReq, opts ...client.CallOption) (*PracticeSummaryInfo, error)
 	GetPracticeSummary(ctx context.Context, in *QueryPracticeSummaryReq, opts ...client.CallOption) (*PracticeSummaryDetailInfo, error)
@@ -53,9 +50,11 @@ type QuestionService interface {
 	DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error)
 	CreatePaper(ctx context.Context, in *CreatePaperReq, opts ...client.CallOption) (*CreatePaperReply, error)
 	QueryPaperInClass(ctx context.Context, in *QueryPaperInClassReq, opts ...client.CallOption) (*QueryPaperInClassReply, error)
+	QueryRecommendPaper(ctx context.Context, in *QueryRecommendPaperReq, opts ...client.CallOption) (*QueryRecommendPaperReply, error)
 	QueryPaperQuestions(ctx context.Context, in *QueryPaperQuestionsReq, opts ...client.CallOption) (*QueryPaperQuestionsReply, error)
 	DoPaper(ctx context.Context, in *DoPaperReq, opts ...client.CallOption) (*api.Empty, error)
 	QueryMyPaperAnswerRecord(ctx context.Context, in *QueryPaperAnswerRecordReq, opts ...client.CallOption) (*QueryPaperAnswerRecordReply, error)
+	QueryMyPaperAnswerRecordList(ctx context.Context, in *QueryPaperAnswerRecordListReq, opts ...client.CallOption) (*QueryPaperAnswerRecordListReply, error)
 }
 
 type questionService struct {
@@ -96,6 +95,16 @@ func (c *questionService) CreateQuestion(ctx context.Context, in *CreateQuestion
 	return out, nil
 }
 
+func (c *questionService) QueryQuestionKind(ctx context.Context, in *api.Empty, opts ...client.CallOption) (*QuestionKindInfoReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryQuestionKind", in)
+	out := new(QuestionKindInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *questionService) QueryQuestion(ctx context.Context, in *QueryQuestionReq, opts ...client.CallOption) (*QueryQuestionReply, error) {
 	req := c.c.NewRequest(c.name, "Question.QueryQuestion", in)
 	out := new(QueryQuestionReply)
@@ -106,49 +115,9 @@ func (c *questionService) QueryQuestion(ctx context.Context, in *QueryQuestionRe
 	return out, nil
 }
 
-func (c *questionService) CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, opts ...client.CallOption) (*CreateHomeWorkReply, error) {
-	req := c.c.NewRequest(c.name, "Question.CreateHomeWork", in)
-	out := new(CreateHomeWorkReply)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *questionService) QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, opts ...client.CallOption) (*QueryMyHomeWorkReply, error) {
-	req := c.c.NewRequest(c.name, "Question.QueryMyHomeWork", in)
-	out := new(QueryMyHomeWorkReply)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *questionService) DoHomeWork(ctx context.Context, in *DoHomeWorkReq, opts ...client.CallOption) (*api.Empty, error) {
-	req := c.c.NewRequest(c.name, "Question.DoHomeWork", in)
-	out := new(api.Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *questionService) QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, opts ...client.CallOption) (*QueryAnswerRecordReply, error) {
-	req := c.c.NewRequest(c.name, "Question.QueryAnswerRecord", in)
-	out := new(QueryAnswerRecordReply)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *questionService) QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, opts ...client.CallOption) (*QueryHomeWorkInClassReply, error) {
-	req := c.c.NewRequest(c.name, "Question.QueryHomeWorkInClass", in)
-	out := new(QueryHomeWorkInClassReply)
+func (c *questionService) DoQuestion(ctx context.Context, in *DoQuestionInfo, opts ...client.CallOption) (*QuestionItems, error) {
+	req := c.c.NewRequest(c.name, "Question.DoQuestion", in)
+	out := new(QuestionItems)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -236,6 +205,16 @@ func (c *questionService) QueryPaperInClass(ctx context.Context, in *QueryPaperI
 	return out, nil
 }
 
+func (c *questionService) QueryRecommendPaper(ctx context.Context, in *QueryRecommendPaperReq, opts ...client.CallOption) (*QueryRecommendPaperReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryRecommendPaper", in)
+	out := new(QueryRecommendPaperReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *questionService) QueryPaperQuestions(ctx context.Context, in *QueryPaperQuestionsReq, opts ...client.CallOption) (*QueryPaperQuestionsReply, error) {
 	req := c.c.NewRequest(c.name, "Question.QueryPaperQuestions", in)
 	out := new(QueryPaperQuestionsReply)
@@ -266,17 +245,24 @@ func (c *questionService) QueryMyPaperAnswerRecord(ctx context.Context, in *Quer
 	return out, nil
 }
 
+func (c *questionService) QueryMyPaperAnswerRecordList(ctx context.Context, in *QueryPaperAnswerRecordListReq, opts ...client.CallOption) (*QueryPaperAnswerRecordListReply, error) {
+	req := c.c.NewRequest(c.name, "Question.QueryMyPaperAnswerRecordList", in)
+	out := new(QueryPaperAnswerRecordListReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Question service
 
 type QuestionHandler interface {
 	GetMyQuestionInfo(context.Context, *CRqQueryMyQuestionInfoBySubject, *CRpMyQuestionInfoBySubject) error
 	CreateQuestion(context.Context, *CreateQuestionReq, *QuestionInfoReply) error
+	QueryQuestionKind(context.Context, *api.Empty, *QuestionKindInfoReply) error
 	QueryQuestion(context.Context, *QueryQuestionReq, *QueryQuestionReply) error
-	CreateHomeWork(context.Context, *CreateHomeWorkReq, *CreateHomeWorkReply) error
-	QueryMyHomeWork(context.Context, *QueryMyHomeWorkReq, *QueryMyHomeWorkReply) error
-	DoHomeWork(context.Context, *DoHomeWorkReq, *api.Empty) error
-	QueryAnswerRecord(context.Context, *QueryAnswerRecordReq, *QueryAnswerRecordReply) error
-	QueryHomeWorkInClass(context.Context, *api1.ClassReq, *QueryHomeWorkInClassReply) error
+	DoQuestion(context.Context, *DoQuestionInfo, *QuestionItems) error
 	CreatePracticeSummary(context.Context, *CreatePracticeSummaryReq, *CreatePracticeSummaryReply) error
 	QueryPracticeSummaryInfo(context.Context, *QueryPracticeSummaryReq, *PracticeSummaryInfo) error
 	GetPracticeSummary(context.Context, *QueryPracticeSummaryReq, *PracticeSummaryDetailInfo) error
@@ -285,21 +271,20 @@ type QuestionHandler interface {
 	DelteQuestionInPS(context.Context, *ControllQuestionInPSReq, *api.Empty) error
 	CreatePaper(context.Context, *CreatePaperReq, *CreatePaperReply) error
 	QueryPaperInClass(context.Context, *QueryPaperInClassReq, *QueryPaperInClassReply) error
+	QueryRecommendPaper(context.Context, *QueryRecommendPaperReq, *QueryRecommendPaperReply) error
 	QueryPaperQuestions(context.Context, *QueryPaperQuestionsReq, *QueryPaperQuestionsReply) error
 	DoPaper(context.Context, *DoPaperReq, *api.Empty) error
 	QueryMyPaperAnswerRecord(context.Context, *QueryPaperAnswerRecordReq, *QueryPaperAnswerRecordReply) error
+	QueryMyPaperAnswerRecordList(context.Context, *QueryPaperAnswerRecordListReq, *QueryPaperAnswerRecordListReply) error
 }
 
 func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...server.HandlerOption) error {
 	type question interface {
 		GetMyQuestionInfo(ctx context.Context, in *CRqQueryMyQuestionInfoBySubject, out *CRpMyQuestionInfoBySubject) error
 		CreateQuestion(ctx context.Context, in *CreateQuestionReq, out *QuestionInfoReply) error
+		QueryQuestionKind(ctx context.Context, in *api.Empty, out *QuestionKindInfoReply) error
 		QueryQuestion(ctx context.Context, in *QueryQuestionReq, out *QueryQuestionReply) error
-		CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, out *CreateHomeWorkReply) error
-		QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, out *QueryMyHomeWorkReply) error
-		DoHomeWork(ctx context.Context, in *DoHomeWorkReq, out *api.Empty) error
-		QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, out *QueryAnswerRecordReply) error
-		QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, out *QueryHomeWorkInClassReply) error
+		DoQuestion(ctx context.Context, in *DoQuestionInfo, out *QuestionItems) error
 		CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, out *CreatePracticeSummaryReply) error
 		QueryPracticeSummaryInfo(ctx context.Context, in *QueryPracticeSummaryReq, out *PracticeSummaryInfo) error
 		GetPracticeSummary(ctx context.Context, in *QueryPracticeSummaryReq, out *PracticeSummaryDetailInfo) error
@@ -308,9 +293,11 @@ func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...serv
 		DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error
 		CreatePaper(ctx context.Context, in *CreatePaperReq, out *CreatePaperReply) error
 		QueryPaperInClass(ctx context.Context, in *QueryPaperInClassReq, out *QueryPaperInClassReply) error
+		QueryRecommendPaper(ctx context.Context, in *QueryRecommendPaperReq, out *QueryRecommendPaperReply) error
 		QueryPaperQuestions(ctx context.Context, in *QueryPaperQuestionsReq, out *QueryPaperQuestionsReply) error
 		DoPaper(ctx context.Context, in *DoPaperReq, out *api.Empty) error
 		QueryMyPaperAnswerRecord(ctx context.Context, in *QueryPaperAnswerRecordReq, out *QueryPaperAnswerRecordReply) error
+		QueryMyPaperAnswerRecordList(ctx context.Context, in *QueryPaperAnswerRecordListReq, out *QueryPaperAnswerRecordListReply) error
 	}
 	type Question struct {
 		question
@@ -331,28 +318,16 @@ func (h *questionHandler) CreateQuestion(ctx context.Context, in *CreateQuestion
 	return h.QuestionHandler.CreateQuestion(ctx, in, out)
 }
 
+func (h *questionHandler) QueryQuestionKind(ctx context.Context, in *api.Empty, out *QuestionKindInfoReply) error {
+	return h.QuestionHandler.QueryQuestionKind(ctx, in, out)
+}
+
 func (h *questionHandler) QueryQuestion(ctx context.Context, in *QueryQuestionReq, out *QueryQuestionReply) error {
 	return h.QuestionHandler.QueryQuestion(ctx, in, out)
 }
 
-func (h *questionHandler) CreateHomeWork(ctx context.Context, in *CreateHomeWorkReq, out *CreateHomeWorkReply) error {
-	return h.QuestionHandler.CreateHomeWork(ctx, in, out)
-}
-
-func (h *questionHandler) QueryMyHomeWork(ctx context.Context, in *QueryMyHomeWorkReq, out *QueryMyHomeWorkReply) error {
-	return h.QuestionHandler.QueryMyHomeWork(ctx, in, out)
-}
-
-func (h *questionHandler) DoHomeWork(ctx context.Context, in *DoHomeWorkReq, out *api.Empty) error {
-	return h.QuestionHandler.DoHomeWork(ctx, in, out)
-}
-
-func (h *questionHandler) QueryAnswerRecord(ctx context.Context, in *QueryAnswerRecordReq, out *QueryAnswerRecordReply) error {
-	return h.QuestionHandler.QueryAnswerRecord(ctx, in, out)
-}
-
-func (h *questionHandler) QueryHomeWorkInClass(ctx context.Context, in *api1.ClassReq, out *QueryHomeWorkInClassReply) error {
-	return h.QuestionHandler.QueryHomeWorkInClass(ctx, in, out)
+func (h *questionHandler) DoQuestion(ctx context.Context, in *DoQuestionInfo, out *QuestionItems) error {
+	return h.QuestionHandler.DoQuestion(ctx, in, out)
 }
 
 func (h *questionHandler) CreatePracticeSummary(ctx context.Context, in *CreatePracticeSummaryReq, out *CreatePracticeSummaryReply) error {
@@ -387,6 +362,10 @@ func (h *questionHandler) QueryPaperInClass(ctx context.Context, in *QueryPaperI
 	return h.QuestionHandler.QueryPaperInClass(ctx, in, out)
 }
 
+func (h *questionHandler) QueryRecommendPaper(ctx context.Context, in *QueryRecommendPaperReq, out *QueryRecommendPaperReply) error {
+	return h.QuestionHandler.QueryRecommendPaper(ctx, in, out)
+}
+
 func (h *questionHandler) QueryPaperQuestions(ctx context.Context, in *QueryPaperQuestionsReq, out *QueryPaperQuestionsReply) error {
 	return h.QuestionHandler.QueryPaperQuestions(ctx, in, out)
 }
@@ -397,4 +376,8 @@ func (h *questionHandler) DoPaper(ctx context.Context, in *DoPaperReq, out *api.
 
 func (h *questionHandler) QueryMyPaperAnswerRecord(ctx context.Context, in *QueryPaperAnswerRecordReq, out *QueryPaperAnswerRecordReply) error {
 	return h.QuestionHandler.QueryMyPaperAnswerRecord(ctx, in, out)
+}
+
+func (h *questionHandler) QueryMyPaperAnswerRecordList(ctx context.Context, in *QueryPaperAnswerRecordListReq, out *QueryPaperAnswerRecordListReply) error {
+	return h.QuestionHandler.QueryMyPaperAnswerRecordList(ctx, in, out)
 }

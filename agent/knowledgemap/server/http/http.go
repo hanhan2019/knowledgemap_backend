@@ -108,7 +108,7 @@ func InitRouter(e *echo.Echo) {
 	mustTeacherMid := CreateMustPositionMid(passportSrv, POSITION_TEACHER)
 	mustStudentMid := CreateMustPositionMid(passportSrv, POSITION_STUDENT)
 	api.GET("/hi", hello)
-	api.GET("/test/protobuf/transport", transport)
+	api.POST("/file/upload", transport)
 	{
 		api.POST("/user/register", userRegister)
 		api.PUT("/user/login", userLogin)
@@ -124,6 +124,8 @@ func InitRouter(e *echo.Echo) {
 		api.GET("/class/query/classinfo", queryClassInfo, authMid)
 		api.GET("/class/query/classes", searchClasses, authMid)
 		api.GET("/class/query/formlist", queryFormList)
+		api.POST("/class/deletestudent", deleteStudentInClass, authMid)
+		api.GET("/class/query/student", queryStudentInClass, authMid)
 	}
 	// api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
 	// api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
@@ -144,21 +146,24 @@ func InitRouter(e *echo.Echo) {
 	{
 		api.POST("/question/create", createQuestion, authMid)
 		api.GET("/question/query", queryQuestion, authMid)
+		api.PUT("/question/do", doQuestion, authMid)
 		api.GET("/user/knowledgemap", queryUserKnowledgeMap)
 	}
 	{
-		api.POST("/homework/create", createHomeWork, authMid, mustTeacherMid)
-		api.GET("/homework/query", queryHomeWork, authMid)
-		api.PUT("/homework/do", doHomeWork, authMid)
-		api.GET("/homework/answerrecord/query", queryAnswerRecord, authMid, mustTeacherMid)
-		api.GET("/homework/query/info", queryHomeWorkInClass, authMid)
+		// api.POST("/homework/create", createHomeWork, authMid, mustTeacherMid)
+		// api.GET("/homework/query", queryHomeWork, authMid)
+		// api.PUT("/homework/do", doHomeWork, authMid)
+		// api.GET("/homework/answerrecord/query", queryAnswerRecord, authMid, mustTeacherMid)
+		// api.GET("/homework/query/info", queryHomeWorkInClass, authMid)
 	}
 	{
 		api.POST("/paper/create", createPaper, authMid, mustTeacherMid)
-		api.GET("/paper/query", queryPaper, authMid)                   //根据班级号查试卷
-		api.GET("/paper/query/questions", queryPaperQuestion, authMid) //根据试卷号查试题目
+		api.GET("/paper/query", queryPaper, authMid)                    //根据班级号查试卷
+		api.GET("/paper/query/recommend", queryRecommendPaper, authMid) //查待做作业和推荐试卷
+		api.GET("/paper/query/questions", queryPaperQuestion, authMid)  //根据试卷号查试题目
 		api.PUT("/paper/do", doPaper, authMid)
-		api.GET("/paper/answerrecord/query", queryPaperAnswerRecord, authMid)
+		api.GET("/paper/answerrecord/query", queryPaperAnswerRecord, authMid)          // 查询具体某次试卷的答题记录
+		api.GET("/paper/answerrecord/query/list", queryPaperAnswerRecordList, authMid) //查询我答过哪些试卷
 	}
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

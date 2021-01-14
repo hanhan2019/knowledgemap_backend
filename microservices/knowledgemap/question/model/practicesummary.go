@@ -40,7 +40,7 @@ type PracticeQuestion struct {
 	PSId         bson.ObjectId `json:"psid" bson:"psid"`
 	QuestionName string        `json:"questionname" bson:"questionname"`
 	QuestionId   bson.ObjectId `json:"questionid" bson:"questionid"`
-	QuestionKind Qusetion_Kind `json:"questionkind" bson:"questionkind"`
+	QuestionKind QUESTION_KIND `json:"questionkind" bson:"questionkind"`
 	KnowlegeId   bson.ObjectId `json:"knowlegeid" bson:"knowlegeid"`
 	KnowlegeName string        `json:"knowlegename" bson:"knowlegename"`
 	CreateTime   int64         `json:"createtime" bson:"createtime"`

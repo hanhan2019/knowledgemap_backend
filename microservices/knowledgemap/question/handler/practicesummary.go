@@ -85,12 +85,29 @@ func (s *QuestionService) GetPracticeSummary(ctx context.Context, req *api.Query
 		return fmt.Errorf("查询题目失败")
 	}
 	for _, v := range *ps {
+		questionInfo := new(model.Question)
+		err := gdao.FillQuestionById(ctx, v.QuestionId, questionInfo)
+		if err != nil {
+			logrus.Errorf("GetPracticeSummary query question %v err %v ", v.QuestionId.Hex(), err)
+			continue
+		}
 		question := new(api.QuestionPre)
 		question.Name = v.QuestionName
 		question.Questionid = v.QuestionId.Hex()
-		question.Kind = int64(v.QuestionKind)
-		question.Knowledgename = v.KnowlegeName
-		question.Star = v.Star
+		question.Questiontype = int64(v.QuestionKind)
+		{
+			question.Title = questionInfo.Content
+			question.Istitleimg = questionInfo.IsQImg
+			question.Options = shiftModelOptions2Proto(&questionInfo.Options)
+			question.Answers = shiftModelOptions2Proto(&questionInfo.Answers)
+			question.Subject = questionInfo.Subject
+			question.Course = questionInfo.Course
+			question.Knowledgename = questionInfo.Knowledge.Hex()
+			question.Name = questionInfo.Name
+			question.Star = questionInfo.Star
+			question.Needcheck = questionInfo.NeedCheck
+			question.Explain = questionInfo.Explain
+		}
 		rsp.Questions = append(rsp.Questions, question)
 	}
 	rsp.Currentpage = req.Page
@@ -127,7 +144,7 @@ func (s *QuestionService) QueryMyPracticeSummary(ctx context.Context, req *api.Q
 func (s *QuestionService) AddQuestionInPS(ctx context.Context, req *api.ControllQuestionInPSReq, rsp *uapi.Empty) error {
 	logrus.Infof("AddQuestionInPS req is %v ", req)
 	for _, v := range req.Questions {
-		oneQuestion := new(model.Qusetion)
+		oneQuestion := new(model.Question)
 		err := gdao.FillQuestionById(ctx, bson.ObjectIdHex(v), oneQuestion)
 		if err != nil {
 			logrus.Errorf("AddQuestionInPS Error,question id is %v ,err :%v", v, err)

@@ -12,14 +12,14 @@
 		CRpMyQuestionInfoBySubject
 		CreateQuestionReq
 		QuestionInfoReply
+		QuestionKindInfoReply
 		QueryQuestionReq
 		QueryQuestionReply
 		CreateHomeWorkReq
 		CreateHomeWorkReply
-		QueryMyHomeWorkReq
+		QueryRecommendPaperReq
 		QuestionInfo
-		HomeWorkInfo
-		QueryMyHomeWorkReply
+		QueryRecommendPaperReply
 		DoQuestionInfo
 		DoHomeWorkReq
 		QueryAnswerRecordReq
@@ -42,11 +42,19 @@
 		QueryPaperInClassReply
 		QueryPaperQuestionsReq
 		QueryPaperQuestionsReply
+		TitleItems
+		QuestionItems
+		Option
 		PaperInfo
 		DoPaperReq
+		DoQuestionReq
 		QueryPaperAnswerRecordReq
 		QueryPaperAnswerRecordReply
 		UserPaperAnswerInfo
+		QueryPaperAnswerRecordListReq
+		QueryPaperAnswerRecordListReply
+		UploadFileReq
+		UploadFileReply
 */
 package api
 
@@ -129,7 +137,7 @@ func (m *CRqQueryMyQuestionInfoBySubject) GetEndtime() int64 {
 }
 
 type CRpMyQuestionInfoBySubject struct {
-	Knowledgenodes []string `protobuf:"bytes,1,rep,name=knowledgenodes" json:"knowledgenodes,omitempty"`
+	Knowledgenodes []string `protobuf:"bytes,1,rep,name=knowledgenodes" json:"knowledgenodes"`
 }
 
 func (m *CRpMyQuestionInfoBySubject) Reset()         { *m = CRpMyQuestionInfoBySubject{} }
@@ -147,20 +155,19 @@ func (m *CRpMyQuestionInfoBySubject) GetKnowledgenodes() []string {
 }
 
 type CreateQuestionReq struct {
-	Kind      int64    `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty" form:"kind"`
-	Name      string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Content   string   `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty" form:"content"`
-	Qimage    bool     `protobuf:"varint,4,opt,name=qimage,proto3" json:"qimage,omitempty" form:"qimage"`
-	Option    []string `protobuf:"bytes,5,rep,name=option" json:"option,omitempty" form:"option"`
-	Oimage    bool     `protobuf:"varint,6,opt,name=oimage,proto3" json:"oimage,omitempty" form:"oimage"`
-	Answer    []string `protobuf:"bytes,7,rep,name=answer" json:"answer,omitempty" form:"answer"`
-	Aimage    bool     `protobuf:"varint,8,opt,name=aimage,proto3" json:"aimage,omitempty" form:"aimage"`
-	Subject   string   `protobuf:"bytes,9,opt,name=subject,proto3" json:"subject,omitempty" form:"subject"`
-	Course    string   `protobuf:"bytes,10,opt,name=course,proto3" json:"course,omitempty" form:"course"`
-	Knowledge string   `protobuf:"bytes,11,opt,name=knowledge,proto3" json:"knowledge,omitempty" form:"knowledge"`
-	Needcheck bool     `protobuf:"varint,12,opt,name=needcheck,proto3" json:"needcheck,omitempty" form:"needcheck"`
-	Explain   string   `protobuf:"bytes,13,opt,name=explain,proto3" json:"explain,omitempty" form:"explain"`
-	Star      int64    `protobuf:"varint,14,opt,name=star,proto3" json:"star,omitempty" form:"star"`
+	Questiontype int64     `protobuf:"varint,1,opt,name=questiontype,proto3" json:"questiontype" form:"questiontype"`
+	Name         string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name" form:"name"`
+	Title        string    `protobuf:"bytes,3,opt,name=title,proto3" json:"title" form:"title"`
+	Istitleimg   bool      `protobuf:"varint,4,opt,name=istitleimg,proto3" json:"istitleimg" form:"istitleimg"`
+	Options      []*Option `protobuf:"bytes,5,rep,name=options" json:"options" form:"options"`
+	Answers      []*Option `protobuf:"bytes,6,rep,name=answers" json:"answers" form:"answers"`
+	Subject      string    `protobuf:"bytes,7,opt,name=subject,proto3" json:"subject" form:"subject"`
+	Course       string    `protobuf:"bytes,8,opt,name=course,proto3" json:"course" form:"course"`
+	Knowledge    string    `protobuf:"bytes,9,opt,name=knowledge,proto3" json:"knowledge" form:"knowledge"`
+	Needcheck    bool      `protobuf:"varint,10,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
+	Explain      string    `protobuf:"bytes,11,opt,name=explain,proto3" json:"explain" form:"explain"`
+	Star         int64     `protobuf:"varint,12,opt,name=star,proto3" json:"star" form:"star"`
+	Creatername  string    `protobuf:"bytes,13,opt,name=creatername,proto3" json:"creatername" form:"creatername"`
 }
 
 func (m *CreateQuestionReq) Reset()                    { *m = CreateQuestionReq{} }
@@ -168,9 +175,9 @@ func (m *CreateQuestionReq) String() string            { return proto.CompactTex
 func (*CreateQuestionReq) ProtoMessage()               {}
 func (*CreateQuestionReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{2} }
 
-func (m *CreateQuestionReq) GetKind() int64 {
+func (m *CreateQuestionReq) GetQuestiontype() int64 {
 	if m != nil {
-		return m.Kind
+		return m.Questiontype
 	}
 	return 0
 }
@@ -182,46 +189,32 @@ func (m *CreateQuestionReq) GetName() string {
 	return ""
 }
 
-func (m *CreateQuestionReq) GetContent() string {
+func (m *CreateQuestionReq) GetTitle() string {
 	if m != nil {
-		return m.Content
+		return m.Title
 	}
 	return ""
 }
 
-func (m *CreateQuestionReq) GetQimage() bool {
+func (m *CreateQuestionReq) GetIstitleimg() bool {
 	if m != nil {
-		return m.Qimage
+		return m.Istitleimg
 	}
 	return false
 }
 
-func (m *CreateQuestionReq) GetOption() []string {
+func (m *CreateQuestionReq) GetOptions() []*Option {
 	if m != nil {
-		return m.Option
+		return m.Options
 	}
 	return nil
 }
 
-func (m *CreateQuestionReq) GetOimage() bool {
+func (m *CreateQuestionReq) GetAnswers() []*Option {
 	if m != nil {
-		return m.Oimage
-	}
-	return false
-}
-
-func (m *CreateQuestionReq) GetAnswer() []string {
-	if m != nil {
-		return m.Answer
+		return m.Answers
 	}
 	return nil
-}
-
-func (m *CreateQuestionReq) GetAimage() bool {
-	if m != nil {
-		return m.Aimage
-	}
-	return false
 }
 
 func (m *CreateQuestionReq) GetSubject() string {
@@ -266,22 +259,27 @@ func (m *CreateQuestionReq) GetStar() int64 {
 	return 0
 }
 
+func (m *CreateQuestionReq) GetCreatername() string {
+	if m != nil {
+		return m.Creatername
+	}
+	return ""
+}
+
 type QuestionInfoReply struct {
-	Id        string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" form:"id"`
-	Kind      int64    `protobuf:"varint,2,opt,name=kind,proto3" json:"kind,omitempty" form:"kind"`
-	Content   string   `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty" form:"content"`
-	Qimage    bool     `protobuf:"varint,4,opt,name=qimage,proto3" json:"qimage,omitempty" form:"qimage"`
-	Option    []string `protobuf:"bytes,5,rep,name=option" json:"option,omitempty" form:"option"`
-	Oimage    bool     `protobuf:"varint,6,opt,name=oimage,proto3" json:"oimage,omitempty" form:"oimage"`
-	Answer    []string `protobuf:"bytes,7,rep,name=answer" json:"answer,omitempty" form:"answer"`
-	Aimage    bool     `protobuf:"varint,8,opt,name=aimage,proto3" json:"aimage,omitempty" form:"aimage"`
-	Subject   string   `protobuf:"bytes,9,opt,name=subject,proto3" json:"subject,omitempty" form:"subject"`
-	Course    string   `protobuf:"bytes,10,opt,name=course,proto3" json:"course,omitempty" form:"course"`
-	Knowledge string   `protobuf:"bytes,11,opt,name=knowledge,proto3" json:"knowledge,omitempty" form:"knowledge"`
-	Name      string   `protobuf:"bytes,12,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Needcheck bool     `protobuf:"varint,13,opt,name=needcheck,proto3" json:"needcheck,omitempty" form:"needcheck"`
-	Explain   string   `protobuf:"bytes,14,opt,name=explain,proto3" json:"explain,omitempty" form:"explain"`
-	Star      int64    `protobuf:"varint,15,opt,name=star,proto3" json:"star,omitempty" form:"star"`
+	Id           string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id" form:"id"`
+	Questiontype int64     `protobuf:"varint,2,opt,name=questiontype,proto3" json:"questiontype" form:"questiontype"`
+	Title        string    `protobuf:"bytes,3,opt,name=title,proto3" json:"title" form:"title"`
+	Istitleimg   bool      `protobuf:"varint,4,opt,name=istitleimg,proto3" json:"istitleimg" form:"istitleimg"`
+	Options      []*Option `protobuf:"bytes,5,rep,name=options" json:"options" form:"options"`
+	Answers      []*Option `protobuf:"bytes,6,rep,name=answers" json:"answers" form:"answers"`
+	Subject      string    `protobuf:"bytes,7,opt,name=subject,proto3" json:"subject" form:"subject"`
+	Course       string    `protobuf:"bytes,8,opt,name=course,proto3" json:"course" form:"course"`
+	Knowledge    string    `protobuf:"bytes,9,opt,name=knowledge,proto3" json:"knowledge" form:"knowledge"`
+	Name         string    `protobuf:"bytes,10,opt,name=name,proto3" json:"name" form:"name"`
+	Needcheck    bool      `protobuf:"varint,11,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
+	Explain      string    `protobuf:"bytes,12,opt,name=explain,proto3" json:"explain" form:"explain"`
+	Star         int64     `protobuf:"varint,13,opt,name=star,proto3" json:"star" form:"star"`
 }
 
 func (m *QuestionInfoReply) Reset()                    { *m = QuestionInfoReply{} }
@@ -296,53 +294,39 @@ func (m *QuestionInfoReply) GetId() string {
 	return ""
 }
 
-func (m *QuestionInfoReply) GetKind() int64 {
+func (m *QuestionInfoReply) GetQuestiontype() int64 {
 	if m != nil {
-		return m.Kind
+		return m.Questiontype
 	}
 	return 0
 }
 
-func (m *QuestionInfoReply) GetContent() string {
+func (m *QuestionInfoReply) GetTitle() string {
 	if m != nil {
-		return m.Content
+		return m.Title
 	}
 	return ""
 }
 
-func (m *QuestionInfoReply) GetQimage() bool {
+func (m *QuestionInfoReply) GetIstitleimg() bool {
 	if m != nil {
-		return m.Qimage
+		return m.Istitleimg
 	}
 	return false
 }
 
-func (m *QuestionInfoReply) GetOption() []string {
+func (m *QuestionInfoReply) GetOptions() []*Option {
 	if m != nil {
-		return m.Option
+		return m.Options
 	}
 	return nil
 }
 
-func (m *QuestionInfoReply) GetOimage() bool {
+func (m *QuestionInfoReply) GetAnswers() []*Option {
 	if m != nil {
-		return m.Oimage
-	}
-	return false
-}
-
-func (m *QuestionInfoReply) GetAnswer() []string {
-	if m != nil {
-		return m.Answer
+		return m.Answers
 	}
 	return nil
-}
-
-func (m *QuestionInfoReply) GetAimage() bool {
-	if m != nil {
-		return m.Aimage
-	}
-	return false
 }
 
 func (m *QuestionInfoReply) GetSubject() string {
@@ -394,22 +378,38 @@ func (m *QuestionInfoReply) GetStar() int64 {
 	return 0
 }
 
+type QuestionKindInfoReply struct {
+	Kindlist []string `protobuf:"bytes,1,rep,name=kindlist" json:"kindlist" form:"kind"`
+}
+
+func (m *QuestionKindInfoReply) Reset()                    { *m = QuestionKindInfoReply{} }
+func (m *QuestionKindInfoReply) String() string            { return proto.CompactTextString(m) }
+func (*QuestionKindInfoReply) ProtoMessage()               {}
+func (*QuestionKindInfoReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{4} }
+
+func (m *QuestionKindInfoReply) GetKindlist() []string {
+	if m != nil {
+		return m.Kindlist
+	}
+	return nil
+}
+
 type QueryQuestionReq struct {
-	Kind      int64  `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty" form:"kind"`
-	Subject   string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty" form:"subject"`
-	Course    string `protobuf:"bytes,3,opt,name=course,proto3" json:"course,omitempty" form:"course"`
-	Knowledge string `protobuf:"bytes,4,opt,name=knowledge,proto3" json:"knowledge,omitempty" form:"knowledge"`
-	Page      int64  `protobuf:"varint,5,opt,name=page,proto3" json:"page,omitempty" form:"page"`
+	Questiontype int64  `protobuf:"varint,1,opt,name=questiontype,proto3" json:"questiontype" form:"questiontype"`
+	Subject      string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject" form:"subject"`
+	Course       string `protobuf:"bytes,3,opt,name=course,proto3" json:"course" form:"course"`
+	// string  knowledge = 4 [(gogoproto.moretags) = "form:\"knowledge\""];
+	Page int64 `protobuf:"varint,4,opt,name=page,proto3" json:"page" form:"page"`
 }
 
 func (m *QueryQuestionReq) Reset()                    { *m = QueryQuestionReq{} }
 func (m *QueryQuestionReq) String() string            { return proto.CompactTextString(m) }
 func (*QueryQuestionReq) ProtoMessage()               {}
-func (*QueryQuestionReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{4} }
+func (*QueryQuestionReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{5} }
 
-func (m *QueryQuestionReq) GetKind() int64 {
+func (m *QueryQuestionReq) GetQuestiontype() int64 {
 	if m != nil {
-		return m.Kind
+		return m.Questiontype
 	}
 	return 0
 }
@@ -428,13 +428,6 @@ func (m *QueryQuestionReq) GetCourse() string {
 	return ""
 }
 
-func (m *QueryQuestionReq) GetKnowledge() string {
-	if m != nil {
-		return m.Knowledge
-	}
-	return ""
-}
-
 func (m *QueryQuestionReq) GetPage() int64 {
 	if m != nil {
 		return m.Page
@@ -443,15 +436,15 @@ func (m *QueryQuestionReq) GetPage() int64 {
 }
 
 type QueryQuestionReply struct {
-	Questions   []*QuestionInfoReply `protobuf:"bytes,1,rep,name=questions" json:"questions,omitempty" form:"questions"`
-	Currentpage int64                `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage,omitempty" form:"currentpage"`
-	Totalpage   int64                `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage,omitempty" form:"totalpage"`
+	Questions   []*QuestionInfoReply `protobuf:"bytes,1,rep,name=questions" json:"questions" form:"questions"`
+	Currentpage int64                `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage   int64                `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
 }
 
 func (m *QueryQuestionReply) Reset()                    { *m = QueryQuestionReply{} }
 func (m *QueryQuestionReply) String() string            { return proto.CompactTextString(m) }
 func (*QueryQuestionReply) ProtoMessage()               {}
-func (*QueryQuestionReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{5} }
+func (*QueryQuestionReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{6} }
 
 func (m *QueryQuestionReply) GetQuestions() []*QuestionInfoReply {
 	if m != nil {
@@ -475,16 +468,17 @@ func (m *QueryQuestionReply) GetTotalpage() int64 {
 }
 
 type CreateHomeWorkReq struct {
-	Name      string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Classid   string   `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
-	Students  []string `protobuf:"bytes,3,rep,name=students" json:"students,omitempty" form:"students"`
-	Questions []string `protobuf:"bytes,4,rep,name=questions" json:"questions,omitempty" form:"questions"`
+	Name      string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name" form:"name"`
+	Classid   string   `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Students  []string `protobuf:"bytes,3,rep,name=students" json:"students" form:"students"`
+	Questions []string `protobuf:"bytes,4,rep,name=questions" json:"questions" form:"questions"`
+	Endtime   int64    `protobuf:"varint,5,opt,name=endtime,proto3" json:"endtime" form:"endtime"`
 }
 
 func (m *CreateHomeWorkReq) Reset()                    { *m = CreateHomeWorkReq{} }
 func (m *CreateHomeWorkReq) String() string            { return proto.CompactTextString(m) }
 func (*CreateHomeWorkReq) ProtoMessage()               {}
-func (*CreateHomeWorkReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{6} }
+func (*CreateHomeWorkReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{7} }
 
 func (m *CreateHomeWorkReq) GetName() string {
 	if m != nil {
@@ -514,14 +508,21 @@ func (m *CreateHomeWorkReq) GetQuestions() []string {
 	return nil
 }
 
+func (m *CreateHomeWorkReq) GetEndtime() int64 {
+	if m != nil {
+		return m.Endtime
+	}
+	return 0
+}
+
 type CreateHomeWorkReply struct {
-	Homeworkid string `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid,omitempty" form:"homeworkid"`
+	Homeworkid string `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid" form:"homeworkid"`
 }
 
 func (m *CreateHomeWorkReply) Reset()                    { *m = CreateHomeWorkReply{} }
 func (m *CreateHomeWorkReply) String() string            { return proto.CompactTextString(m) }
 func (*CreateHomeWorkReply) ProtoMessage()               {}
-func (*CreateHomeWorkReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{7} }
+func (*CreateHomeWorkReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{8} }
 
 func (m *CreateHomeWorkReply) GetHomeworkid() string {
 	if m != nil {
@@ -530,44 +531,36 @@ func (m *CreateHomeWorkReply) GetHomeworkid() string {
 	return ""
 }
 
-type QueryMyHomeWorkReq struct {
-	Userid  string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Classid string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
+type QueryRecommendPaperReq struct {
+	Userid string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
 }
 
-func (m *QueryMyHomeWorkReq) Reset()                    { *m = QueryMyHomeWorkReq{} }
-func (m *QueryMyHomeWorkReq) String() string            { return proto.CompactTextString(m) }
-func (*QueryMyHomeWorkReq) ProtoMessage()               {}
-func (*QueryMyHomeWorkReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{8} }
+func (m *QueryRecommendPaperReq) Reset()                    { *m = QueryRecommendPaperReq{} }
+func (m *QueryRecommendPaperReq) String() string            { return proto.CompactTextString(m) }
+func (*QueryRecommendPaperReq) ProtoMessage()               {}
+func (*QueryRecommendPaperReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{9} }
 
-func (m *QueryMyHomeWorkReq) GetUserid() string {
+func (m *QueryRecommendPaperReq) GetUserid() string {
 	if m != nil {
 		return m.Userid
 	}
 	return ""
 }
 
-func (m *QueryMyHomeWorkReq) GetClassid() string {
-	if m != nil {
-		return m.Classid
-	}
-	return ""
-}
-
 type QuestionInfo struct {
-	Questionid string   `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid,omitempty" form:"qustionid"`
-	Kind       int64    `protobuf:"varint,2,opt,name=kind,proto3" json:"kind,omitempty" form:"kind"`
-	Content    string   `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty" form:"content"`
-	Qimage     bool     `protobuf:"varint,4,opt,name=qimage,proto3" json:"qimage,omitempty" form:"qimage"`
-	Oimage     bool     `protobuf:"varint,5,opt,name=oimage,proto3" json:"oimage,omitempty" form:"oimage"`
-	Option     []string `protobuf:"bytes,6,rep,name=option" json:"option,omitempty" form:"option"`
-	Score      int64    `protobuf:"varint,7,opt,name=score,proto3" json:"score,omitempty" form:"socre"`
+	Questionid   string    `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"qustionid"`
+	Questiontype int64     `protobuf:"varint,2,opt,name=questiontype,proto3" json:"questiontype" form:"questiontype"`
+	Title        string    `protobuf:"bytes,3,opt,name=title,proto3" json:"title" form:"title"`
+	Istitleimg   bool      `protobuf:"varint,4,opt,name=istitleimg,proto3" json:"istitleimg" form:"istitleimg"`
+	Options      []*Option `protobuf:"bytes,5,rep,name=options" json:"options" form:"options"`
+	Score        int64     `protobuf:"varint,6,opt,name=score,proto3" json:"score" form:"socre"`
+	Needcheck    bool      `protobuf:"varint,7,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
 }
 
 func (m *QuestionInfo) Reset()                    { *m = QuestionInfo{} }
 func (m *QuestionInfo) String() string            { return proto.CompactTextString(m) }
 func (*QuestionInfo) ProtoMessage()               {}
-func (*QuestionInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{9} }
+func (*QuestionInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{10} }
 
 func (m *QuestionInfo) GetQuestionid() string {
 	if m != nil {
@@ -576,37 +569,30 @@ func (m *QuestionInfo) GetQuestionid() string {
 	return ""
 }
 
-func (m *QuestionInfo) GetKind() int64 {
+func (m *QuestionInfo) GetQuestiontype() int64 {
 	if m != nil {
-		return m.Kind
+		return m.Questiontype
 	}
 	return 0
 }
 
-func (m *QuestionInfo) GetContent() string {
+func (m *QuestionInfo) GetTitle() string {
 	if m != nil {
-		return m.Content
+		return m.Title
 	}
 	return ""
 }
 
-func (m *QuestionInfo) GetQimage() bool {
+func (m *QuestionInfo) GetIstitleimg() bool {
 	if m != nil {
-		return m.Qimage
+		return m.Istitleimg
 	}
 	return false
 }
 
-func (m *QuestionInfo) GetOimage() bool {
+func (m *QuestionInfo) GetOptions() []*Option {
 	if m != nil {
-		return m.Oimage
-	}
-	return false
-}
-
-func (m *QuestionInfo) GetOption() []string {
-	if m != nil {
-		return m.Option
+		return m.Options
 	}
 	return nil
 }
@@ -618,58 +604,44 @@ func (m *QuestionInfo) GetScore() int64 {
 	return 0
 }
 
-type HomeWorkInfo struct {
-	Homeworkid string          `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid,omitempty" form:"homeworkid"`
-	Name       string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Questions  []*QuestionInfo `protobuf:"bytes,3,rep,name=questions" json:"questions,omitempty" form:"questions"`
-}
-
-func (m *HomeWorkInfo) Reset()                    { *m = HomeWorkInfo{} }
-func (m *HomeWorkInfo) String() string            { return proto.CompactTextString(m) }
-func (*HomeWorkInfo) ProtoMessage()               {}
-func (*HomeWorkInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{10} }
-
-func (m *HomeWorkInfo) GetHomeworkid() string {
+func (m *QuestionInfo) GetNeedcheck() bool {
 	if m != nil {
-		return m.Homeworkid
+		return m.Needcheck
 	}
-	return ""
+	return false
 }
 
-func (m *HomeWorkInfo) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
+type QueryRecommendPaperReply struct {
+	Homework []*PaperInfo `protobuf:"bytes,1,rep,name=homework" json:"homework" form:"homework"`
+	Exam     []*PaperInfo `protobuf:"bytes,2,rep,name=exam" json:"exam" form:"exam"`
 }
 
-func (m *HomeWorkInfo) GetQuestions() []*QuestionInfo {
-	if m != nil {
-		return m.Questions
-	}
-	return nil
+func (m *QueryRecommendPaperReply) Reset()         { *m = QueryRecommendPaperReply{} }
+func (m *QueryRecommendPaperReply) String() string { return proto.CompactTextString(m) }
+func (*QueryRecommendPaperReply) ProtoMessage()    {}
+func (*QueryRecommendPaperReply) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuestion, []int{11}
 }
 
-type QueryMyHomeWorkReply struct {
-	Homework []*HomeWorkInfo `protobuf:"bytes,1,rep,name=homework" json:"homework,omitempty" form:"homework"`
-}
-
-func (m *QueryMyHomeWorkReply) Reset()                    { *m = QueryMyHomeWorkReply{} }
-func (m *QueryMyHomeWorkReply) String() string            { return proto.CompactTextString(m) }
-func (*QueryMyHomeWorkReply) ProtoMessage()               {}
-func (*QueryMyHomeWorkReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{11} }
-
-func (m *QueryMyHomeWorkReply) GetHomework() []*HomeWorkInfo {
+func (m *QueryRecommendPaperReply) GetHomework() []*PaperInfo {
 	if m != nil {
 		return m.Homework
 	}
 	return nil
 }
 
+func (m *QueryRecommendPaperReply) GetExam() []*PaperInfo {
+	if m != nil {
+		return m.Exam
+	}
+	return nil
+}
+
 type DoQuestionInfo struct {
-	Questionid string   `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid,omitempty" form:"questionid"`
-	Answer     []string `protobuf:"bytes,2,rep,name=answer" json:"answer,omitempty" form:"answer"`
-	Aimage     bool     `protobuf:"varint,3,opt,name=aimage,proto3" json:"aimage,omitempty" form:"aimage"`
+	Questionid string   `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"questionid"`
+	Userid     string   `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Username   string   `protobuf:"bytes,3,opt,name=username,proto3" json:"username" form:"username"`
+	Answers    []string `protobuf:"bytes,4,rep,name=answers" json:"answers" form:"answers"`
 }
 
 func (m *DoQuestionInfo) Reset()                    { *m = DoQuestionInfo{} }
@@ -684,25 +656,32 @@ func (m *DoQuestionInfo) GetQuestionid() string {
 	return ""
 }
 
-func (m *DoQuestionInfo) GetAnswer() []string {
+func (m *DoQuestionInfo) GetUserid() string {
 	if m != nil {
-		return m.Answer
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *DoQuestionInfo) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *DoQuestionInfo) GetAnswers() []string {
+	if m != nil {
+		return m.Answers
 	}
 	return nil
 }
 
-func (m *DoQuestionInfo) GetAimage() bool {
-	if m != nil {
-		return m.Aimage
-	}
-	return false
-}
-
 type DoHomeWorkReq struct {
-	Homeworkid string            `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid,omitempty" form:"homeworkid"`
-	Userid     string            `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Username   string            `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty" form:"username"`
-	Answer     []*DoQuestionInfo `protobuf:"bytes,4,rep,name=answer" json:"answer,omitempty" form:"answer"`
+	Homeworkid string            `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid" form:"homeworkid"`
+	Userid     string            `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Username   string            `protobuf:"bytes,3,opt,name=username,proto3" json:"username" form:"username"`
+	Answer     []*DoQuestionInfo `protobuf:"bytes,4,rep,name=answer" json:"answer" form:"answer"`
 }
 
 func (m *DoHomeWorkReq) Reset()                    { *m = DoHomeWorkReq{} }
@@ -739,7 +718,7 @@ func (m *DoHomeWorkReq) GetAnswer() []*DoQuestionInfo {
 }
 
 type QueryAnswerRecordReq struct {
-	Homeworkid string `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid,omitempty" form:"homeworkid"`
+	Homeworkid string `protobuf:"bytes,1,opt,name=homeworkid,proto3" json:"homeworkid" form:"homeworkid"`
 }
 
 func (m *QueryAnswerRecordReq) Reset()                    { *m = QueryAnswerRecordReq{} }
@@ -755,9 +734,9 @@ func (m *QueryAnswerRecordReq) GetHomeworkid() string {
 }
 
 type UserAnswerInfo struct {
-	Username string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty" form:"username"`
-	Userid   string   `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Answer   []string `protobuf:"bytes,3,rep,name=answer" json:"answer,omitempty" form:"answer"`
+	Username string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username" form:"username"`
+	Userid   string   `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Answer   []string `protobuf:"bytes,3,rep,name=answer" json:"answer" form:"answer"`
 }
 
 func (m *UserAnswerInfo) Reset()                    { *m = UserAnswerInfo{} }
@@ -787,11 +766,11 @@ func (m *UserAnswerInfo) GetAnswer() []string {
 }
 
 type AllUserAnswerInfo struct {
-	Questionid    string            `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid,omitempty" form:"questionid"`
-	Content       string            `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty" form:"content"`
-	Option        []string          `protobuf:"bytes,3,rep,name=option" json:"option,omitempty" form:"option"`
-	Rightanswer   []string          `protobuf:"bytes,4,rep,name=rightanswer" json:"rightanswer,omitempty" form:"rightanswer"`
-	Alluseranswer []*UserAnswerInfo `protobuf:"bytes,5,rep,name=alluseranswer" json:"alluseranswer,omitempty" form:"alluseranswer"`
+	Questionid    string            `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"questionid"`
+	Content       string            `protobuf:"bytes,2,opt,name=content,proto3" json:"content" form:"content"`
+	Option        []string          `protobuf:"bytes,3,rep,name=option" json:"option" form:"option"`
+	Rightanswer   []string          `protobuf:"bytes,4,rep,name=rightanswer" json:"rightanswer" form:"rightanswer"`
+	Alluseranswer []*UserAnswerInfo `protobuf:"bytes,5,rep,name=alluseranswer" json:"alluseranswer" form:"alluseranswer"`
 }
 
 func (m *AllUserAnswerInfo) Reset()                    { *m = AllUserAnswerInfo{} }
@@ -835,7 +814,7 @@ func (m *AllUserAnswerInfo) GetAlluseranswer() []*UserAnswerInfo {
 }
 
 type QueryAnswerRecordReply struct {
-	Homeworkrecord []*AllUserAnswerInfo `protobuf:"bytes,1,rep,name=homeworkrecord" json:"homeworkrecord,omitempty" form:"homeworkrecord"`
+	Homeworkrecord []*AllUserAnswerInfo `protobuf:"bytes,1,rep,name=homeworkrecord" json:"homeworkrecord" form:"homeworkrecord"`
 }
 
 func (m *QueryAnswerRecordReply) Reset()                    { *m = QueryAnswerRecordReply{} }
@@ -851,7 +830,7 @@ func (m *QueryAnswerRecordReply) GetHomeworkrecord() []*AllUserAnswerInfo {
 }
 
 type QueryHomeWorkInClassReply struct {
-	Homework []*HomeWorkInfo `protobuf:"bytes,1,rep,name=homework" json:"homework,omitempty" form:"homeworkrecord"`
+	Homework []*PaperInfo `protobuf:"bytes,1,rep,name=homework" json:"homework" form:"homeworkrecord"`
 }
 
 func (m *QueryHomeWorkInClassReply) Reset()         { *m = QueryHomeWorkInClassReply{} }
@@ -861,7 +840,7 @@ func (*QueryHomeWorkInClassReply) Descriptor() ([]byte, []int) {
 	return fileDescriptorQuestion, []int{18}
 }
 
-func (m *QueryHomeWorkInClassReply) GetHomework() []*HomeWorkInfo {
+func (m *QueryHomeWorkInClassReply) GetHomework() []*PaperInfo {
 	if m != nil {
 		return m.Homework
 	}
@@ -869,12 +848,12 @@ func (m *QueryHomeWorkInClassReply) GetHomework() []*HomeWorkInfo {
 }
 
 type CreatePracticeSummaryReq struct {
-	Name         string              `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Ownerid      string              `protobuf:"bytes,2,opt,name=ownerid,proto3" json:"ownerid,omitempty" form:"ownerid"`
-	Classid      string              `protobuf:"bytes,3,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
-	Pstype       PracticeSummaryType `protobuf:"varint,4,opt,name=pstype,proto3,enum=api.PracticeSummaryType" json:"pstype,omitempty" form:"pstype"`
-	Introduction string              `protobuf:"bytes,5,opt,name=introduction,proto3" json:"introduction,omitempty" form:"introduction"`
-	Ownername    string              `protobuf:"bytes,6,opt,name=ownername,proto3" json:"ownername,omitempty" form:"ownername"`
+	Name         string              `protobuf:"bytes,1,opt,name=name,proto3" json:"name" form:"name"`
+	Ownerid      string              `protobuf:"bytes,2,opt,name=ownerid,proto3" json:"ownerid" form:"ownerid"`
+	Classid      string              `protobuf:"bytes,3,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Pstype       PracticeSummaryType `protobuf:"varint,4,opt,name=pstype,proto3,enum=api.PracticeSummaryType" json:"pstype" form:"pstype"`
+	Introduction string              `protobuf:"bytes,5,opt,name=introduction,proto3" json:"introduction" form:"introduction"`
+	Ownername    string              `protobuf:"bytes,6,opt,name=ownername,proto3" json:"ownername" form:"ownername"`
 }
 
 func (m *CreatePracticeSummaryReq) Reset()         { *m = CreatePracticeSummaryReq{} }
@@ -927,7 +906,7 @@ func (m *CreatePracticeSummaryReq) GetOwnername() string {
 }
 
 type CreatePracticeSummaryReply struct {
-	Practicesummaryid string `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid,omitempty" form:"practicesummaryid"`
+	Practicesummaryid string `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid" form:"practicesummaryid"`
 }
 
 func (m *CreatePracticeSummaryReply) Reset()         { *m = CreatePracticeSummaryReply{} }
@@ -945,8 +924,8 @@ func (m *CreatePracticeSummaryReply) GetPracticesummaryid() string {
 }
 
 type QueryPracticeSummaryReq struct {
-	Practicesummaryid string `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid,omitempty" form:"practicesummaryid"`
-	Page              int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty" form:"page"`
+	Practicesummaryid string `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid" form:"practicesummaryid"`
+	Page              int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page" form:"page"`
 }
 
 func (m *QueryPracticeSummaryReq) Reset()                    { *m = QueryPracticeSummaryReq{} }
@@ -969,13 +948,13 @@ func (m *QueryPracticeSummaryReq) GetPage() int64 {
 }
 
 type PracticeSummaryInfo struct {
-	Practicesummaryid string              `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid,omitempty" form:"practicesummaryid"`
-	Name              string              `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Introduction      string              `protobuf:"bytes,3,opt,name=introduction,proto3" json:"introduction,omitempty" form:"introduction"`
-	Questionnumbers   int64               `protobuf:"varint,4,opt,name=questionnumbers,proto3" json:"questionnumbers,omitempty" form:"questionnumbers"`
-	Pstype            PracticeSummaryType `protobuf:"varint,5,opt,name=pstype,proto3,enum=api.PracticeSummaryType" json:"pstype,omitempty" form:"pstype"`
-	Ownername         string              `protobuf:"bytes,6,opt,name=ownername,proto3" json:"ownername,omitempty" form:"ownername"`
-	Coursename        string              `protobuf:"bytes,7,opt,name=coursename,proto3" json:"coursename,omitempty" form:"coursename"`
+	Practicesummaryid string              `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid" form:"practicesummaryid"`
+	Name              string              `protobuf:"bytes,2,opt,name=name,proto3" json:"name" form:"name"`
+	Introduction      string              `protobuf:"bytes,3,opt,name=introduction,proto3" json:"introduction" form:"introduction"`
+	Questionnumbers   int64               `protobuf:"varint,4,opt,name=questionnumbers,proto3" json:"questionnumbers" form:"questionnumbers"`
+	Pstype            PracticeSummaryType `protobuf:"varint,5,opt,name=pstype,proto3,enum=api.PracticeSummaryType" json:"pstype" form:"pstype"`
+	Ownername         string              `protobuf:"bytes,6,opt,name=ownername,proto3" json:"ownername" form:"ownername"`
+	Coursename        string              `protobuf:"bytes,7,opt,name=coursename,proto3" json:"coursename" form:"coursename"`
 }
 
 func (m *PracticeSummaryInfo) Reset()                    { *m = PracticeSummaryInfo{} }
@@ -1033,11 +1012,21 @@ func (m *PracticeSummaryInfo) GetCoursename() string {
 }
 
 type QuestionPre struct {
-	Questionid    string `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid,omitempty" form:"qustionid"`
-	Kind          int64  `protobuf:"varint,2,opt,name=kind,proto3" json:"kind,omitempty" form:"kind"`
-	Knowledgename string `protobuf:"bytes,3,opt,name=knowledgename,proto3" json:"knowledgename,omitempty" form:"knowledgename"`
-	Name          string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Star          int64  `protobuf:"varint,5,opt,name=star,proto3" json:"star,omitempty" form:"star"`
+	Questionid   string    `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"qustionid"`
+	Questiontype int64     `protobuf:"varint,2,opt,name=questiontype,proto3" json:"questiontype" form:"questiontype"`
+	Title        string    `protobuf:"bytes,3,opt,name=title,proto3" json:"title" form:"title"`
+	Istitleimg   bool      `protobuf:"varint,4,opt,name=istitleimg,proto3" json:"istitleimg" form:"istitleimg"`
+	Options      []*Option `protobuf:"bytes,5,rep,name=options" json:"options" form:"options"`
+	// bool oimage = 6 [(gogoproto.moretags) = "form:\"oimage\""];
+	Answers []*Option `protobuf:"bytes,7,rep,name=answers" json:"answers" form:"answers"`
+	// bool aimage  = 8 [(gogoproto.moretags) = "form:\"aimage\""];
+	Subject       string `protobuf:"bytes,9,opt,name=subject,proto3" json:"subject" form:"subject"`
+	Course        string `protobuf:"bytes,10,opt,name=course,proto3" json:"course" form:"course"`
+	Knowledgename string `protobuf:"bytes,11,opt,name=knowledgename,proto3" json:"knowledgename" form:"knowledgename"`
+	Name          string `protobuf:"bytes,12,opt,name=name,proto3" json:"name" form:"name"`
+	Star          int64  `protobuf:"varint,13,opt,name=star,proto3" json:"star" form:"star"`
+	Needcheck     bool   `protobuf:"varint,14,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
+	Explain       string `protobuf:"bytes,15,opt,name=explain,proto3" json:"explain" form:"explain"`
 }
 
 func (m *QuestionPre) Reset()                    { *m = QuestionPre{} }
@@ -1052,11 +1041,53 @@ func (m *QuestionPre) GetQuestionid() string {
 	return ""
 }
 
-func (m *QuestionPre) GetKind() int64 {
+func (m *QuestionPre) GetQuestiontype() int64 {
 	if m != nil {
-		return m.Kind
+		return m.Questiontype
 	}
 	return 0
+}
+
+func (m *QuestionPre) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *QuestionPre) GetIstitleimg() bool {
+	if m != nil {
+		return m.Istitleimg
+	}
+	return false
+}
+
+func (m *QuestionPre) GetOptions() []*Option {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
+func (m *QuestionPre) GetAnswers() []*Option {
+	if m != nil {
+		return m.Answers
+	}
+	return nil
+}
+
+func (m *QuestionPre) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *QuestionPre) GetCourse() string {
+	if m != nil {
+		return m.Course
+	}
+	return ""
 }
 
 func (m *QuestionPre) GetKnowledgename() string {
@@ -1080,10 +1111,24 @@ func (m *QuestionPre) GetStar() int64 {
 	return 0
 }
 
+func (m *QuestionPre) GetNeedcheck() bool {
+	if m != nil {
+		return m.Needcheck
+	}
+	return false
+}
+
+func (m *QuestionPre) GetExplain() string {
+	if m != nil {
+		return m.Explain
+	}
+	return ""
+}
+
 type PracticeSummaryDetailInfo struct {
-	Questions   []*QuestionPre `protobuf:"bytes,1,rep,name=questions" json:"questions,omitempty" form:"questions"`
-	Currentpage int64          `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage,omitempty" form:"currentpage"`
-	Totalpage   int64          `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage,omitempty" form:"totalpage"`
+	Questions   []*QuestionPre `protobuf:"bytes,1,rep,name=questions" json:"questions" form:"questions"`
+	Currentpage int64          `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage   int64          `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
 }
 
 func (m *PracticeSummaryDetailInfo) Reset()         { *m = PracticeSummaryDetailInfo{} }
@@ -1115,8 +1160,8 @@ func (m *PracticeSummaryDetailInfo) GetTotalpage() int64 {
 }
 
 type QueryMyPracticeSummaryReq struct {
-	Userid string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Page   int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty" form:"page"`
+	Userid string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Page   int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page" form:"page"`
 }
 
 func (m *QueryMyPracticeSummaryReq) Reset()         { *m = QueryMyPracticeSummaryReq{} }
@@ -1141,9 +1186,9 @@ func (m *QueryMyPracticeSummaryReq) GetPage() int64 {
 }
 
 type QueryMyPracticeSummaryReply struct {
-	Practicesummary []*PracticeSummaryInfo `protobuf:"bytes,1,rep,name=practicesummary" json:"practicesummary,omitempty" form:"practicesummary"`
-	Currentpage     int64                  `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage,omitempty" form:"currentpage"`
-	Totalpage       int64                  `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage,omitempty" form:"totalpage"`
+	Practicesummary []*PracticeSummaryInfo `protobuf:"bytes,1,rep,name=practicesummary" json:"practicesummary" form:"practicesummary"`
+	Currentpage     int64                  `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage       int64                  `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
 }
 
 func (m *QueryMyPracticeSummaryReply) Reset()         { *m = QueryMyPracticeSummaryReply{} }
@@ -1175,8 +1220,8 @@ func (m *QueryMyPracticeSummaryReply) GetTotalpage() int64 {
 }
 
 type ControllQuestionInPSReq struct {
-	Practicesummaryid string   `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid,omitempty" form:"practicesummaryid"`
-	Questions         []string `protobuf:"bytes,2,rep,name=questions" json:"questions,omitempty" form:"questions"`
+	Practicesummaryid string   `protobuf:"bytes,1,opt,name=practicesummaryid,proto3" json:"practicesummaryid" form:"practicesummaryid"`
+	Questions         []string `protobuf:"bytes,2,rep,name=questions" json:"questions" form:"questions"`
 }
 
 func (m *ControllQuestionInPSReq) Reset()                    { *m = ControllQuestionInPSReq{} }
@@ -1199,10 +1244,11 @@ func (m *ControllQuestionInPSReq) GetQuestions() []string {
 }
 
 type CreatePaperReq struct {
-	Name           string                             `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Classid        string                             `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
-	Questions      []*CreatePaperReq_QuestionsInPaper `protobuf:"bytes,4,rep,name=questions" json:"questions,omitempty" form:"questions"`
-	Continuingtime int64                              `protobuf:"varint,5,opt,name=continuingtime,proto3" json:"continuingtime,omitempty" form:"continuingtime"`
+	Name        string                             `protobuf:"bytes,1,opt,name=name,proto3" json:"name" form:"name"`
+	Classid     string                             `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Questions   []*CreatePaperReq_QuestionsInPaper `protobuf:"bytes,4,rep,name=questions" json:"questions" form:"questions"`
+	Suggesttime int64                              `protobuf:"varint,5,opt,name=suggesttime,proto3" json:"suggesttime" form:"suggesttime"`
+	Paperkind   string                             `protobuf:"bytes,6,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
 }
 
 func (m *CreatePaperReq) Reset()                    { *m = CreatePaperReq{} }
@@ -1231,17 +1277,24 @@ func (m *CreatePaperReq) GetQuestions() []*CreatePaperReq_QuestionsInPaper {
 	return nil
 }
 
-func (m *CreatePaperReq) GetContinuingtime() int64 {
+func (m *CreatePaperReq) GetSuggesttime() int64 {
 	if m != nil {
-		return m.Continuingtime
+		return m.Suggesttime
 	}
 	return 0
 }
 
+func (m *CreatePaperReq) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
 type CreatePaperReq_QuestionsInPaper struct {
-	Questionid string `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid,omitempty" form:"questionid"`
-	Score      int64  `protobuf:"varint,2,opt,name=score,proto3" json:"score,omitempty" form:"score"`
-	Needcheck  bool   `protobuf:"varint,3,opt,name=needcheck,proto3" json:"needcheck,omitempty" form:"needcheck"`
+	Questionid string `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"questionid"`
+	Score      int64  `protobuf:"varint,2,opt,name=score,proto3" json:"score" form:"score"`
+	Needcheck  bool   `protobuf:"varint,3,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
 }
 
 func (m *CreatePaperReq_QuestionsInPaper) Reset()         { *m = CreatePaperReq_QuestionsInPaper{} }
@@ -1273,7 +1326,8 @@ func (m *CreatePaperReq_QuestionsInPaper) GetNeedcheck() bool {
 }
 
 type CreatePaperReply struct {
-	Paperid string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid,omitempty" form:"paperid"`
+	Paperid   string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid" form:"paperid"`
+	Paperkind string `protobuf:"bytes,2,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
 }
 
 func (m *CreatePaperReply) Reset()                    { *m = CreatePaperReply{} }
@@ -1288,10 +1342,18 @@ func (m *CreatePaperReply) GetPaperid() string {
 	return ""
 }
 
+func (m *CreatePaperReply) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
 type QueryPaperInClassReq struct {
-	Userid  string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Classid string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid,omitempty" form:"classid"`
-	Page    int64  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty" form:"page"`
+	Userid    string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Classid   string `protobuf:"bytes,2,opt,name=classid,proto3" json:"classid" form:"classid"`
+	Page      int64  `protobuf:"varint,3,opt,name=page,proto3" json:"page" form:"page"`
+	Paperkind string `protobuf:"bytes,4,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
 }
 
 func (m *QueryPaperInClassReq) Reset()                    { *m = QueryPaperInClassReq{} }
@@ -1320,10 +1382,17 @@ func (m *QueryPaperInClassReq) GetPage() int64 {
 	return 0
 }
 
+func (m *QueryPaperInClassReq) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
 type QueryPaperInClassReply struct {
-	Paper       []*PaperInfo `protobuf:"bytes,1,rep,name=paper" json:"paper,omitempty" form:"paper"`
-	Currentpage int64        `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage,omitempty" form:"currentpage"`
-	Totalpage   int64        `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage,omitempty" form:"totalpage"`
+	Paper       []*PaperInfo `protobuf:"bytes,1,rep,name=paper" json:"paper" form:"paper"`
+	Currentpage int64        `protobuf:"varint,2,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage   int64        `protobuf:"varint,3,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
 }
 
 func (m *QueryPaperInClassReply) Reset()                    { *m = QueryPaperInClassReply{} }
@@ -1353,7 +1422,8 @@ func (m *QueryPaperInClassReply) GetTotalpage() int64 {
 }
 
 type QueryPaperQuestionsReq struct {
-	Paperid string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid,omitempty" form:"paperid"`
+	Paperid   string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid" form:"paperid"`
+	Paperkind string `protobuf:"bytes,2,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
 }
 
 func (m *QueryPaperQuestionsReq) Reset()                    { *m = QueryPaperQuestionsReq{} }
@@ -1368,11 +1438,18 @@ func (m *QueryPaperQuestionsReq) GetPaperid() string {
 	return ""
 }
 
+func (m *QueryPaperQuestionsReq) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
 type QueryPaperQuestionsReply struct {
-	Paper          []*QuestionInfo `protobuf:"bytes,1,rep,name=paper" json:"paper,omitempty" form:"paper"`
-	Name           string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Totalscore     int64           `protobuf:"varint,3,opt,name=totalscore,proto3" json:"totalscore,omitempty" form:"totalscore"`
-	Continuingtime int64           `protobuf:"varint,4,opt,name=continuingtime,proto3" json:"continuingtime,omitempty" form:"continuingtime"`
+	Titleitems  []*TitleItems `protobuf:"bytes,1,rep,name=titleitems" json:"titleitems" form:" titleitems"`
+	Name        string        `protobuf:"bytes,2,opt,name=name,proto3" json:"name" form:"name"`
+	Score       int64         `protobuf:"varint,3,opt,name=score,proto3" json:"score" form:"score"`
+	Suggesttime int64         `protobuf:"varint,4,opt,name=suggesttime,proto3" json:"suggesttime" form:"suggesttime"`
 }
 
 func (m *QueryPaperQuestionsReply) Reset()         { *m = QueryPaperQuestionsReply{} }
@@ -1382,9 +1459,9 @@ func (*QueryPaperQuestionsReply) Descriptor() ([]byte, []int) {
 	return fileDescriptorQuestion, []int{33}
 }
 
-func (m *QueryPaperQuestionsReply) GetPaper() []*QuestionInfo {
+func (m *QueryPaperQuestionsReply) GetTitleitems() []*TitleItems {
 	if m != nil {
-		return m.Paper
+		return m.Titleitems
 	}
 	return nil
 }
@@ -1396,32 +1473,177 @@ func (m *QueryPaperQuestionsReply) GetName() string {
 	return ""
 }
 
-func (m *QueryPaperQuestionsReply) GetTotalscore() int64 {
+func (m *QueryPaperQuestionsReply) GetScore() int64 {
 	if m != nil {
-		return m.Totalscore
+		return m.Score
 	}
 	return 0
 }
 
-func (m *QueryPaperQuestionsReply) GetContinuingtime() int64 {
+func (m *QueryPaperQuestionsReply) GetSuggesttime() int64 {
 	if m != nil {
-		return m.Continuingtime
+		return m.Suggesttime
 	}
 	return 0
+}
+
+type TitleItems struct {
+	Name          string           `protobuf:"bytes,1,opt,name=name,proto3" json:"name" form:"name"`
+	Questionitems []*QuestionItems `protobuf:"bytes,2,rep,name=questionitems" json:"questionitems" form:"questionitems"`
+}
+
+func (m *TitleItems) Reset()                    { *m = TitleItems{} }
+func (m *TitleItems) String() string            { return proto.CompactTextString(m) }
+func (*TitleItems) ProtoMessage()               {}
+func (*TitleItems) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{34} }
+
+func (m *TitleItems) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *TitleItems) GetQuestionitems() []*QuestionItems {
+	if m != nil {
+		return m.Questionitems
+	}
+	return nil
+}
+
+type QuestionItems struct {
+	Id           string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id" form:"id"`
+	Questiontype int64     `protobuf:"varint,2,opt,name=questiontype,proto3" json:"questiontype" form:"questiontype"`
+	Title        string    `protobuf:"bytes,3,opt,name=title,proto3" json:"title" form:"title"`
+	Istitleimg   bool      `protobuf:"varint,4,opt,name=istitleimg,proto3" json:"istitleimg" form:"istitleimg"`
+	Options      []*Option `protobuf:"bytes,5,rep,name=options" json:"options" form:"options"`
+	Rightoptions []*Option `protobuf:"bytes,6,rep,name=rightoptions" json:"rightoptions" form:"rightoptions"`
+	Getoptions   []string  `protobuf:"bytes,7,rep,name=getoptions" json:"getoptions" form:"getoptions"`
+	Needcheck    bool      `protobuf:"varint,8,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
+	Explain      string    `protobuf:"bytes,9,opt,name=explain,proto3" json:"explain" form:"explain"`
+	Result       int64     `protobuf:"varint,10,opt,name=result,proto3" json:"result" form:"result"`
+}
+
+func (m *QuestionItems) Reset()                    { *m = QuestionItems{} }
+func (m *QuestionItems) String() string            { return proto.CompactTextString(m) }
+func (*QuestionItems) ProtoMessage()               {}
+func (*QuestionItems) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{35} }
+
+func (m *QuestionItems) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *QuestionItems) GetQuestiontype() int64 {
+	if m != nil {
+		return m.Questiontype
+	}
+	return 0
+}
+
+func (m *QuestionItems) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *QuestionItems) GetIstitleimg() bool {
+	if m != nil {
+		return m.Istitleimg
+	}
+	return false
+}
+
+func (m *QuestionItems) GetOptions() []*Option {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
+func (m *QuestionItems) GetRightoptions() []*Option {
+	if m != nil {
+		return m.Rightoptions
+	}
+	return nil
+}
+
+func (m *QuestionItems) GetGetoptions() []string {
+	if m != nil {
+		return m.Getoptions
+	}
+	return nil
+}
+
+func (m *QuestionItems) GetNeedcheck() bool {
+	if m != nil {
+		return m.Needcheck
+	}
+	return false
+}
+
+func (m *QuestionItems) GetExplain() string {
+	if m != nil {
+		return m.Explain
+	}
+	return ""
+}
+
+func (m *QuestionItems) GetResult() int64 {
+	if m != nil {
+		return m.Result
+	}
+	return 0
+}
+
+type Option struct {
+	Prefix       string `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix" form:"prefix"`
+	Content      string `protobuf:"bytes,2,opt,name=content,proto3" json:"content" form:"content"`
+	Iscontentimg bool   `protobuf:"varint,3,opt,name=iscontentimg,proto3" json:"iscontentimg" form:"iscontentimg"`
+}
+
+func (m *Option) Reset()                    { *m = Option{} }
+func (m *Option) String() string            { return proto.CompactTextString(m) }
+func (*Option) ProtoMessage()               {}
+func (*Option) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{36} }
+
+func (m *Option) GetPrefix() string {
+	if m != nil {
+		return m.Prefix
+	}
+	return ""
+}
+
+func (m *Option) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+func (m *Option) GetIscontentimg() bool {
+	if m != nil {
+		return m.Iscontentimg
+	}
+	return false
 }
 
 type PaperInfo struct {
-	Paperid    string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid,omitempty" form:"paperid"`
-	Name       string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Totalscore int64  `protobuf:"varint,3,opt,name=totalscore,proto3" json:"totalscore,omitempty" form:"totalscore"`
+	Paperid string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid" form:"paperid"`
+	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name" form:"name"`
+	Score   int64  `protobuf:"varint,3,opt,name=score,proto3" json:"score" form:"score"`
 	// repeated QuestionInfo questions = 4 [(gogoproto.moretags) = "form:\"questions\""] ;
-	Continuingtime int64 `protobuf:"varint,4,opt,name=continuingtime,proto3" json:"continuingtime,omitempty" form:"continuingtime"`
+	Suggesttime int64  `protobuf:"varint,4,opt,name=suggesttime,proto3" json:"suggesttime" form:"suggesttime"`
+	Origin      string `protobuf:"bytes,5,opt,name=origin,proto3" json:"origin" form:"origin"`
 }
 
 func (m *PaperInfo) Reset()                    { *m = PaperInfo{} }
 func (m *PaperInfo) String() string            { return proto.CompactTextString(m) }
 func (*PaperInfo) ProtoMessage()               {}
-func (*PaperInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{34} }
+func (*PaperInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{37} }
 
 func (m *PaperInfo) GetPaperid() string {
 	if m != nil {
@@ -1437,31 +1659,39 @@ func (m *PaperInfo) GetName() string {
 	return ""
 }
 
-func (m *PaperInfo) GetTotalscore() int64 {
+func (m *PaperInfo) GetScore() int64 {
 	if m != nil {
-		return m.Totalscore
+		return m.Score
 	}
 	return 0
 }
 
-func (m *PaperInfo) GetContinuingtime() int64 {
+func (m *PaperInfo) GetSuggesttime() int64 {
 	if m != nil {
-		return m.Continuingtime
+		return m.Suggesttime
 	}
 	return 0
+}
+
+func (m *PaperInfo) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
 }
 
 type DoPaperReq struct {
-	Paperid  string            `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid,omitempty" form:"paperid"`
-	Userid   string            `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Username string            `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty" form:"username"`
-	Answer   []*DoQuestionInfo `protobuf:"bytes,4,rep,name=answer" json:"answer,omitempty" form:"answer"`
+	Paperid   string            `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid" form:"paperid"`
+	Userid    string            `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Username  string            `protobuf:"bytes,3,opt,name=username,proto3" json:"username" form:"username"`
+	Answer    []*DoQuestionInfo `protobuf:"bytes,4,rep,name=answer" json:"answer" form:"answer"`
+	Paperkind string            `protobuf:"bytes,5,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
 }
 
 func (m *DoPaperReq) Reset()                    { *m = DoPaperReq{} }
 func (m *DoPaperReq) String() string            { return proto.CompactTextString(m) }
 func (*DoPaperReq) ProtoMessage()               {}
-func (*DoPaperReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{35} }
+func (*DoPaperReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{38} }
 
 func (m *DoPaperReq) GetPaperid() string {
 	if m != nil {
@@ -1491,21 +1721,69 @@ func (m *DoPaperReq) GetAnswer() []*DoQuestionInfo {
 	return nil
 }
 
+func (m *DoPaperReq) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
+type DoQuestionReq struct {
+	Questionid string          `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"questionid"`
+	Userid     string          `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Username   string          `protobuf:"bytes,3,opt,name=username,proto3" json:"username" form:"username"`
+	Answer     *DoQuestionInfo `protobuf:"bytes,4,opt,name=answer" json:"answer" form:"answer"`
+}
+
+func (m *DoQuestionReq) Reset()                    { *m = DoQuestionReq{} }
+func (m *DoQuestionReq) String() string            { return proto.CompactTextString(m) }
+func (*DoQuestionReq) ProtoMessage()               {}
+func (*DoQuestionReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{39} }
+
+func (m *DoQuestionReq) GetQuestionid() string {
+	if m != nil {
+		return m.Questionid
+	}
+	return ""
+}
+
+func (m *DoQuestionReq) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *DoQuestionReq) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *DoQuestionReq) GetAnswer() *DoQuestionInfo {
+	if m != nil {
+		return m.Answer
+	}
+	return nil
+}
+
 type QueryPaperAnswerRecordReq struct {
-	Paperid string `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid,omitempty" form:"paperid"`
-	Userid  string `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
+	Paperrecordid string `protobuf:"bytes,1,opt,name=paperrecordid,proto3" json:"paperrecordid" form:"paperrecordid"`
+	Userid        string `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Paperkind     string `protobuf:"bytes,3,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
 }
 
 func (m *QueryPaperAnswerRecordReq) Reset()         { *m = QueryPaperAnswerRecordReq{} }
 func (m *QueryPaperAnswerRecordReq) String() string { return proto.CompactTextString(m) }
 func (*QueryPaperAnswerRecordReq) ProtoMessage()    {}
 func (*QueryPaperAnswerRecordReq) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuestion, []int{36}
+	return fileDescriptorQuestion, []int{40}
 }
 
-func (m *QueryPaperAnswerRecordReq) GetPaperid() string {
+func (m *QueryPaperAnswerRecordReq) GetPaperrecordid() string {
 	if m != nil {
-		return m.Paperid
+		return m.Paperrecordid
 	}
 	return ""
 }
@@ -1517,20 +1795,27 @@ func (m *QueryPaperAnswerRecordReq) GetUserid() string {
 	return ""
 }
 
+func (m *QueryPaperAnswerRecordReq) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
 type QueryPaperAnswerRecordReply struct {
-	Paperid     string                 `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid,omitempty" form:"paperid"`
-	Papername   string                 `protobuf:"bytes,2,opt,name=papername,proto3" json:"papername,omitempty" form:"papername"`
-	Totalscore  int64                  `protobuf:"varint,3,opt,name=totalscore,proto3" json:"totalscore,omitempty" form:"totalscore"`
-	Getscore    int64                  `protobuf:"varint,4,opt,name=getscore,proto3" json:"getscore,omitempty" form:"getscore"`
-	Needcheck   bool                   `protobuf:"varint,5,opt,name=needcheck,proto3" json:"needcheck,omitempty" form:"needcheck"`
-	Paperrecord []*UserPaperAnswerInfo `protobuf:"bytes,6,rep,name=paperrecord" json:"paperrecord,omitempty" form:"homeworkrecord"`
+	Paperid     string        `protobuf:"bytes,1,opt,name=paperid,proto3" json:"paperid" form:"paperid"`
+	Papername   string        `protobuf:"bytes,2,opt,name=papername,proto3" json:"papername" form:"papername"`
+	Score       int64         `protobuf:"varint,3,opt,name=score,proto3" json:"score" form:"score"`
+	Getscore    int64         `protobuf:"varint,4,opt,name=getscore,proto3" json:"getscore" form:"getscore"`
+	Needcheck   bool          `protobuf:"varint,5,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
+	Paperrecord []*TitleItems `protobuf:"bytes,6,rep,name=paperrecord" json:"paperrecord" form:"paperecord"`
 }
 
 func (m *QueryPaperAnswerRecordReply) Reset()         { *m = QueryPaperAnswerRecordReply{} }
 func (m *QueryPaperAnswerRecordReply) String() string { return proto.CompactTextString(m) }
 func (*QueryPaperAnswerRecordReply) ProtoMessage()    {}
 func (*QueryPaperAnswerRecordReply) Descriptor() ([]byte, []int) {
-	return fileDescriptorQuestion, []int{37}
+	return fileDescriptorQuestion, []int{41}
 }
 
 func (m *QueryPaperAnswerRecordReply) GetPaperid() string {
@@ -1547,9 +1832,9 @@ func (m *QueryPaperAnswerRecordReply) GetPapername() string {
 	return ""
 }
 
-func (m *QueryPaperAnswerRecordReply) GetTotalscore() int64 {
+func (m *QueryPaperAnswerRecordReply) GetScore() int64 {
 	if m != nil {
-		return m.Totalscore
+		return m.Score
 	}
 	return 0
 }
@@ -1568,34 +1853,43 @@ func (m *QueryPaperAnswerRecordReply) GetNeedcheck() bool {
 	return false
 }
 
-func (m *QueryPaperAnswerRecordReply) GetPaperrecord() []*UserPaperAnswerInfo {
+func (m *QueryPaperAnswerRecordReply) GetPaperrecord() []*TitleItems {
 	if m != nil {
 		return m.Paperrecord
 	}
 	return nil
 }
 
+// message QueryHomeWorkAnswerRecordReply{
+// 	string homeworkid = 1  [(gogoproto.moretags) = "form:\"homeworkid\""] ;
+// 	string homeworkname = 2  [(gogoproto.moretags) = "form:\"homeworkname\""] ;
+// 	int64 totalscore = 3  [(gogoproto.moretags) = "form:\"totalscore\""] ;
+// 	int64 getscore = 4  [(gogoproto.moretags) = "form:\"getscore\""] ;
+// 	bool needcheck = 5 [(gogoproto.moretags) = "form:\"needcheck\""] ;
+// 	repeated UserPaperAnswerInfo homeworkrecord= 6  [(gogoproto.moretags) = "form:\"homeworkrecord\""] ;
+// }
 type UserPaperAnswerInfo struct {
-	Questionid  string   `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid,omitempty" form:"questionid"`
-	Kind        int64    `protobuf:"varint,2,opt,name=kind,proto3" json:"kind,omitempty" form:"kind"`
-	Name        string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty" form:"name"`
-	Content     string   `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty" form:"content"`
-	Qimage      bool     `protobuf:"varint,5,opt,name=qimage,proto3" json:"qimage,omitempty" form:"qimage"`
-	Option      []string `protobuf:"bytes,6,rep,name=option" json:"option,omitempty" form:"option"`
-	Oimage      bool     `protobuf:"varint,7,opt,name=oimage,proto3" json:"oimage,omitempty" form:"oimage"`
-	Rightanswer []string `protobuf:"bytes,8,rep,name=rightanswer" json:"rightanswer,omitempty" form:"rightanswer"`
-	Raimage     bool     `protobuf:"varint,9,opt,name=raimage,proto3" json:"raimage,omitempty" form:"raimage"`
-	Useranswer  []string `protobuf:"bytes,10,rep,name=useranswer" json:"useranswer,omitempty" form:"useranswer"`
-	Uaimage     bool     `protobuf:"varint,11,opt,name=uaimage,proto3" json:"uaimage,omitempty" form:"uaimage"`
-	Needcheck   bool     `protobuf:"varint,12,opt,name=needcheck,proto3" json:"needcheck,omitempty" form:"needcheck"`
-	Explain     string   `protobuf:"bytes,13,opt,name=explain,proto3" json:"explain,omitempty" form:"explain"`
-	Star        int64    `protobuf:"varint,14,opt,name=star,proto3" json:"star,omitempty" form:"star"`
+	Questionid  string   `protobuf:"bytes,1,opt,name=questionid,proto3" json:"questionid" form:"questionid"`
+	Kind        string   `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind" form:"kind"`
+	Name        string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name" form:"name"`
+	Content     string   `protobuf:"bytes,4,opt,name=content,proto3" json:"content" form:"content"`
+	Qimage      bool     `protobuf:"varint,5,opt,name=qimage,proto3" json:"qimage" form:"qimage"`
+	Option      []string `protobuf:"bytes,6,rep,name=option" json:"option" form:"option"`
+	Oimage      bool     `protobuf:"varint,7,opt,name=oimage,proto3" json:"oimage" form:"oimage"`
+	Rightanswer []string `protobuf:"bytes,8,rep,name=rightanswer" json:"rightanswer" form:"rightanswer"`
+	Raimage     bool     `protobuf:"varint,9,opt,name=raimage,proto3" json:"raimage" form:"raimage"`
+	Useranswer  []string `protobuf:"bytes,10,rep,name=useranswer" json:"useranswer" form:"useranswer"`
+	Uaimage     bool     `protobuf:"varint,11,opt,name=uaimage,proto3" json:"uaimage" form:"uaimage"`
+	Needcheck   bool     `protobuf:"varint,12,opt,name=needcheck,proto3" json:"needcheck" form:"needcheck"`
+	Explain     string   `protobuf:"bytes,13,opt,name=explain,proto3" json:"explain" form:"explain"`
+	Star        int64    `protobuf:"varint,14,opt,name=star,proto3" json:"star" form:"star"`
+	Result      int64    `protobuf:"varint,15,opt,name=result,proto3" json:"result" form:"result"`
 }
 
 func (m *UserPaperAnswerInfo) Reset()                    { *m = UserPaperAnswerInfo{} }
 func (m *UserPaperAnswerInfo) String() string            { return proto.CompactTextString(m) }
 func (*UserPaperAnswerInfo) ProtoMessage()               {}
-func (*UserPaperAnswerInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{38} }
+func (*UserPaperAnswerInfo) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{42} }
 
 func (m *UserPaperAnswerInfo) GetQuestionid() string {
 	if m != nil {
@@ -1604,11 +1898,11 @@ func (m *UserPaperAnswerInfo) GetQuestionid() string {
 	return ""
 }
 
-func (m *UserPaperAnswerInfo) GetKind() int64 {
+func (m *UserPaperAnswerInfo) GetKind() string {
 	if m != nil {
 		return m.Kind
 	}
-	return 0
+	return ""
 }
 
 func (m *UserPaperAnswerInfo) GetName() string {
@@ -1695,19 +1989,210 @@ func (m *UserPaperAnswerInfo) GetStar() int64 {
 	return 0
 }
 
+func (m *UserPaperAnswerInfo) GetResult() int64 {
+	if m != nil {
+		return m.Result
+	}
+	return 0
+}
+
+type QueryPaperAnswerRecordListReq struct {
+	Userid    string `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Page      int64  `protobuf:"varint,2,opt,name=page,proto3" json:"page" form:"page"`
+	Paperkind string `protobuf:"bytes,3,opt,name=paperkind,proto3" json:"paperkind" form:"paperkind"`
+}
+
+func (m *QueryPaperAnswerRecordListReq) Reset()         { *m = QueryPaperAnswerRecordListReq{} }
+func (m *QueryPaperAnswerRecordListReq) String() string { return proto.CompactTextString(m) }
+func (*QueryPaperAnswerRecordListReq) ProtoMessage()    {}
+func (*QueryPaperAnswerRecordListReq) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuestion, []int{43}
+}
+
+func (m *QueryPaperAnswerRecordListReq) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *QueryPaperAnswerRecordListReq) GetPage() int64 {
+	if m != nil {
+		return m.Page
+	}
+	return 0
+}
+
+func (m *QueryPaperAnswerRecordListReq) GetPaperkind() string {
+	if m != nil {
+		return m.Paperkind
+	}
+	return ""
+}
+
+type QueryPaperAnswerRecordListReply struct {
+	Recordlist  []*QueryPaperAnswerRecordListReply_OneRecord `protobuf:"bytes,10,rep,name=recordlist" json:"recordlist" form:"recordlist"`
+	Currentpage int64                                        `protobuf:"varint,6,opt,name=currentpage,proto3" json:"currentpage" form:"currentpage"`
+	Totalpage   int64                                        `protobuf:"varint,7,opt,name=totalpage,proto3" json:"totalpage" form:"totalpage"`
+}
+
+func (m *QueryPaperAnswerRecordListReply) Reset()         { *m = QueryPaperAnswerRecordListReply{} }
+func (m *QueryPaperAnswerRecordListReply) String() string { return proto.CompactTextString(m) }
+func (*QueryPaperAnswerRecordListReply) ProtoMessage()    {}
+func (*QueryPaperAnswerRecordListReply) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuestion, []int{44}
+}
+
+func (m *QueryPaperAnswerRecordListReply) GetRecordlist() []*QueryPaperAnswerRecordListReply_OneRecord {
+	if m != nil {
+		return m.Recordlist
+	}
+	return nil
+}
+
+func (m *QueryPaperAnswerRecordListReply) GetCurrentpage() int64 {
+	if m != nil {
+		return m.Currentpage
+	}
+	return 0
+}
+
+func (m *QueryPaperAnswerRecordListReply) GetTotalpage() int64 {
+	if m != nil {
+		return m.Totalpage
+	}
+	return 0
+}
+
+type QueryPaperAnswerRecordListReply_OneRecord struct {
+	Paperrecordid string `protobuf:"bytes,1,opt,name=paperrecordid,proto3" json:"paperrecordid" form:"paperrecordid"`
+	Papername     string `protobuf:"bytes,2,opt,name=papername,proto3" json:"papername" form:"papername"`
+	Course        string `protobuf:"bytes,3,opt,name=course,proto3" json:"course" form:"coursename"`
+	Teachername   string `protobuf:"bytes,4,opt,name=teachername,proto3" json:"teachername" form:"teachername"`
+	Status        int64  `protobuf:"varint,5,opt,name=status,proto3" json:"status" form:"status"`
+	Dotime        int64  `protobuf:"varint,6,opt,name=dotime,proto3" json:"dotime" form:"dotime"`
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) Reset() {
+	*m = QueryPaperAnswerRecordListReply_OneRecord{}
+}
+func (m *QueryPaperAnswerRecordListReply_OneRecord) String() string { return proto.CompactTextString(m) }
+func (*QueryPaperAnswerRecordListReply_OneRecord) ProtoMessage()    {}
+func (*QueryPaperAnswerRecordListReply_OneRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptorQuestion, []int{44, 0}
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) GetPaperrecordid() string {
+	if m != nil {
+		return m.Paperrecordid
+	}
+	return ""
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) GetPapername() string {
+	if m != nil {
+		return m.Papername
+	}
+	return ""
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) GetCourse() string {
+	if m != nil {
+		return m.Course
+	}
+	return ""
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) GetTeachername() string {
+	if m != nil {
+		return m.Teachername
+	}
+	return ""
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) GetStatus() int64 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) GetDotime() int64 {
+	if m != nil {
+		return m.Dotime
+	}
+	return 0
+}
+
+type UploadFileReq struct {
+	Type   int64  `protobuf:"varint,1,opt,name=type,proto3" json:"type" form:"type"`
+	File   []byte `protobuf:"bytes,2,opt,name=file,proto3" json:"file" form:"file"`
+	Userid string `protobuf:"bytes,3,opt,name=userid,proto3" json:"userid" form:"file"`
+}
+
+func (m *UploadFileReq) Reset()                    { *m = UploadFileReq{} }
+func (m *UploadFileReq) String() string            { return proto.CompactTextString(m) }
+func (*UploadFileReq) ProtoMessage()               {}
+func (*UploadFileReq) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{45} }
+
+func (m *UploadFileReq) GetType() int64 {
+	if m != nil {
+		return m.Type
+	}
+	return 0
+}
+
+func (m *UploadFileReq) GetFile() []byte {
+	if m != nil {
+		return m.File
+	}
+	return nil
+}
+
+func (m *UploadFileReq) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+type UploadFileReply struct {
+	Fileid string `protobuf:"bytes,1,opt,name=fileid,proto3" json:"fileid" form:"fileid"`
+	Url    string `protobuf:"bytes,2,opt,name=url,proto3" json:"url" form:"url"`
+}
+
+func (m *UploadFileReply) Reset()                    { *m = UploadFileReply{} }
+func (m *UploadFileReply) String() string            { return proto.CompactTextString(m) }
+func (*UploadFileReply) ProtoMessage()               {}
+func (*UploadFileReply) Descriptor() ([]byte, []int) { return fileDescriptorQuestion, []int{46} }
+
+func (m *UploadFileReply) GetFileid() string {
+	if m != nil {
+		return m.Fileid
+	}
+	return ""
+}
+
+func (m *UploadFileReply) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*CRqQueryMyQuestionInfoBySubject)(nil), "api.CRqQueryMyQuestionInfoBySubject")
 	proto.RegisterType((*CRpMyQuestionInfoBySubject)(nil), "api.CRpMyQuestionInfoBySubject")
 	proto.RegisterType((*CreateQuestionReq)(nil), "api.CreateQuestionReq")
 	proto.RegisterType((*QuestionInfoReply)(nil), "api.QuestionInfoReply")
+	proto.RegisterType((*QuestionKindInfoReply)(nil), "api.QuestionKindInfoReply")
 	proto.RegisterType((*QueryQuestionReq)(nil), "api.QueryQuestionReq")
 	proto.RegisterType((*QueryQuestionReply)(nil), "api.QueryQuestionReply")
 	proto.RegisterType((*CreateHomeWorkReq)(nil), "api.CreateHomeWorkReq")
 	proto.RegisterType((*CreateHomeWorkReply)(nil), "api.CreateHomeWorkReply")
-	proto.RegisterType((*QueryMyHomeWorkReq)(nil), "api.QueryMyHomeWorkReq")
+	proto.RegisterType((*QueryRecommendPaperReq)(nil), "api.QueryRecommendPaperReq")
 	proto.RegisterType((*QuestionInfo)(nil), "api.QuestionInfo")
-	proto.RegisterType((*HomeWorkInfo)(nil), "api.HomeWorkInfo")
-	proto.RegisterType((*QueryMyHomeWorkReply)(nil), "api.QueryMyHomeWorkReply")
+	proto.RegisterType((*QueryRecommendPaperReply)(nil), "api.QueryRecommendPaperReply")
 	proto.RegisterType((*DoQuestionInfo)(nil), "api.DoQuestionInfo")
 	proto.RegisterType((*DoHomeWorkReq)(nil), "api.DoHomeWorkReq")
 	proto.RegisterType((*QueryAnswerRecordReq)(nil), "api.QueryAnswerRecordReq")
@@ -1731,11 +2216,20 @@ func init() {
 	proto.RegisterType((*QueryPaperInClassReply)(nil), "api.QueryPaperInClassReply")
 	proto.RegisterType((*QueryPaperQuestionsReq)(nil), "api.QueryPaperQuestionsReq")
 	proto.RegisterType((*QueryPaperQuestionsReply)(nil), "api.QueryPaperQuestionsReply")
+	proto.RegisterType((*TitleItems)(nil), "api.TitleItems")
+	proto.RegisterType((*QuestionItems)(nil), "api.QuestionItems")
+	proto.RegisterType((*Option)(nil), "api.Option")
 	proto.RegisterType((*PaperInfo)(nil), "api.PaperInfo")
 	proto.RegisterType((*DoPaperReq)(nil), "api.DoPaperReq")
+	proto.RegisterType((*DoQuestionReq)(nil), "api.DoQuestionReq")
 	proto.RegisterType((*QueryPaperAnswerRecordReq)(nil), "api.QueryPaperAnswerRecordReq")
 	proto.RegisterType((*QueryPaperAnswerRecordReply)(nil), "api.QueryPaperAnswerRecordReply")
 	proto.RegisterType((*UserPaperAnswerInfo)(nil), "api.UserPaperAnswerInfo")
+	proto.RegisterType((*QueryPaperAnswerRecordListReq)(nil), "api.QueryPaperAnswerRecordListReq")
+	proto.RegisterType((*QueryPaperAnswerRecordListReply)(nil), "api.QueryPaperAnswerRecordListReply")
+	proto.RegisterType((*QueryPaperAnswerRecordListReply_OneRecord)(nil), "api.QueryPaperAnswerRecordListReply.OneRecord")
+	proto.RegisterType((*UploadFileReq)(nil), "api.UploadFileReq")
+	proto.RegisterType((*UploadFileReply)(nil), "api.UploadFileReply")
 	proto.RegisterEnum("api.PracticeSummaryType", PracticeSummaryType_name, PracticeSummaryType_value)
 }
 func (m *CRqQueryMyQuestionInfoBySubject) Marshal() (dAtA []byte, err error) {
@@ -1821,10 +2315,10 @@ func (m *CreateQuestionReq) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Kind != 0 {
+	if m.Questiontype != 0 {
 		dAtA[i] = 0x8
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Kind))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Questiontype))
 	}
 	if len(m.Name) > 0 {
 		dAtA[i] = 0x12
@@ -1832,92 +2326,66 @@ func (m *CreateQuestionReq) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
-	if len(m.Content) > 0 {
+	if len(m.Title) > 0 {
 		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Content)))
-		i += copy(dAtA[i:], m.Content)
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
 	}
-	if m.Qimage {
+	if m.Istitleimg {
 		dAtA[i] = 0x20
 		i++
-		if m.Qimage {
+		if m.Istitleimg {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
 		i++
 	}
-	if len(m.Option) > 0 {
-		for _, s := range m.Option {
+	if len(m.Options) > 0 {
+		for _, msg := range m.Options {
 			dAtA[i] = 0x2a
 			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
 			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
+			i += n
 		}
 	}
-	if m.Oimage {
-		dAtA[i] = 0x30
-		i++
-		if m.Oimage {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.Answer) > 0 {
-		for _, s := range m.Answer {
-			dAtA[i] = 0x3a
+	if len(m.Answers) > 0 {
+		for _, msg := range m.Answers {
+			dAtA[i] = 0x32
 			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
 			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
+			i += n
 		}
-	}
-	if m.Aimage {
-		dAtA[i] = 0x40
-		i++
-		if m.Aimage {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
 	}
 	if len(m.Subject) > 0 {
-		dAtA[i] = 0x4a
+		dAtA[i] = 0x3a
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Subject)))
 		i += copy(dAtA[i:], m.Subject)
 	}
 	if len(m.Course) > 0 {
-		dAtA[i] = 0x52
+		dAtA[i] = 0x42
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Course)))
 		i += copy(dAtA[i:], m.Course)
 	}
 	if len(m.Knowledge) > 0 {
-		dAtA[i] = 0x5a
+		dAtA[i] = 0x4a
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Knowledge)))
 		i += copy(dAtA[i:], m.Knowledge)
 	}
 	if m.Needcheck {
-		dAtA[i] = 0x60
+		dAtA[i] = 0x50
 		i++
 		if m.Needcheck {
 			dAtA[i] = 1
@@ -1927,15 +2395,21 @@ func (m *CreateQuestionReq) MarshalTo(dAtA []byte) (int, error) {
 		i++
 	}
 	if len(m.Explain) > 0 {
-		dAtA[i] = 0x6a
+		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Explain)))
 		i += copy(dAtA[i:], m.Explain)
 	}
 	if m.Star != 0 {
-		dAtA[i] = 0x70
+		dAtA[i] = 0x60
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(m.Star))
+	}
+	if len(m.Creatername) > 0 {
+		dAtA[i] = 0x6a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Creatername)))
+		i += copy(dAtA[i:], m.Creatername)
 	}
 	return i, nil
 }
@@ -1961,103 +2435,77 @@ func (m *QuestionInfoReply) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Id)))
 		i += copy(dAtA[i:], m.Id)
 	}
-	if m.Kind != 0 {
+	if m.Questiontype != 0 {
 		dAtA[i] = 0x10
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Kind))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Questiontype))
 	}
-	if len(m.Content) > 0 {
+	if len(m.Title) > 0 {
 		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Content)))
-		i += copy(dAtA[i:], m.Content)
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
 	}
-	if m.Qimage {
+	if m.Istitleimg {
 		dAtA[i] = 0x20
 		i++
-		if m.Qimage {
+		if m.Istitleimg {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
 		i++
 	}
-	if len(m.Option) > 0 {
-		for _, s := range m.Option {
+	if len(m.Options) > 0 {
+		for _, msg := range m.Options {
 			dAtA[i] = 0x2a
 			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
 			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
+			i += n
 		}
 	}
-	if m.Oimage {
-		dAtA[i] = 0x30
-		i++
-		if m.Oimage {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.Answer) > 0 {
-		for _, s := range m.Answer {
-			dAtA[i] = 0x3a
+	if len(m.Answers) > 0 {
+		for _, msg := range m.Answers {
+			dAtA[i] = 0x32
 			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
 			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
+			i += n
 		}
-	}
-	if m.Aimage {
-		dAtA[i] = 0x40
-		i++
-		if m.Aimage {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
 	}
 	if len(m.Subject) > 0 {
-		dAtA[i] = 0x4a
+		dAtA[i] = 0x3a
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Subject)))
 		i += copy(dAtA[i:], m.Subject)
 	}
 	if len(m.Course) > 0 {
-		dAtA[i] = 0x52
+		dAtA[i] = 0x42
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Course)))
 		i += copy(dAtA[i:], m.Course)
 	}
 	if len(m.Knowledge) > 0 {
-		dAtA[i] = 0x5a
+		dAtA[i] = 0x4a
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Knowledge)))
 		i += copy(dAtA[i:], m.Knowledge)
 	}
 	if len(m.Name) > 0 {
-		dAtA[i] = 0x62
+		dAtA[i] = 0x52
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
 	if m.Needcheck {
-		dAtA[i] = 0x68
+		dAtA[i] = 0x58
 		i++
 		if m.Needcheck {
 			dAtA[i] = 1
@@ -2067,15 +2515,48 @@ func (m *QuestionInfoReply) MarshalTo(dAtA []byte) (int, error) {
 		i++
 	}
 	if len(m.Explain) > 0 {
-		dAtA[i] = 0x72
+		dAtA[i] = 0x62
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Explain)))
 		i += copy(dAtA[i:], m.Explain)
 	}
 	if m.Star != 0 {
-		dAtA[i] = 0x78
+		dAtA[i] = 0x68
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(m.Star))
+	}
+	return i, nil
+}
+
+func (m *QuestionKindInfoReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuestionKindInfoReply) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Kindlist) > 0 {
+		for _, s := range m.Kindlist {
+			dAtA[i] = 0xa
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
 	}
 	return i, nil
 }
@@ -2095,10 +2576,10 @@ func (m *QueryQuestionReq) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Kind != 0 {
+	if m.Questiontype != 0 {
 		dAtA[i] = 0x8
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Kind))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Questiontype))
 	}
 	if len(m.Subject) > 0 {
 		dAtA[i] = 0x12
@@ -2112,14 +2593,8 @@ func (m *QueryQuestionReq) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Course)))
 		i += copy(dAtA[i:], m.Course)
 	}
-	if len(m.Knowledge) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Knowledge)))
-		i += copy(dAtA[i:], m.Knowledge)
-	}
 	if m.Page != 0 {
-		dAtA[i] = 0x28
+		dAtA[i] = 0x20
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(m.Page))
 	}
@@ -2223,6 +2698,11 @@ func (m *CreateHomeWorkReq) MarshalTo(dAtA []byte) (int, error) {
 			i += copy(dAtA[i:], s)
 		}
 	}
+	if m.Endtime != 0 {
+		dAtA[i] = 0x28
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Endtime))
+	}
 	return i, nil
 }
 
@@ -2250,7 +2730,7 @@ func (m *CreateHomeWorkReply) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *QueryMyHomeWorkReq) Marshal() (dAtA []byte, err error) {
+func (m *QueryRecommendPaperReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -2260,7 +2740,7 @@ func (m *QueryMyHomeWorkReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryMyHomeWorkReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryRecommendPaperReq) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -2270,12 +2750,6 @@ func (m *QueryMyHomeWorkReq) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Userid)))
 		i += copy(dAtA[i:], m.Userid)
-	}
-	if len(m.Classid) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Classid)))
-		i += copy(dAtA[i:], m.Classid)
 	}
 	return i, nil
 }
@@ -2301,90 +2775,30 @@ func (m *QuestionInfo) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Questionid)))
 		i += copy(dAtA[i:], m.Questionid)
 	}
-	if m.Kind != 0 {
+	if m.Questiontype != 0 {
 		dAtA[i] = 0x10
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Kind))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Questiontype))
 	}
-	if len(m.Content) > 0 {
+	if len(m.Title) > 0 {
 		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Content)))
-		i += copy(dAtA[i:], m.Content)
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
 	}
-	if m.Qimage {
+	if m.Istitleimg {
 		dAtA[i] = 0x20
 		i++
-		if m.Qimage {
+		if m.Istitleimg {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
 		i++
 	}
-	if m.Oimage {
-		dAtA[i] = 0x28
-		i++
-		if m.Oimage {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if len(m.Option) > 0 {
-		for _, s := range m.Option {
-			dAtA[i] = 0x32
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
-		}
-	}
-	if m.Score != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Score))
-	}
-	return i, nil
-}
-
-func (m *HomeWorkInfo) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *HomeWorkInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Homeworkid) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Homeworkid)))
-		i += copy(dAtA[i:], m.Homeworkid)
-	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	if len(m.Questions) > 0 {
-		for _, msg := range m.Questions {
-			dAtA[i] = 0x1a
+	if len(m.Options) > 0 {
+		for _, msg := range m.Options {
+			dAtA[i] = 0x2a
 			i++
 			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
 			n, err := msg.MarshalTo(dAtA[i:])
@@ -2394,10 +2808,25 @@ func (m *HomeWorkInfo) MarshalTo(dAtA []byte) (int, error) {
 			i += n
 		}
 	}
+	if m.Score != 0 {
+		dAtA[i] = 0x30
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Score))
+	}
+	if m.Needcheck {
+		dAtA[i] = 0x38
+		i++
+		if m.Needcheck {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
 	return i, nil
 }
 
-func (m *QueryMyHomeWorkReply) Marshal() (dAtA []byte, err error) {
+func (m *QueryRecommendPaperReply) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -2407,7 +2836,7 @@ func (m *QueryMyHomeWorkReply) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryMyHomeWorkReply) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryRecommendPaperReply) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -2415,6 +2844,18 @@ func (m *QueryMyHomeWorkReply) MarshalTo(dAtA []byte) (int, error) {
 	if len(m.Homework) > 0 {
 		for _, msg := range m.Homework {
 			dAtA[i] = 0xa
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.Exam) > 0 {
+		for _, msg := range m.Exam {
+			dAtA[i] = 0x12
 			i++
 			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
 			n, err := msg.MarshalTo(dAtA[i:])
@@ -2448,9 +2889,21 @@ func (m *DoQuestionInfo) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Questionid)))
 		i += copy(dAtA[i:], m.Questionid)
 	}
-	if len(m.Answer) > 0 {
-		for _, s := range m.Answer {
-			dAtA[i] = 0x12
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Username) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Username)))
+		i += copy(dAtA[i:], m.Username)
+	}
+	if len(m.Answers) > 0 {
+		for _, s := range m.Answers {
+			dAtA[i] = 0x22
 			i++
 			l = len(s)
 			for l >= 1<<7 {
@@ -2462,16 +2915,6 @@ func (m *DoQuestionInfo) MarshalTo(dAtA []byte) (int, error) {
 			i++
 			i += copy(dAtA[i:], s)
 		}
-	}
-	if m.Aimage {
-		dAtA[i] = 0x18
-		i++
-		if m.Aimage {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
 	}
 	return i, nil
 }
@@ -2910,27 +3353,95 @@ func (m *QuestionPre) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Questionid)))
 		i += copy(dAtA[i:], m.Questionid)
 	}
-	if m.Kind != 0 {
+	if m.Questiontype != 0 {
 		dAtA[i] = 0x10
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Kind))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Questiontype))
+	}
+	if len(m.Title) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
+	}
+	if m.Istitleimg {
+		dAtA[i] = 0x20
+		i++
+		if m.Istitleimg {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if len(m.Options) > 0 {
+		for _, msg := range m.Options {
+			dAtA[i] = 0x2a
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.Answers) > 0 {
+		for _, msg := range m.Answers {
+			dAtA[i] = 0x3a
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.Subject) > 0 {
+		dAtA[i] = 0x4a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Subject)))
+		i += copy(dAtA[i:], m.Subject)
+	}
+	if len(m.Course) > 0 {
+		dAtA[i] = 0x52
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Course)))
+		i += copy(dAtA[i:], m.Course)
 	}
 	if len(m.Knowledgename) > 0 {
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x5a
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Knowledgename)))
 		i += copy(dAtA[i:], m.Knowledgename)
 	}
 	if len(m.Name) > 0 {
-		dAtA[i] = 0x22
+		dAtA[i] = 0x62
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
 	if m.Star != 0 {
-		dAtA[i] = 0x28
+		dAtA[i] = 0x68
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(m.Star))
+	}
+	if m.Needcheck {
+		dAtA[i] = 0x70
+		i++
+		if m.Needcheck {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if len(m.Explain) > 0 {
+		dAtA[i] = 0x7a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Explain)))
+		i += copy(dAtA[i:], m.Explain)
 	}
 	return i, nil
 }
@@ -3122,10 +3633,16 @@ func (m *CreatePaperReq) MarshalTo(dAtA []byte) (int, error) {
 			i += n
 		}
 	}
-	if m.Continuingtime != 0 {
+	if m.Suggesttime != 0 {
 		dAtA[i] = 0x28
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Continuingtime))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Suggesttime))
+	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
 	}
 	return i, nil
 }
@@ -3190,6 +3707,12 @@ func (m *CreatePaperReply) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperid)))
 		i += copy(dAtA[i:], m.Paperid)
 	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
+	}
 	return i, nil
 }
 
@@ -3224,6 +3747,12 @@ func (m *QueryPaperInClassReq) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x18
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(m.Page))
+	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
 	}
 	return i, nil
 }
@@ -3289,6 +3818,12 @@ func (m *QueryPaperQuestionsReq) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperid)))
 		i += copy(dAtA[i:], m.Paperid)
 	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
+	}
 	return i, nil
 }
 
@@ -3307,8 +3842,8 @@ func (m *QueryPaperQuestionsReply) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Paper) > 0 {
-		for _, msg := range m.Paper {
+	if len(m.Titleitems) > 0 {
+		for _, msg := range m.Titleitems {
 			dAtA[i] = 0xa
 			i++
 			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
@@ -3325,15 +3860,196 @@ func (m *QueryPaperQuestionsReply) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
-	if m.Totalscore != 0 {
+	if m.Score != 0 {
 		dAtA[i] = 0x18
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Totalscore))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Score))
 	}
-	if m.Continuingtime != 0 {
+	if m.Suggesttime != 0 {
 		dAtA[i] = 0x20
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Continuingtime))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Suggesttime))
+	}
+	return i, nil
+}
+
+func (m *TitleItems) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TitleItems) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
+		i += copy(dAtA[i:], m.Name)
+	}
+	if len(m.Questionitems) > 0 {
+		for _, msg := range m.Questionitems {
+			dAtA[i] = 0x12
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *QuestionItems) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuestionItems) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if m.Questiontype != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Questiontype))
+	}
+	if len(m.Title) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
+	}
+	if m.Istitleimg {
+		dAtA[i] = 0x20
+		i++
+		if m.Istitleimg {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if len(m.Options) > 0 {
+		for _, msg := range m.Options {
+			dAtA[i] = 0x2a
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.Rightoptions) > 0 {
+		for _, msg := range m.Rightoptions {
+			dAtA[i] = 0x32
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.Getoptions) > 0 {
+		for _, s := range m.Getoptions {
+			dAtA[i] = 0x3a
+			i++
+			l = len(s)
+			for l >= 1<<7 {
+				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
+				l >>= 7
+				i++
+			}
+			dAtA[i] = uint8(l)
+			i++
+			i += copy(dAtA[i:], s)
+		}
+	}
+	if m.Needcheck {
+		dAtA[i] = 0x40
+		i++
+		if m.Needcheck {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
+	}
+	if len(m.Explain) > 0 {
+		dAtA[i] = 0x4a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Explain)))
+		i += copy(dAtA[i:], m.Explain)
+	}
+	if m.Result != 0 {
+		dAtA[i] = 0x50
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Result))
+	}
+	return i, nil
+}
+
+func (m *Option) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Option) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Prefix) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Prefix)))
+		i += copy(dAtA[i:], m.Prefix)
+	}
+	if len(m.Content) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Content)))
+		i += copy(dAtA[i:], m.Content)
+	}
+	if m.Iscontentimg {
+		dAtA[i] = 0x18
+		i++
+		if m.Iscontentimg {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
 	}
 	return i, nil
 }
@@ -3365,15 +4081,21 @@ func (m *PaperInfo) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
 	}
-	if m.Totalscore != 0 {
+	if m.Score != 0 {
 		dAtA[i] = 0x18
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Totalscore))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Score))
 	}
-	if m.Continuingtime != 0 {
+	if m.Suggesttime != 0 {
 		dAtA[i] = 0x20
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Continuingtime))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Suggesttime))
+	}
+	if len(m.Origin) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Origin)))
+		i += copy(dAtA[i:], m.Origin)
 	}
 	return i, nil
 }
@@ -3423,6 +4145,58 @@ func (m *DoPaperReq) MarshalTo(dAtA []byte) (int, error) {
 			i += n
 		}
 	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
+	}
+	return i, nil
+}
+
+func (m *DoQuestionReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DoQuestionReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Questionid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Questionid)))
+		i += copy(dAtA[i:], m.Questionid)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Username) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Username)))
+		i += copy(dAtA[i:], m.Username)
+	}
+	if m.Answer != nil {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Answer.Size()))
+		n1, err := m.Answer.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n1
+	}
 	return i, nil
 }
 
@@ -3441,17 +4215,23 @@ func (m *QueryPaperAnswerRecordReq) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Paperid) > 0 {
+	if len(m.Paperrecordid) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperid)))
-		i += copy(dAtA[i:], m.Paperid)
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperrecordid)))
+		i += copy(dAtA[i:], m.Paperrecordid)
 	}
 	if len(m.Userid) > 0 {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Userid)))
 		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
 	}
 	return i, nil
 }
@@ -3483,10 +4263,10 @@ func (m *QueryPaperAnswerRecordReply) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Papername)))
 		i += copy(dAtA[i:], m.Papername)
 	}
-	if m.Totalscore != 0 {
+	if m.Score != 0 {
 		dAtA[i] = 0x18
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Totalscore))
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Score))
 	}
 	if m.Getscore != 0 {
 		dAtA[i] = 0x20
@@ -3539,10 +4319,11 @@ func (m *UserPaperAnswerInfo) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Questionid)))
 		i += copy(dAtA[i:], m.Questionid)
 	}
-	if m.Kind != 0 {
-		dAtA[i] = 0x10
+	if len(m.Kind) > 0 {
+		dAtA[i] = 0x12
 		i++
-		i = encodeVarintQuestion(dAtA, i, uint64(m.Kind))
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Kind)))
+		i += copy(dAtA[i:], m.Kind)
 	}
 	if len(m.Name) > 0 {
 		dAtA[i] = 0x1a
@@ -3662,6 +4443,203 @@ func (m *UserPaperAnswerInfo) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintQuestion(dAtA, i, uint64(m.Star))
 	}
+	if m.Result != 0 {
+		dAtA[i] = 0x78
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Result))
+	}
+	return i, nil
+}
+
+func (m *QueryPaperAnswerRecordListReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPaperAnswerRecordListReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if m.Page != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Page))
+	}
+	if len(m.Paperkind) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperkind)))
+		i += copy(dAtA[i:], m.Paperkind)
+	}
+	return i, nil
+}
+
+func (m *QueryPaperAnswerRecordListReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPaperAnswerRecordListReply) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Currentpage != 0 {
+		dAtA[i] = 0x30
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Currentpage))
+	}
+	if m.Totalpage != 0 {
+		dAtA[i] = 0x38
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Totalpage))
+	}
+	if len(m.Recordlist) > 0 {
+		for _, msg := range m.Recordlist {
+			dAtA[i] = 0x52
+			i++
+			i = encodeVarintQuestion(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Paperrecordid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Paperrecordid)))
+		i += copy(dAtA[i:], m.Paperrecordid)
+	}
+	if len(m.Papername) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Papername)))
+		i += copy(dAtA[i:], m.Papername)
+	}
+	if len(m.Course) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Course)))
+		i += copy(dAtA[i:], m.Course)
+	}
+	if len(m.Teachername) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Teachername)))
+		i += copy(dAtA[i:], m.Teachername)
+	}
+	if m.Status != 0 {
+		dAtA[i] = 0x28
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Status))
+	}
+	if m.Dotime != 0 {
+		dAtA[i] = 0x30
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Dotime))
+	}
+	return i, nil
+}
+
+func (m *UploadFileReq) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UploadFileReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Type != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(m.Type))
+	}
+	if len(m.File) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.File)))
+		i += copy(dAtA[i:], m.File)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	return i, nil
+}
+
+func (m *UploadFileReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UploadFileReply) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Fileid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Fileid)))
+		i += copy(dAtA[i:], m.Fileid)
+	}
+	if len(m.Url) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintQuestion(dAtA, i, uint64(len(m.Url)))
+		i += copy(dAtA[i:], m.Url)
+	}
 	return i, nil
 }
 
@@ -3706,37 +4684,31 @@ func (m *CRpMyQuestionInfoBySubject) Size() (n int) {
 func (m *CreateQuestionReq) Size() (n int) {
 	var l int
 	_ = l
-	if m.Kind != 0 {
-		n += 1 + sovQuestion(uint64(m.Kind))
+	if m.Questiontype != 0 {
+		n += 1 + sovQuestion(uint64(m.Questiontype))
 	}
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	l = len(m.Content)
+	l = len(m.Title)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Qimage {
+	if m.Istitleimg {
 		n += 2
 	}
-	if len(m.Option) > 0 {
-		for _, s := range m.Option {
-			l = len(s)
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
 	}
-	if m.Oimage {
-		n += 2
-	}
-	if len(m.Answer) > 0 {
-		for _, s := range m.Answer {
-			l = len(s)
+	if len(m.Answers) > 0 {
+		for _, e := range m.Answers {
+			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
-	}
-	if m.Aimage {
-		n += 2
 	}
 	l = len(m.Subject)
 	if l > 0 {
@@ -3759,6 +4731,10 @@ func (m *CreateQuestionReq) Size() (n int) {
 	}
 	if m.Star != 0 {
 		n += 1 + sovQuestion(uint64(m.Star))
+	}
+	l = len(m.Creatername)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	return n
 }
@@ -3770,33 +4746,27 @@ func (m *QuestionInfoReply) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Kind != 0 {
-		n += 1 + sovQuestion(uint64(m.Kind))
+	if m.Questiontype != 0 {
+		n += 1 + sovQuestion(uint64(m.Questiontype))
 	}
-	l = len(m.Content)
+	l = len(m.Title)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Qimage {
+	if m.Istitleimg {
 		n += 2
 	}
-	if len(m.Option) > 0 {
-		for _, s := range m.Option {
-			l = len(s)
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
 	}
-	if m.Oimage {
-		n += 2
-	}
-	if len(m.Answer) > 0 {
-		for _, s := range m.Answer {
-			l = len(s)
+	if len(m.Answers) > 0 {
+		for _, e := range m.Answers {
+			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
-	}
-	if m.Aimage {
-		n += 2
 	}
 	l = len(m.Subject)
 	if l > 0 {
@@ -3827,21 +4797,29 @@ func (m *QuestionInfoReply) Size() (n int) {
 	return n
 }
 
+func (m *QuestionKindInfoReply) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.Kindlist) > 0 {
+		for _, s := range m.Kindlist {
+			l = len(s)
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	return n
+}
+
 func (m *QueryQuestionReq) Size() (n int) {
 	var l int
 	_ = l
-	if m.Kind != 0 {
-		n += 1 + sovQuestion(uint64(m.Kind))
+	if m.Questiontype != 0 {
+		n += 1 + sovQuestion(uint64(m.Questiontype))
 	}
 	l = len(m.Subject)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
 	l = len(m.Course)
-	if l > 0 {
-		n += 1 + l + sovQuestion(uint64(l))
-	}
-	l = len(m.Knowledge)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
@@ -3892,6 +4870,9 @@ func (m *CreateHomeWorkReq) Size() (n int) {
 			n += 1 + l + sovQuestion(uint64(l))
 		}
 	}
+	if m.Endtime != 0 {
+		n += 1 + sovQuestion(uint64(m.Endtime))
+	}
 	return n
 }
 
@@ -3905,14 +4886,10 @@ func (m *CreateHomeWorkReply) Size() (n int) {
 	return n
 }
 
-func (m *QueryMyHomeWorkReq) Size() (n int) {
+func (m *QueryRecommendPaperReq) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Userid)
-	if l > 0 {
-		n += 1 + l + sovQuestion(uint64(l))
-	}
-	l = len(m.Classid)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
@@ -3926,56 +4903,42 @@ func (m *QuestionInfo) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Kind != 0 {
-		n += 1 + sovQuestion(uint64(m.Kind))
+	if m.Questiontype != 0 {
+		n += 1 + sovQuestion(uint64(m.Questiontype))
 	}
-	l = len(m.Content)
+	l = len(m.Title)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Qimage {
+	if m.Istitleimg {
 		n += 2
 	}
-	if m.Oimage {
-		n += 2
-	}
-	if len(m.Option) > 0 {
-		for _, s := range m.Option {
-			l = len(s)
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
 	}
 	if m.Score != 0 {
 		n += 1 + sovQuestion(uint64(m.Score))
 	}
-	return n
-}
-
-func (m *HomeWorkInfo) Size() (n int) {
-	var l int
-	_ = l
-	l = len(m.Homeworkid)
-	if l > 0 {
-		n += 1 + l + sovQuestion(uint64(l))
-	}
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovQuestion(uint64(l))
-	}
-	if len(m.Questions) > 0 {
-		for _, e := range m.Questions {
-			l = e.Size()
-			n += 1 + l + sovQuestion(uint64(l))
-		}
+	if m.Needcheck {
+		n += 2
 	}
 	return n
 }
 
-func (m *QueryMyHomeWorkReply) Size() (n int) {
+func (m *QueryRecommendPaperReply) Size() (n int) {
 	var l int
 	_ = l
 	if len(m.Homework) > 0 {
 		for _, e := range m.Homework {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	if len(m.Exam) > 0 {
+		for _, e := range m.Exam {
 			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
@@ -3990,14 +4953,19 @@ func (m *DoQuestionInfo) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if len(m.Answer) > 0 {
-		for _, s := range m.Answer {
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if len(m.Answers) > 0 {
+		for _, s := range m.Answers {
 			l = len(s)
 			n += 1 + l + sovQuestion(uint64(l))
 		}
-	}
-	if m.Aimage {
-		n += 2
 	}
 	return n
 }
@@ -4203,8 +5171,35 @@ func (m *QuestionPre) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Kind != 0 {
-		n += 1 + sovQuestion(uint64(m.Kind))
+	if m.Questiontype != 0 {
+		n += 1 + sovQuestion(uint64(m.Questiontype))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Istitleimg {
+		n += 2
+	}
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	if len(m.Answers) > 0 {
+		for _, e := range m.Answers {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Course)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	l = len(m.Knowledgename)
 	if l > 0 {
@@ -4216,6 +5211,13 @@ func (m *QuestionPre) Size() (n int) {
 	}
 	if m.Star != 0 {
 		n += 1 + sovQuestion(uint64(m.Star))
+	}
+	if m.Needcheck {
+		n += 2
+	}
+	l = len(m.Explain)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	return n
 }
@@ -4302,8 +5304,12 @@ func (m *CreatePaperReq) Size() (n int) {
 			n += 1 + l + sovQuestion(uint64(l))
 		}
 	}
-	if m.Continuingtime != 0 {
-		n += 1 + sovQuestion(uint64(m.Continuingtime))
+	if m.Suggesttime != 0 {
+		n += 1 + sovQuestion(uint64(m.Suggesttime))
+	}
+	l = len(m.Paperkind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	return n
 }
@@ -4331,6 +5337,10 @@ func (m *CreatePaperReply) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
+	l = len(m.Paperkind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
 	return n
 }
 
@@ -4347,6 +5357,10 @@ func (m *QueryPaperInClassReq) Size() (n int) {
 	}
 	if m.Page != 0 {
 		n += 1 + sovQuestion(uint64(m.Page))
+	}
+	l = len(m.Paperkind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	return n
 }
@@ -4376,14 +5390,18 @@ func (m *QueryPaperQuestionsReq) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
+	l = len(m.Paperkind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
 	return n
 }
 
 func (m *QueryPaperQuestionsReply) Size() (n int) {
 	var l int
 	_ = l
-	if len(m.Paper) > 0 {
-		for _, e := range m.Paper {
+	if len(m.Titleitems) > 0 {
+		for _, e := range m.Titleitems {
 			l = e.Size()
 			n += 1 + l + sovQuestion(uint64(l))
 		}
@@ -4392,11 +5410,92 @@ func (m *QueryPaperQuestionsReply) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Totalscore != 0 {
-		n += 1 + sovQuestion(uint64(m.Totalscore))
+	if m.Score != 0 {
+		n += 1 + sovQuestion(uint64(m.Score))
 	}
-	if m.Continuingtime != 0 {
-		n += 1 + sovQuestion(uint64(m.Continuingtime))
+	if m.Suggesttime != 0 {
+		n += 1 + sovQuestion(uint64(m.Suggesttime))
+	}
+	return n
+}
+
+func (m *TitleItems) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if len(m.Questionitems) > 0 {
+		for _, e := range m.Questionitems {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QuestionItems) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Questiontype != 0 {
+		n += 1 + sovQuestion(uint64(m.Questiontype))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Istitleimg {
+		n += 2
+	}
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	if len(m.Rightoptions) > 0 {
+		for _, e := range m.Rightoptions {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	if len(m.Getoptions) > 0 {
+		for _, s := range m.Getoptions {
+			l = len(s)
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	if m.Needcheck {
+		n += 2
+	}
+	l = len(m.Explain)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Result != 0 {
+		n += 1 + sovQuestion(uint64(m.Result))
+	}
+	return n
+}
+
+func (m *Option) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Prefix)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Content)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Iscontentimg {
+		n += 2
 	}
 	return n
 }
@@ -4412,11 +5511,15 @@ func (m *PaperInfo) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Totalscore != 0 {
-		n += 1 + sovQuestion(uint64(m.Totalscore))
+	if m.Score != 0 {
+		n += 1 + sovQuestion(uint64(m.Score))
 	}
-	if m.Continuingtime != 0 {
-		n += 1 + sovQuestion(uint64(m.Continuingtime))
+	if m.Suggesttime != 0 {
+		n += 1 + sovQuestion(uint64(m.Suggesttime))
+	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	return n
 }
@@ -4442,17 +5545,47 @@ func (m *DoPaperReq) Size() (n int) {
 			n += 1 + l + sovQuestion(uint64(l))
 		}
 	}
+	l = len(m.Paperkind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	return n
+}
+
+func (m *DoQuestionReq) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Questionid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Answer != nil {
+		l = m.Answer.Size()
+		n += 1 + l + sovQuestion(uint64(l))
+	}
 	return n
 }
 
 func (m *QueryPaperAnswerRecordReq) Size() (n int) {
 	var l int
 	_ = l
-	l = len(m.Paperid)
+	l = len(m.Paperrecordid)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
 	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Paperkind)
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
@@ -4470,8 +5603,8 @@ func (m *QueryPaperAnswerRecordReply) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Totalscore != 0 {
-		n += 1 + sovQuestion(uint64(m.Totalscore))
+	if m.Score != 0 {
+		n += 1 + sovQuestion(uint64(m.Score))
 	}
 	if m.Getscore != 0 {
 		n += 1 + sovQuestion(uint64(m.Getscore))
@@ -4495,8 +5628,9 @@ func (m *UserPaperAnswerInfo) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuestion(uint64(l))
 	}
-	if m.Kind != 0 {
-		n += 1 + sovQuestion(uint64(m.Kind))
+	l = len(m.Kind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	l = len(m.Name)
 	if l > 0 {
@@ -4545,6 +5679,103 @@ func (m *UserPaperAnswerInfo) Size() (n int) {
 	}
 	if m.Star != 0 {
 		n += 1 + sovQuestion(uint64(m.Star))
+	}
+	if m.Result != 0 {
+		n += 1 + sovQuestion(uint64(m.Result))
+	}
+	return n
+}
+
+func (m *QueryPaperAnswerRecordListReq) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Page != 0 {
+		n += 1 + sovQuestion(uint64(m.Page))
+	}
+	l = len(m.Paperkind)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryPaperAnswerRecordListReply) Size() (n int) {
+	var l int
+	_ = l
+	if m.Currentpage != 0 {
+		n += 1 + sovQuestion(uint64(m.Currentpage))
+	}
+	if m.Totalpage != 0 {
+		n += 1 + sovQuestion(uint64(m.Totalpage))
+	}
+	if len(m.Recordlist) > 0 {
+		for _, e := range m.Recordlist {
+			l = e.Size()
+			n += 1 + l + sovQuestion(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryPaperAnswerRecordListReply_OneRecord) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Paperrecordid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Papername)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Course)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Teachername)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	if m.Status != 0 {
+		n += 1 + sovQuestion(uint64(m.Status))
+	}
+	if m.Dotime != 0 {
+		n += 1 + sovQuestion(uint64(m.Dotime))
+	}
+	return n
+}
+
+func (m *UploadFileReq) Size() (n int) {
+	var l int
+	_ = l
+	if m.Type != 0 {
+		n += 1 + sovQuestion(uint64(m.Type))
+	}
+	l = len(m.File)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	return n
+}
+
+func (m *UploadFileReply) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Fileid)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
+	}
+	l = len(m.Url)
+	if l > 0 {
+		n += 1 + l + sovQuestion(uint64(l))
 	}
 	return n
 }
@@ -4799,9 +6030,9 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Questiontype", wireType)
 			}
-			m.Kind = 0
+			m.Questiontype = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -4811,7 +6042,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int64(b) & 0x7F) << shift
+				m.Questiontype |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -4847,7 +6078,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4872,11 +6103,11 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Content = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Qimage", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Istitleimg", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -4893,12 +6124,12 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.Qimage = bool(v != 0)
+			m.Istitleimg = bool(v != 0)
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Option", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -4908,46 +6139,28 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuestion
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Option = append(m.Option, string(dAtA[iNdEx:postIndex]))
+			m.Options = append(m.Options, &Option{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Oimage", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Oimage = bool(v != 0)
-		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Answer", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Answers", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -4957,42 +6170,24 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuestion
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Answer = append(m.Answer, string(dAtA[iNdEx:postIndex]))
+			m.Answers = append(m.Answers, &Option{})
+			if err := m.Answers[len(m.Answers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Aimage", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Aimage = bool(v != 0)
-		case 9:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
 			}
@@ -5021,7 +6216,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Subject = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 10:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Course", wireType)
 			}
@@ -5050,7 +6245,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Course = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 11:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Knowledge", wireType)
 			}
@@ -5079,7 +6274,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Knowledge = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 12:
+		case 10:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Needcheck", wireType)
 			}
@@ -5099,7 +6294,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Needcheck = bool(v != 0)
-		case 13:
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Explain", wireType)
 			}
@@ -5128,7 +6323,7 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Explain = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 14:
+		case 12:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Star", wireType)
 			}
@@ -5147,6 +6342,35 @@ func (m *CreateQuestionReq) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creatername", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creatername = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -5228,9 +6452,9 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Questiontype", wireType)
 			}
-			m.Kind = 0
+			m.Questiontype = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -5240,14 +6464,14 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int64(b) & 0x7F) << shift
+				m.Questiontype |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -5272,11 +6496,11 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Content = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Qimage", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Istitleimg", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -5293,12 +6517,12 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.Qimage = bool(v != 0)
+			m.Istitleimg = bool(v != 0)
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Option", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -5308,46 +6532,28 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuestion
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Option = append(m.Option, string(dAtA[iNdEx:postIndex]))
+			m.Options = append(m.Options, &Option{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Oimage", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Oimage = bool(v != 0)
-		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Answer", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Answers", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -5357,42 +6563,24 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuestion
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Answer = append(m.Answer, string(dAtA[iNdEx:postIndex]))
+			m.Answers = append(m.Answers, &Option{})
+			if err := m.Answers[len(m.Answers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Aimage", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Aimage = bool(v != 0)
-		case 9:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
 			}
@@ -5421,7 +6609,7 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Subject = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 10:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Course", wireType)
 			}
@@ -5450,7 +6638,7 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Course = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 11:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Knowledge", wireType)
 			}
@@ -5479,7 +6667,7 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Knowledge = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 12:
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -5508,7 +6696,7 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 13:
+		case 11:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Needcheck", wireType)
 			}
@@ -5528,7 +6716,7 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Needcheck = bool(v != 0)
-		case 14:
+		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Explain", wireType)
 			}
@@ -5557,7 +6745,7 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Explain = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 15:
+		case 13:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Star", wireType)
 			}
@@ -5576,6 +6764,85 @@ func (m *QuestionInfoReply) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuestionKindInfoReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuestionKindInfoReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuestionKindInfoReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kindlist", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kindlist = append(m.Kindlist, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -5628,9 +6895,9 @@ func (m *QueryQuestionReq) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Questiontype", wireType)
 			}
-			m.Kind = 0
+			m.Questiontype = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -5640,7 +6907,7 @@ func (m *QueryQuestionReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int64(b) & 0x7F) << shift
+				m.Questiontype |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -5704,35 +6971,6 @@ func (m *QueryQuestionReq) Unmarshal(dAtA []byte) error {
 			m.Course = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Knowledge", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuestion
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Knowledge = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
 			}
@@ -6036,6 +7274,25 @@ func (m *CreateHomeWorkReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Questions = append(m.Questions, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Endtime", wireType)
+			}
+			m.Endtime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Endtime |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -6136,7 +7393,7 @@ func (m *CreateHomeWorkReply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryMyHomeWorkReq) Unmarshal(dAtA []byte) error {
+func (m *QueryRecommendPaperReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6159,10 +7416,10 @@ func (m *QueryMyHomeWorkReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryMyHomeWorkReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryRecommendPaperReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryMyHomeWorkReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryRecommendPaperReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6193,35 +7450,6 @@ func (m *QueryMyHomeWorkReq) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Userid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Classid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuestion
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Classid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -6304,9 +7532,9 @@ func (m *QuestionInfo) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Questiontype", wireType)
 			}
-			m.Kind = 0
+			m.Questiontype = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -6316,14 +7544,14 @@ func (m *QuestionInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int64(b) & 0x7F) << shift
+				m.Questiontype |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -6348,11 +7576,11 @@ func (m *QuestionInfo) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Content = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Qimage", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Istitleimg", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -6369,186 +7597,10 @@ func (m *QuestionInfo) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.Qimage = bool(v != 0)
+			m.Istitleimg = bool(v != 0)
 		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Oimage", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Oimage = bool(v != 0)
-		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Option", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuestion
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Option = append(m.Option, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Score", wireType)
-			}
-			m.Score = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Score |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuestion(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthQuestion
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HomeWorkInfo) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuestion
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HomeWorkInfo: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HomeWorkInfo: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Homeworkid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuestion
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Homeworkid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuestion
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuestion
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Questions", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -6572,11 +7624,50 @@ func (m *HomeWorkInfo) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Questions = append(m.Questions, &QuestionInfo{})
-			if err := m.Questions[len(m.Questions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Options = append(m.Options, &Option{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Score", wireType)
+			}
+			m.Score = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Score |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Needcheck", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Needcheck = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -6598,7 +7689,7 @@ func (m *HomeWorkInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryMyHomeWorkReply) Unmarshal(dAtA []byte) error {
+func (m *QueryRecommendPaperReply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6621,10 +7712,10 @@ func (m *QueryMyHomeWorkReply) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryMyHomeWorkReply: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryRecommendPaperReply: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryMyHomeWorkReply: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryRecommendPaperReply: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6653,8 +7744,39 @@ func (m *QueryMyHomeWorkReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Homework = append(m.Homework, &HomeWorkInfo{})
+			m.Homework = append(m.Homework, &PaperInfo{})
 			if err := m.Homework[len(m.Homework)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exam", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Exam = append(m.Exam, &PaperInfo{})
+			if err := m.Exam[len(m.Exam)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6739,7 +7861,7 @@ func (m *DoQuestionInfo) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Answer", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -6764,13 +7886,13 @@ func (m *DoQuestionInfo) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Answer = append(m.Answer, string(dAtA[iNdEx:postIndex]))
+			m.Userid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Aimage", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
 			}
-			var v int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -6780,12 +7902,50 @@ func (m *DoQuestionInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= (int(b) & 0x7F) << shift
+				stringLen |= (uint64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.Aimage = bool(v != 0)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Answers", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Answers = append(m.Answers, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -7524,7 +8684,7 @@ func (m *QueryHomeWorkInClassReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Homework = append(m.Homework, &HomeWorkInfo{})
+			m.Homework = append(m.Homework, &PaperInfo{})
 			if err := m.Homework[len(m.Homework)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -8234,9 +9394,9 @@ func (m *QuestionPre) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Questiontype", wireType)
 			}
-			m.Kind = 0
+			m.Questiontype = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -8246,12 +9406,181 @@ func (m *QuestionPre) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int64(b) & 0x7F) << shift
+				m.Questiontype |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Istitleimg", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Istitleimg = bool(v != 0)
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Options = append(m.Options, &Option{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Answers", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Answers = append(m.Answers, &Option{})
+			if err := m.Answers[len(m.Answers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Course", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Course = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Knowledgename", wireType)
 			}
@@ -8280,7 +9609,7 @@ func (m *QuestionPre) Unmarshal(dAtA []byte) error {
 			}
 			m.Knowledgename = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -8309,7 +9638,7 @@ func (m *QuestionPre) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 13:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Star", wireType)
 			}
@@ -8328,6 +9657,55 @@ func (m *QuestionPre) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 14:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Needcheck", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Needcheck = bool(v != 0)
+		case 15:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Explain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Explain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -8913,9 +10291,9 @@ func (m *CreatePaperReq) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Continuingtime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Suggesttime", wireType)
 			}
-			m.Continuingtime = 0
+			m.Suggesttime = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -8925,11 +10303,40 @@ func (m *CreatePaperReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Continuingtime |= (int64(b) & 0x7F) << shift
+				m.Suggesttime |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9127,6 +10534,35 @@ func (m *CreatePaperReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Paperid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9254,6 +10690,35 @@ func (m *QueryPaperInClassReq) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9452,6 +10917,35 @@ func (m *QueryPaperQuestionsReq) Unmarshal(dAtA []byte) error {
 			}
 			m.Paperid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9504,7 +10998,7 @@ func (m *QueryPaperQuestionsReply) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Paper", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Titleitems", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -9528,8 +11022,8 @@ func (m *QueryPaperQuestionsReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Paper = append(m.Paper, &QuestionInfo{})
-			if err := m.Paper[len(m.Paper)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Titleitems = append(m.Titleitems, &TitleItems{})
+			if err := m.Titleitems[len(m.Titleitems)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -9564,9 +11058,9 @@ func (m *QueryPaperQuestionsReply) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Totalscore", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Score", wireType)
 			}
-			m.Totalscore = 0
+			m.Score = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -9576,16 +11070,16 @@ func (m *QueryPaperQuestionsReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Totalscore |= (int64(b) & 0x7F) << shift
+				m.Score |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Continuingtime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Suggesttime", wireType)
 			}
-			m.Continuingtime = 0
+			m.Suggesttime = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -9595,11 +11089,555 @@ func (m *QueryPaperQuestionsReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Continuingtime |= (int64(b) & 0x7F) << shift
+				m.Suggesttime |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TitleItems) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TitleItems: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TitleItems: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Questionitems", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Questionitems = append(m.Questionitems, &QuestionItems{})
+			if err := m.Questionitems[len(m.Questionitems)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuestionItems) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuestionItems: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuestionItems: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Questiontype", wireType)
+			}
+			m.Questiontype = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Questiontype |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Istitleimg", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Istitleimg = bool(v != 0)
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Options = append(m.Options, &Option{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rightoptions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Rightoptions = append(m.Rightoptions, &Option{})
+			if err := m.Rightoptions[len(m.Rightoptions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Getoptions", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Getoptions = append(m.Getoptions, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Needcheck", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Needcheck = bool(v != 0)
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Explain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Explain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Result", wireType)
+			}
+			m.Result = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Result |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Option) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Option: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Option: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Prefix", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Prefix = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Content = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Iscontentimg", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Iscontentimg = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9710,9 +11748,9 @@ func (m *PaperInfo) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Totalscore", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Score", wireType)
 			}
-			m.Totalscore = 0
+			m.Score = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -9722,16 +11760,16 @@ func (m *PaperInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Totalscore |= (int64(b) & 0x7F) << shift
+				m.Score |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Continuingtime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Suggesttime", wireType)
 			}
-			m.Continuingtime = 0
+			m.Suggesttime = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -9741,11 +11779,40 @@ func (m *PaperInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Continuingtime |= (int64(b) & 0x7F) << shift
+				m.Suggesttime |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9914,6 +11981,205 @@ func (m *DoPaperReq) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DoQuestionReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DoQuestionReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DoQuestionReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Questionid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Questionid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Answer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Answer == nil {
+				m.Answer = &DoQuestionInfo{}
+			}
+			if err := m.Answer.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -9966,7 +12232,7 @@ func (m *QueryPaperAnswerRecordReq) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Paperid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperrecordid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -9991,7 +12257,7 @@ func (m *QueryPaperAnswerRecordReq) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Paperid = string(dAtA[iNdEx:postIndex])
+			m.Paperrecordid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -10021,6 +12287,35 @@ func (m *QueryPaperAnswerRecordReq) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -10132,9 +12427,9 @@ func (m *QueryPaperAnswerRecordReply) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Totalscore", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Score", wireType)
 			}
-			m.Totalscore = 0
+			m.Score = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -10144,7 +12439,7 @@ func (m *QueryPaperAnswerRecordReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Totalscore |= (int64(b) & 0x7F) << shift
+				m.Score |= (int64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -10214,7 +12509,7 @@ func (m *QueryPaperAnswerRecordReply) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Paperrecord = append(m.Paperrecord, &UserPaperAnswerInfo{})
+			m.Paperrecord = append(m.Paperrecord, &TitleItems{})
 			if err := m.Paperrecord[len(m.Paperrecord)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -10299,10 +12594,10 @@ func (m *UserPaperAnswerInfo) Unmarshal(dAtA []byte) error {
 			m.Questionid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
 			}
-			m.Kind = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuestion
@@ -10312,11 +12607,21 @@ func (m *UserPaperAnswerInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int64(b) & 0x7F) << shift
+				stringLen |= (uint64(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
@@ -10610,6 +12915,712 @@ func (m *UserPaperAnswerInfo) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 15:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Result", wireType)
+			}
+			m.Result = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Result |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPaperAnswerRecordListReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPaperAnswerRecordListReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPaperAnswerRecordListReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Page", wireType)
+			}
+			m.Page = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Page |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperkind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperkind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPaperAnswerRecordListReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPaperAnswerRecordListReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPaperAnswerRecordListReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Currentpage", wireType)
+			}
+			m.Currentpage = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Currentpage |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Totalpage", wireType)
+			}
+			m.Totalpage = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Totalpage |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Recordlist", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Recordlist = append(m.Recordlist, &QueryPaperAnswerRecordListReply_OneRecord{})
+			if err := m.Recordlist[len(m.Recordlist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPaperAnswerRecordListReply_OneRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OneRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OneRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Paperrecordid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Paperrecordid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Papername", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Papername = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Course", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Course = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Teachername", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Teachername = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Dotime", wireType)
+			}
+			m.Dotime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Dotime |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UploadFileReq) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UploadFileReq: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UploadFileReq: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field File", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.File = append(m.File[:0], dAtA[iNdEx:postIndex]...)
+			if m.File == nil {
+				m.File = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuestion(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UploadFileReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuestion
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UploadFileReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UploadFileReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fileid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Fileid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuestion
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuestion
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuestion(dAtA[iNdEx:])
@@ -10739,153 +13750,190 @@ var (
 func init() { proto.RegisterFile("api/question.proto", fileDescriptorQuestion) }
 
 var fileDescriptorQuestion = []byte{
-	// 2353 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x1a, 0x4b, 0x6f, 0x23, 0x49,
-	0x39, 0xed, 0x8e, 0xed, 0xf8, 0x73, 0xe2, 0x24, 0x95, 0x79, 0xf4, 0x78, 0x77, 0xe2, 0xa8, 0x80,
-	0x55, 0x06, 0x0d, 0xb1, 0x14, 0x18, 0xb4, 0xb0, 0x62, 0xd9, 0x38, 0xce, 0xce, 0x0e, 0x4c, 0xd8,
-	0xd9, 0x4a, 0x46, 0xb0, 0x68, 0xb5, 0xc8, 0xb1, 0x6b, 0x92, 0x26, 0x76, 0xb7, 0xa7, 0xbb, 0xcd,
-	0x90, 0xbf, 0xb0, 0x67, 0x5e, 0x7b, 0xe0, 0x88, 0xc4, 0x15, 0x6e, 0x5c, 0x10, 0x47, 0x24, 0x24,
-	0x1e, 0x17, 0xc4, 0xc9, 0x42, 0xc3, 0x89, 0xe5, 0x66, 0x21, 0xce, 0xa8, 0x5e, 0xdd, 0xd5, 0xed,
-	0xb6, 0xdd, 0x8e, 0x66, 0x56, 0x39, 0xec, 0x25, 0xea, 0xd4, 0xf7, 0xd5, 0x57, 0xf5, 0xbd, 0x1f,
-	0x65, 0x40, 0xad, 0xbe, 0x5d, 0x7f, 0x3a, 0xa0, 0x7e, 0x60, 0xbb, 0xce, 0x4e, 0xdf, 0x73, 0x03,
-	0x17, 0x99, 0xad, 0xbe, 0x5d, 0xfd, 0xd2, 0xa9, 0x1d, 0x9c, 0x0d, 0x4e, 0x76, 0xda, 0x6e, 0xaf,
-	0x7e, 0xea, 0x9e, 0xba, 0x75, 0x0e, 0x3b, 0x19, 0x3c, 0xe1, 0xff, 0xf1, 0x7f, 0xf8, 0x97, 0xd8,
-	0x53, 0xdd, 0x3f, 0x77, 0xdc, 0x67, 0x5d, 0xda, 0x39, 0xa5, 0xbd, 0x56, 0xff, 0x07, 0x27, 0xad,
-	0xf6, 0x39, 0x75, 0x3a, 0xf5, 0x9e, 0xdd, 0xf6, 0x5c, 0x9f, 0x7a, 0x3f, 0xb2, 0xdb, 0xd4, 0xaf,
-	0xeb, 0x28, 0xf5, 0x81, 0x4f, 0xbd, 0x3a, 0x3b, 0x9c, 0x7d, 0x48, 0x22, 0x07, 0xf3, 0x12, 0x69,
-	0x77, 0x5b, 0xbe, 0xcf, 0xa9, 0xf0, 0x2f, 0x41, 0x06, 0x7f, 0x64, 0x40, 0x6d, 0x9f, 0x3c, 0x7d,
-	0x6f, 0x40, 0xbd, 0x8b, 0xc3, 0x8b, 0xf7, 0x24, 0x73, 0x0f, 0x9c, 0x27, 0x6e, 0xe3, 0xe2, 0x68,
-	0x70, 0xf2, 0x43, 0xda, 0x0e, 0xd0, 0x2d, 0x30, 0x07, 0x76, 0xc7, 0x32, 0xb6, 0x8c, 0xed, 0x52,
-	0xa3, 0xf8, 0xc9, 0xb0, 0xc6, 0xfe, 0x25, 0xec, 0x0f, 0xfa, 0x02, 0x14, 0x7d, 0x81, 0x65, 0xe5,
-	0x38, 0xb8, 0xfc, 0xc9, 0xb0, 0xa6, 0x96, 0x88, 0xfa, 0x60, 0x68, 0xd4, 0xe9, 0x04, 0x76, 0x8f,
-	0x5a, 0xe6, 0x96, 0xb1, 0x6d, 0x0a, 0x34, 0xb9, 0x44, 0xd4, 0x07, 0x6e, 0x42, 0x75, 0x9f, 0xf4,
-	0x27, 0x5d, 0xe3, 0x35, 0xa8, 0x84, 0x0c, 0x39, 0x6e, 0x87, 0xfa, 0x96, 0xb1, 0x65, 0x6e, 0x97,
-	0x48, 0x62, 0x15, 0xff, 0x6f, 0x11, 0xd6, 0xf7, 0x3d, 0xda, 0x0a, 0xa8, 0xa2, 0x43, 0xe8, 0x53,
-	0xf4, 0x39, 0x58, 0x3c, 0xb7, 0x1d, 0xc1, 0x85, 0xd9, 0x58, 0x1d, 0x0d, 0x6b, 0xe5, 0x27, 0xae,
-	0xd7, 0xfb, 0x3a, 0x66, 0xab, 0x98, 0x70, 0x20, 0x43, 0x72, 0x5a, 0x3d, 0x2a, 0x79, 0xd1, 0x90,
-	0xd8, 0x2a, 0x26, 0x1c, 0x88, 0xee, 0x42, 0xb1, 0xed, 0x3a, 0x01, 0x75, 0x02, 0xce, 0x4c, 0xa9,
-	0x81, 0x46, 0xc3, 0x5a, 0x45, 0xe0, 0x49, 0x00, 0x26, 0x0a, 0x05, 0xdd, 0x81, 0xc2, 0x53, 0xbb,
-	0xd7, 0x3a, 0xa5, 0xd6, 0xe2, 0x96, 0xb1, 0xbd, 0xd4, 0x58, 0x1f, 0x0d, 0x6b, 0x2b, 0x02, 0x59,
-	0xac, 0x63, 0x22, 0x11, 0x18, 0xaa, 0xdb, 0x67, 0xf7, 0xb5, 0xf2, 0x8c, 0x31, 0x1d, 0x55, 0xac,
-	0x63, 0x22, 0x11, 0x38, 0xaa, 0xa0, 0x5a, 0x48, 0x52, 0x75, 0x15, 0x55, 0x37, 0xa4, 0xda, 0x72,
-	0xfc, 0x67, 0xd4, 0xb3, 0x8a, 0x49, 0xaa, 0x62, 0x1d, 0x13, 0x89, 0xc0, 0x51, 0x05, 0xd5, 0xa5,
-	0x24, 0xd5, 0x96, 0xa2, 0x2a, 0x3e, 0x98, 0x10, 0x94, 0xe2, 0x4b, 0x49, 0x21, 0x48, 0x00, 0x8e,
-	0xf4, 0x7f, 0x07, 0x0a, 0x6d, 0x77, 0xe0, 0xf9, 0xd4, 0x02, 0x8e, 0xac, 0x11, 0x16, 0xeb, 0x98,
-	0x48, 0x04, 0xb4, 0x0b, 0xa5, 0x50, 0x9f, 0x56, 0x99, 0x63, 0x5f, 0x1b, 0x0d, 0x6b, 0x6b, 0x52,
-	0x59, 0x0a, 0x84, 0x49, 0x84, 0xc6, 0xf6, 0x38, 0x94, 0x76, 0xda, 0x67, 0xb4, 0x7d, 0x6e, 0x2d,
-	0xf3, 0xab, 0x6b, 0x7b, 0x42, 0x10, 0x26, 0x11, 0x1a, 0x63, 0x80, 0xfe, 0xb8, 0xdf, 0x6d, 0xd9,
-	0x8e, 0xb5, 0x92, 0x64, 0x40, 0x02, 0x30, 0x51, 0x28, 0xcc, 0x30, 0xfc, 0xa0, 0xe5, 0x59, 0x95,
-	0xa4, 0xf5, 0xb0, 0x55, 0x4c, 0x38, 0x10, 0xff, 0x34, 0x0f, 0xeb, 0xba, 0xe9, 0x12, 0xda, 0xef,
-	0x5e, 0xa0, 0xdb, 0x90, 0x0b, 0x9d, 0x67, 0x65, 0x34, 0xac, 0x95, 0xc4, 0x46, 0xbb, 0x83, 0x49,
-	0xce, 0xee, 0x84, 0x76, 0x99, 0x9b, 0x66, 0x97, 0x9f, 0x99, 0xdc, 0x55, 0x33, 0x39, 0x15, 0x29,
-	0x96, 0xa7, 0x45, 0x8a, 0x98, 0x5d, 0xae, 0xcc, 0x6d, 0x97, 0x95, 0xec, 0x76, 0xb9, 0x3a, 0xcd,
-	0x2e, 0xff, 0x6d, 0xc0, 0x1a, 0x0f, 0xf0, 0x73, 0xc7, 0xc3, 0xbb, 0xc9, 0xf0, 0x9e, 0x51, 0xe4,
-	0xe6, 0x5c, 0x22, 0x5f, 0xcc, 0x2c, 0xf2, 0x3e, 0x33, 0x94, 0x7c, 0xf2, 0xc6, 0x7d, 0x6e, 0x26,
-	0x1c, 0x88, 0xff, 0x6c, 0x00, 0x4a, 0xf0, 0xca, 0x9c, 0xf0, 0x5b, 0x50, 0x52, 0x89, 0x5b, 0xa4,
-	0x8d, 0xf2, 0xee, 0x8d, 0x9d, 0x56, 0xdf, 0xde, 0x19, 0xf3, 0x57, 0xfd, 0x1e, 0xe1, 0x16, 0x4c,
-	0xa2, 0xed, 0xe8, 0x75, 0x28, 0xb7, 0x07, 0x9e, 0x47, 0x9d, 0x80, 0x5f, 0x47, 0x38, 0xee, 0x8d,
-	0xd1, 0xb0, 0x86, 0x24, 0xaf, 0x11, 0x10, 0x13, 0x1d, 0x95, 0x71, 0x1d, 0xb8, 0x41, 0xab, 0xcb,
-	0xf7, 0x89, 0x44, 0xa8, 0x9d, 0x16, 0x82, 0x30, 0x89, 0xd0, 0xf0, 0x9f, 0x0c, 0x95, 0xcd, 0xde,
-	0x71, 0x7b, 0xf4, 0xbb, 0xae, 0x77, 0x2e, 0xb5, 0xc7, 0xcd, 0xcf, 0x98, 0x95, 0xa8, 0x58, 0xaa,
-	0xb7, 0x3b, 0xe3, 0xda, 0x93, 0x00, 0x16, 0x35, 0xc4, 0x17, 0xaa, 0xc3, 0x92, 0x1f, 0x0c, 0x3a,
-	0xd4, 0x09, 0x7c, 0xcb, 0xe4, 0x6e, 0xbb, 0x31, 0x1a, 0xd6, 0x56, 0x95, 0x39, 0x09, 0x08, 0x26,
-	0x21, 0x12, 0xe3, 0x26, 0x92, 0xe9, 0x22, 0xdf, 0x31, 0x4b, 0x76, 0xf8, 0x21, 0x6c, 0x24, 0x99,
-	0x61, 0xea, 0xb9, 0x07, 0x70, 0xe6, 0xf6, 0xe8, 0x33, 0xd7, 0x3b, 0x0f, 0x63, 0xe5, 0xf5, 0xd1,
-	0xb0, 0xb6, 0x2e, 0x68, 0x45, 0x30, 0x4c, 0x34, 0x44, 0xdc, 0x93, 0xba, 0x3e, 0xbc, 0xd0, 0x65,
-	0x73, 0x07, 0x0a, 0xac, 0x4e, 0x0a, 0x09, 0x69, 0x66, 0x28, 0xd6, 0x31, 0x91, 0x08, 0xf3, 0x49,
-	0x08, 0xff, 0x21, 0x07, 0xcb, 0xba, 0xbd, 0xa0, 0xaf, 0x00, 0x28, 0xd6, 0xc2, 0xd3, 0x62, 0x22,
-	0x90, 0x20, 0x4c, 0x34, 0xbc, 0x2b, 0x10, 0xf1, 0x05, 0x6a, 0x3e, 0x43, 0x18, 0x97, 0xc9, 0xa1,
-	0x30, 0x2b, 0x39, 0xbc, 0x06, 0x79, 0xbf, 0xed, 0x7a, 0xd4, 0x2a, 0x72, 0xa6, 0xd6, 0x46, 0xc3,
-	0xda, 0xb2, 0xb4, 0x1c, 0xb7, 0xed, 0x51, 0x4c, 0x04, 0x18, 0xff, 0xc6, 0x80, 0x65, 0xa5, 0x2b,
-	0x2e, 0xc2, 0xcb, 0x69, 0x3e, 0x5b, 0xa1, 0x76, 0xa0, 0x1b, 0xa8, 0xc9, 0x9d, 0x7e, 0x7d, 0xcc,
-	0xe9, 0x67, 0xdb, 0xec, 0xf7, 0xe1, 0xda, 0x98, 0x95, 0x31, 0xa3, 0x6d, 0xc0, 0x92, 0xba, 0x91,
-	0x0c, 0x29, 0x82, 0xba, 0xce, 0x9f, 0xee, 0x43, 0x0a, 0x19, 0x93, 0x70, 0x1f, 0xfe, 0xa5, 0x01,
-	0x95, 0xa6, 0x1b, 0x33, 0xaa, 0x7b, 0x29, 0x46, 0xa5, 0x49, 0x24, 0x82, 0xc5, 0xad, 0x2a, 0xca,
-	0xb9, 0xb9, 0xec, 0x39, 0xd7, 0x9c, 0x91, 0x73, 0xf1, 0x73, 0x03, 0x56, 0x9a, 0xae, 0xee, 0x5d,
-	0x97, 0x54, 0x58, 0xe4, 0x94, 0xb9, 0x59, 0x4e, 0x59, 0x87, 0x25, 0xf6, 0xc5, 0xf5, 0x2b, 0x6c,
-	0x5f, 0x13, 0xa2, 0x82, 0x60, 0x12, 0x22, 0xa1, 0x37, 0x43, 0xd6, 0x17, 0xb9, 0x1a, 0x36, 0xb8,
-	0x1a, 0xe2, 0x62, 0x9d, 0x22, 0x0f, 0x7c, 0x28, 0x15, 0xbc, 0xc7, 0xff, 0x25, 0xb4, 0xed, 0x7a,
-	0x9d, 0xcb, 0xb3, 0x8a, 0x7f, 0x6e, 0x40, 0xe5, 0xb1, 0x4f, 0x3d, 0x41, 0x8e, 0xeb, 0x54, 0x67,
-	0xc9, 0xc8, 0xc2, 0xd2, 0x1c, 0xe2, 0x8a, 0x14, 0x6f, 0xce, 0x50, 0x3c, 0xfe, 0x6d, 0x0e, 0xd6,
-	0xf7, 0xba, 0xdd, 0xc4, 0xe5, 0x2e, 0x69, 0x70, 0x5a, 0x84, 0xca, 0x65, 0x8a, 0x50, 0x32, 0x96,
-	0x98, 0xb3, 0x62, 0xc9, 0xeb, 0x50, 0xf6, 0xec, 0xd3, 0xb3, 0x40, 0xd3, 0x69, 0x49, 0xcf, 0xaf,
-	0x1a, 0x10, 0x13, 0x1d, 0x15, 0x1d, 0xc1, 0x4a, 0xab, 0xdb, 0x65, 0x72, 0x91, 0x7b, 0xf3, 0x9a,
-	0x3d, 0xc4, 0xb9, 0x6e, 0x58, 0xa3, 0x61, 0xed, 0x9a, 0x14, 0x93, 0xbe, 0x07, 0x93, 0x38, 0x0d,
-	0xec, 0xc3, 0x8d, 0x14, 0xeb, 0x60, 0x01, 0xe0, 0x7d, 0xa8, 0x28, 0xb5, 0x7b, 0x7c, 0x39, 0x56,
-	0x59, 0x8c, 0x09, 0xba, 0x71, 0x6b, 0x34, 0xac, 0x5d, 0x8f, 0xdb, 0x8e, 0xd8, 0x87, 0x49, 0x82,
-	0x10, 0xa6, 0x70, 0x8b, 0x1f, 0x1a, 0xc5, 0x92, 0x7d, 0x96, 0x84, 0xc4, 0xb9, 0xef, 0x64, 0x09,
-	0x3c, 0x53, 0x0e, 0x8b, 0xc2, 0xcf, 0xdf, 0x72, 0x60, 0x89, 0x7c, 0xfc, 0xc8, 0x6b, 0xb5, 0x03,
-	0xbb, 0x4d, 0x8f, 0x06, 0xbd, 0x5e, 0xcb, 0xbb, 0x98, 0xa7, 0xc6, 0x70, 0x9f, 0x39, 0x9a, 0xa5,
-	0x6a, 0x56, 0x20, 0x01, 0x98, 0x28, 0x14, 0x3d, 0xdf, 0x9a, 0xb3, 0x2b, 0x92, 0x7d, 0x28, 0xf4,
-	0xfd, 0xe0, 0xa2, 0x2f, 0xb2, 0x5a, 0x65, 0xd7, 0xe2, 0x5c, 0x26, 0x6e, 0x7a, 0x7c, 0xd1, 0xa7,
-	0xba, 0x35, 0x89, 0x1d, 0x98, 0xc8, 0xad, 0xe8, 0x0d, 0x58, 0xb6, 0x9d, 0xc0, 0x73, 0x3b, 0x83,
-	0xb6, 0xec, 0x73, 0xd8, 0xb9, 0x37, 0x47, 0xc3, 0xda, 0x86, 0x6c, 0xc4, 0x34, 0x28, 0x26, 0x31,
-	0x64, 0x56, 0xe2, 0xf0, 0xab, 0x73, 0x39, 0x14, 0x92, 0xf9, 0x3d, 0x04, 0x61, 0x12, 0xa1, 0xe1,
-	0x33, 0xa8, 0x4e, 0x10, 0xa9, 0x28, 0x44, 0xd7, 0xfb, 0x72, 0xdd, 0x17, 0xeb, 0xa1, 0xcf, 0xbd,
-	0x3a, 0x1a, 0xd6, 0x2c, 0xc9, 0x44, 0x12, 0x05, 0x93, 0xf1, 0x6d, 0xf8, 0x23, 0x03, 0x6e, 0x72,
-	0x2b, 0x49, 0x51, 0xde, 0x0b, 0x3c, 0x27, 0x2c, 0xbc, 0x73, 0xd3, 0x0a, 0xef, 0xdf, 0x99, 0xb0,
-	0x91, 0xb8, 0x07, 0x8f, 0x2e, 0x2f, 0xf8, 0x22, 0xb3, 0xb3, 0x7e, 0x52, 0xe1, 0xe6, 0x3c, 0x0a,
-	0x6f, 0xc2, 0xaa, 0x0a, 0x71, 0xce, 0xa0, 0x77, 0x42, 0x3d, 0x9f, 0xdb, 0x9e, 0xd9, 0xa8, 0x8e,
-	0x86, 0xb5, 0x1b, 0xf1, 0x80, 0x28, 0x11, 0x30, 0x49, 0x6e, 0xd1, 0x0c, 0x37, 0x7f, 0x79, 0xc3,
-	0xbd, 0x84, 0xed, 0xb1, 0x50, 0x2e, 0x1a, 0x2c, 0xbe, 0xa9, 0x98, 0x0c, 0xe5, 0x11, 0x0c, 0x13,
-	0x0d, 0x11, 0x8f, 0x0c, 0x28, 0xab, 0x64, 0xf9, 0xc8, 0xa3, 0x2f, 0xb3, 0xae, 0x7d, 0x13, 0x56,
-	0xa2, 0x71, 0x5d, 0x94, 0xe1, 0xb5, 0x68, 0x1c, 0x03, 0x63, 0x12, 0x47, 0x0f, 0x4d, 0x60, 0x71,
-	0x9a, 0x09, 0xa8, 0xae, 0x38, 0x3f, 0xad, 0x2b, 0xfe, 0x8b, 0x01, 0xb7, 0x12, 0x2a, 0x69, 0xd2,
-	0xa0, 0x65, 0x77, 0xb9, 0xd9, 0x36, 0xc7, 0x1b, 0xc6, 0xb5, 0x58, 0xed, 0xf8, 0xc8, 0xa3, 0x57,
-	0xad, 0x55, 0x3c, 0x97, 0x49, 0xe3, 0x30, 0x2d, 0x20, 0xcc, 0xd1, 0x15, 0x65, 0xf2, 0xf7, 0xff,
-	0x18, 0xf0, 0xca, 0xa4, 0xd3, 0x58, 0xa0, 0xfb, 0x10, 0x56, 0x13, 0x0e, 0x2c, 0xc5, 0x98, 0xea,
-	0x0c, 0x3c, 0x65, 0x69, 0x3e, 0x96, 0xd8, 0x8a, 0x49, 0x92, 0xd8, 0xa7, 0x2c, 0xda, 0x8f, 0x0d,
-	0xb8, 0xb9, 0xef, 0xb2, 0x48, 0xd1, 0xed, 0x46, 0x65, 0xe5, 0xa3, 0xa3, 0x17, 0x1d, 0x6a, 0x63,
-	0x3d, 0x75, 0x2e, 0x5b, 0x4f, 0xfd, 0x6b, 0x13, 0x2a, 0x32, 0xe3, 0xb4, 0xfa, 0xac, 0x42, 0x79,
-	0x29, 0xe3, 0x81, 0xef, 0x25, 0xbb, 0xfd, 0xf2, 0xee, 0xe7, 0xb9, 0x26, 0xe3, 0x47, 0x87, 0xfe,
-	0xe1, 0x3f, 0x70, 0xf8, 0xda, 0x6c, 0x27, 0xd9, 0x83, 0x0a, 0xab, 0x12, 0x6d, 0x67, 0x60, 0x3b,
-	0xa7, 0xfc, 0x8d, 0x40, 0xf8, 0xad, 0x56, 0xc1, 0xc4, 0xe1, 0x98, 0x24, 0x36, 0x54, 0x7f, 0x25,
-	0x26, 0x5c, 0xb1, 0x83, 0x2f, 0x5b, 0xd7, 0x86, 0xad, 0x6c, 0x6e, 0xac, 0x95, 0xe5, 0x2d, 0xac,
-	0x6c, 0x65, 0xe3, 0xc3, 0x3d, 0x33, 0xd3, 0x70, 0x0f, 0xbf, 0x05, 0x6b, 0x31, 0x71, 0x31, 0x47,
-	0xb9, 0x0b, 0xc5, 0x3e, 0xfb, 0x2f, 0xbc, 0xa3, 0xa6, 0x06, 0x09, 0xc0, 0x44, 0xa1, 0xe0, 0x9f,
-	0x18, 0xb2, 0x59, 0xe1, 0x14, 0xc2, 0xb2, 0xf0, 0xe5, 0x4d, 0x3d, 0xc2, 0x68, 0x60, 0x4e, 0x8b,
-	0x06, 0xbf, 0x37, 0x64, 0x95, 0x1c, 0xbf, 0x16, 0xe3, 0xef, 0xab, 0x90, 0xe7, 0x97, 0x97, 0xee,
-	0x5f, 0x11, 0xee, 0x2f, 0xd0, 0x9e, 0xb8, 0xba, 0x7c, 0x39, 0x1a, 0x26, 0x02, 0xfd, 0x53, 0x76,
-	0xf0, 0xb7, 0xf5, 0xfb, 0x87, 0xa6, 0xc4, 0x04, 0x3b, 0x9f, 0x7e, 0xfe, 0x6b, 0x80, 0x95, 0x4a,
-	0x88, 0x89, 0xe2, 0x6b, 0x71, 0x51, 0xa4, 0x0c, 0x23, 0x26, 0x4a, 0x23, 0x53, 0xe9, 0x73, 0x0f,
-	0x80, 0x73, 0x24, 0xec, 0x57, 0x70, 0xae, 0x59, 0x7c, 0x04, 0xc3, 0x44, 0x43, 0x4c, 0x71, 0xc0,
-	0xc5, 0x39, 0x1d, 0x10, 0xff, 0xc3, 0x80, 0x52, 0xa8, 0xd3, 0xf9, 0x44, 0x76, 0xd5, 0x59, 0xfb,
-	0xbb, 0x01, 0xd0, 0x74, 0xc3, 0xd0, 0x3a, 0x1f, 0x6f, 0x57, 0x79, 0xec, 0x11, 0xc8, 0x72, 0x81,
-	0xb3, 0x96, 0x9c, 0x7d, 0xbc, 0x2c, 0x36, 0xf1, 0x28, 0x27, 0xeb, 0x86, 0x94, 0x63, 0xe7, 0x0e,
-	0x87, 0xcc, 0xd5, 0xf9, 0xa7, 0x66, 0x40, 0x9a, 0xab, 0x87, 0x20, 0x4c, 0x22, 0xb4, 0xcb, 0x9a,
-	0x52, 0x1d, 0x96, 0x4e, 0x69, 0x20, 0x36, 0x09, 0x23, 0xd2, 0xf4, 0xa3, 0x20, 0x98, 0x84, 0x48,
-	0xf1, 0x04, 0x91, 0xcf, 0xf6, 0xfa, 0xf3, 0x18, 0xca, 0xfc, 0xa2, 0x72, 0x9e, 0x50, 0xd0, 0x2a,
-	0xa6, 0xc7, 0x3e, 0xf5, 0x34, 0x99, 0xcd, 0x6a, 0xf2, 0x75, 0x3a, 0xf8, 0xe3, 0x3c, 0x6c, 0xa4,
-	0xec, 0xbf, 0x6c, 0x8a, 0xcc, 0x54, 0xe9, 0x2b, 0xb7, 0x36, 0x33, 0xbe, 0xa5, 0x2f, 0xce, 0x33,
-	0xe6, 0xce, 0x67, 0x7f, 0xd8, 0x2c, 0x64, 0x7f, 0xd8, 0x2c, 0xce, 0x9a, 0x88, 0x27, 0x46, 0x53,
-	0x4b, 0xd9, 0x47, 0x53, 0x77, 0xa1, 0xe8, 0xc9, 0xa1, 0x6b, 0x89, 0x9f, 0xa2, 0x31, 0xea, 0xa9,
-	0xa9, 0xab, 0x42, 0x61, 0x7a, 0xd1, 0xa6, 0x58, 0xc0, 0x8f, 0xd1, 0xf4, 0xa2, 0x4f, 0xab, 0x34,
-	0x44, 0x76, 0xc8, 0x40, 0x1e, 0x52, 0x4e, 0x1e, 0x32, 0x08, 0x0f, 0x91, 0x5f, 0x57, 0xe4, 0xd5,
-	0xfc, 0x8b, 0x6f, 0x8d, 0xcd, 0x0d, 0x58, 0x67, 0x8c, 0xca, 0x50, 0x6c, 0x1e, 0xbc, 0xbd, 0xf7,
-	0xf8, 0xe1, 0xf1, 0xda, 0x02, 0xaa, 0x00, 0xec, 0xbf, 0xfb, 0xf0, 0xe1, 0xc1, 0xfe, 0xf1, 0x83,
-	0x77, 0xbf, 0xb3, 0x66, 0xa0, 0x65, 0x58, 0x3a, 0x7c, 0x70, 0x74, 0xbc, 0xf7, 0xed, 0x83, 0xa3,
-	0xb5, 0xdc, 0xee, 0xcf, 0xca, 0xb0, 0xa4, 0x82, 0x1e, 0xfa, 0x00, 0xd6, 0xef, 0xd3, 0x20, 0xfe,
-	0x1b, 0x12, 0x24, 0x2b, 0xd5, 0xe9, 0xbf, 0x73, 0xa9, 0xd6, 0x24, 0xd6, 0xa4, 0x5f, 0xa0, 0xe0,
-	0x05, 0xd4, 0x50, 0xa5, 0x76, 0x78, 0xde, 0x0d, 0xad, 0x08, 0xd6, 0xde, 0x57, 0xab, 0x13, 0x9e,
-	0x17, 0xf1, 0x02, 0xda, 0x83, 0x95, 0xd8, 0x0b, 0x25, 0xba, 0xae, 0x50, 0x63, 0x2f, 0xb4, 0xd5,
-	0x9b, 0x69, 0xcb, 0x82, 0x44, 0x53, 0x5d, 0x43, 0x8d, 0xfc, 0x62, 0xd7, 0xd0, 0xc6, 0xf5, 0x55,
-	0x2b, 0x75, 0x5d, 0x50, 0xb9, 0x0f, 0xab, 0x89, 0x87, 0x0d, 0xa4, 0x9d, 0x19, 0x7b, 0x54, 0xab,
-	0xde, 0x4a, 0x07, 0x08, 0x42, 0x3b, 0x2c, 0x43, 0x86, 0x34, 0x90, 0xcc, 0x43, 0xfa, 0x76, 0xe0,
-	0x6b, 0x07, 0xbd, 0x7e, 0xc0, 0xf0, 0x0f, 0xf9, 0xef, 0x24, 0xe2, 0x23, 0x55, 0xa4, 0x9d, 0x90,
-	0x48, 0x46, 0xd5, 0x57, 0x26, 0x81, 0x14, 0x1f, 0xd7, 0xd2, 0x86, 0xa5, 0x68, 0x45, 0xf0, 0x2e,
-	0x2b, 0xe4, 0xea, 0x66, 0x44, 0x25, 0x6d, 0xac, 0x8a, 0x17, 0xd0, 0xfb, 0x70, 0x3d, 0x75, 0x74,
-	0x87, 0x6e, 0xeb, 0x9d, 0xce, 0x58, 0x6f, 0xad, 0x0c, 0x67, 0xe2, 0xd4, 0x0f, 0x2f, 0xa0, 0x63,
-	0x55, 0x16, 0xa6, 0x8c, 0xc8, 0x5e, 0x8d, 0x2e, 0x96, 0x42, 0x7c, 0x62, 0xbf, 0xcc, 0xa9, 0xa2,
-	0xfb, 0x34, 0x48, 0xde, 0x76, 0x3a, 0xbd, 0xcd, 0x34, 0x7a, 0xd1, 0xe4, 0x03, 0x2f, 0xa0, 0x0f,
-	0x64, 0x2d, 0x3c, 0xd6, 0xd9, 0xa3, 0x4d, 0xdd, 0x0a, 0x52, 0x68, 0x6f, 0x4d, 0x85, 0x0b, 0x49,
-	0x7c, 0x03, 0x56, 0xf7, 0x3a, 0x1d, 0xbd, 0x89, 0x96, 0x17, 0x9e, 0xd0, 0x5f, 0x27, 0x6c, 0xe7,
-	0x9b, 0xb0, 0xde, 0xa4, 0xdd, 0xc8, 0xd7, 0xe6, 0x26, 0xf0, 0x06, 0x94, 0xb5, 0x1e, 0x0c, 0x6d,
-	0xa4, 0x34, 0xb1, 0xd5, 0xeb, 0xe3, 0x8b, 0xe2, 0xf2, 0xca, 0x72, 0xf5, 0x36, 0x47, 0xb7, 0xdc,
-	0x44, 0x57, 0xa6, 0x5b, 0xee, 0x58, 0x67, 0x84, 0x17, 0xd0, 0x11, 0x6c, 0xa4, 0x34, 0x0b, 0x28,
-	0xb9, 0x4b, 0xef, 0x47, 0xaa, 0xb7, 0x27, 0x03, 0x05, 0xd1, 0x6d, 0x28, 0xca, 0x7a, 0x15, 0xad,
-	0x4a, 0x57, 0x0c, 0x19, 0x8b, 0x8b, 0xe2, 0x43, 0x69, 0x94, 0x87, 0xe3, 0xc5, 0x98, 0xae, 0xea,
-	0xb4, 0x02, 0x51, 0x57, 0x75, 0x7a, 0x25, 0x87, 0x17, 0x1a, 0x6b, 0x7f, 0x7c, 0xbe, 0x69, 0xfc,
-	0xf5, 0xf9, 0xa6, 0xf1, 0xcf, 0xe7, 0x9b, 0xc6, 0x2f, 0xfe, 0xb5, 0xb9, 0x70, 0x52, 0xe0, 0xbf,
-	0x3a, 0xfc, 0xf2, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0x45, 0xcd, 0x6a, 0x23, 0x4b, 0x29, 0x00,
-	0x00,
+	// 2954 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x5b, 0xcd, 0x8f, 0x1c, 0x47,
+	0x15, 0xdf, 0x9e, 0xcf, 0xdd, 0x37, 0xbb, 0xb3, 0xbb, 0xbd, 0xb1, 0x3d, 0x9e, 0xc4, 0x9e, 0xd5,
+	0x4b, 0x08, 0x36, 0x38, 0x5e, 0x69, 0x43, 0x20, 0x10, 0x91, 0xe0, 0xdd, 0x75, 0x12, 0x13, 0x1b,
+	0x3b, 0xb5, 0x6b, 0x41, 0xa4, 0x28, 0x68, 0x76, 0xa6, 0x3c, 0xdb, 0xd9, 0x99, 0xee, 0x71, 0x77,
+	0x0f, 0xce, 0x72, 0x44, 0xe2, 0x92, 0x13, 0x12, 0x07, 0x02, 0x07, 0x2e, 0x88, 0x7f, 0x80, 0x0b,
+	0x82, 0x43, 0x4e, 0x1c, 0x72, 0xe1, 0x23, 0x42, 0xe2, 0x38, 0x42, 0xe6, 0xe6, 0xdc, 0xe6, 0x02,
+	0x1c, 0x90, 0x50, 0x7d, 0x74, 0xf7, 0xeb, 0x9e, 0xaf, 0x9e, 0x89, 0x1d, 0x59, 0x90, 0xcb, 0xaa,
+	0xa7, 0xde, 0xef, 0x55, 0xd5, 0xab, 0xf7, 0xea, 0xbd, 0x57, 0xaf, 0x6a, 0xc1, 0xac, 0x77, 0xad,
+	0xad, 0xbb, 0x3d, 0xee, 0xf9, 0x96, 0x63, 0x5f, 0xee, 0xba, 0x8e, 0xef, 0x98, 0xd9, 0x7a, 0xd7,
+	0xaa, 0x3e, 0xd7, 0xb2, 0xfc, 0xa3, 0xde, 0xe1, 0xe5, 0x86, 0xd3, 0xd9, 0x6a, 0x39, 0x2d, 0x67,
+	0x4b, 0xd2, 0x0e, 0x7b, 0x77, 0xe4, 0x2f, 0xf9, 0x43, 0x7e, 0x29, 0x9e, 0xea, 0xee, 0xb1, 0xed,
+	0xdc, 0x6b, 0xf3, 0x66, 0x8b, 0x77, 0xea, 0xdd, 0xef, 0x1f, 0xd6, 0x1b, 0xc7, 0xdc, 0x6e, 0x6e,
+	0x75, 0xac, 0x86, 0xeb, 0x78, 0xdc, 0xfd, 0x81, 0xd5, 0xe0, 0xde, 0x16, 0x85, 0x6c, 0xf5, 0x3c,
+	0xee, 0x6e, 0x89, 0xc1, 0xc5, 0x87, 0xee, 0xe4, 0xea, 0xac, 0x9d, 0x34, 0xda, 0x75, 0xcf, 0x93,
+	0xbd, 0xc8, 0x2f, 0xd5, 0x0d, 0xbe, 0x6f, 0x40, 0x6d, 0x97, 0xdd, 0x7d, 0xb3, 0xc7, 0xdd, 0x93,
+	0x1b, 0x27, 0x6f, 0x6a, 0xe1, 0xae, 0xd9, 0x77, 0x9c, 0x9d, 0x93, 0xfd, 0xde, 0xe1, 0xbb, 0xbc,
+	0xe1, 0x9b, 0x67, 0x21, 0xdb, 0xb3, 0x9a, 0x15, 0x63, 0xd3, 0xb8, 0xb0, 0xb4, 0x53, 0x7c, 0xd0,
+	0xaf, 0x89, 0x9f, 0x4c, 0xfc, 0x31, 0xbf, 0x00, 0x45, 0x4f, 0xa1, 0x2a, 0x19, 0x49, 0x2e, 0x3d,
+	0xe8, 0xd7, 0x82, 0x26, 0x16, 0x7c, 0x08, 0x18, 0xb7, 0x9b, 0xbe, 0xd5, 0xe1, 0x95, 0xec, 0xa6,
+	0x71, 0x21, 0xab, 0x60, 0xba, 0x89, 0x05, 0x1f, 0xb8, 0x07, 0xd5, 0x5d, 0xd6, 0x1d, 0x37, 0x8d,
+	0x67, 0xa1, 0x1c, 0x0a, 0x64, 0x3b, 0x4d, 0xee, 0x55, 0x8c, 0xcd, 0xec, 0x85, 0x25, 0x96, 0x68,
+	0xc5, 0x0f, 0xf2, 0xb0, 0xbe, 0xeb, 0xf2, 0xba, 0xcf, 0x83, 0x7e, 0x18, 0xbf, 0x6b, 0xbe, 0x04,
+	0xcb, 0x81, 0xea, 0xfc, 0x93, 0x2e, 0x97, 0xd2, 0x64, 0x77, 0xce, 0x0c, 0xfa, 0xb5, 0x8d, 0x3b,
+	0x8e, 0xdb, 0xf9, 0x06, 0x52, 0x2a, 0xb2, 0x18, 0xd8, 0x7c, 0x1a, 0x72, 0x76, 0xbd, 0xc3, 0xb5,
+	0x8c, 0xab, 0x83, 0x7e, 0xad, 0xa4, 0x98, 0x44, 0x2b, 0x32, 0x49, 0x34, 0x9f, 0x85, 0xbc, 0x6f,
+	0xf9, 0x6d, 0x25, 0xe2, 0xd2, 0xce, 0xda, 0xa0, 0x5f, 0x5b, 0x56, 0x28, 0xd9, 0x8c, 0x4c, 0x91,
+	0xcd, 0x17, 0x00, 0x2c, 0x4f, 0x7e, 0x5a, 0x9d, 0x56, 0x25, 0xb7, 0x69, 0x5c, 0x58, 0xdc, 0x39,
+	0x35, 0xe8, 0xd7, 0xd6, 0x15, 0x38, 0xa2, 0x21, 0x23, 0x40, 0xf3, 0xeb, 0x50, 0x74, 0xba, 0x62,
+	0x46, 0x5e, 0x25, 0xbf, 0x99, 0xbd, 0x50, 0xda, 0x2e, 0x5d, 0xae, 0x77, 0xad, 0xcb, 0x37, 0x65,
+	0xdb, 0x8e, 0x39, 0xe8, 0xd7, 0xca, 0xaa, 0x03, 0x8d, 0x42, 0x16, 0xe0, 0x05, 0x6b, 0xdd, 0xf6,
+	0xee, 0x71, 0xd7, 0xab, 0x14, 0x26, 0xb2, 0x6a, 0x14, 0xb2, 0x00, 0x6f, 0x5e, 0x8a, 0x14, 0x5c,
+	0x94, 0x62, 0x11, 0xb4, 0x26, 0x60, 0xa4, 0xe7, 0x8b, 0x50, 0x68, 0x38, 0x3d, 0xd7, 0xe3, 0x95,
+	0x45, 0x09, 0x5e, 0x1f, 0xf4, 0x6b, 0x2b, 0x0a, 0xac, 0xda, 0x91, 0x69, 0x80, 0xb9, 0x0d, 0x4b,
+	0xa1, 0xde, 0x2a, 0x4b, 0x12, 0xfd, 0xc4, 0xa0, 0x5f, 0x5b, 0x53, 0xe8, 0x90, 0x84, 0x2c, 0x82,
+	0x09, 0x1e, 0x9b, 0xf3, 0x66, 0xe3, 0x88, 0x37, 0x8e, 0x2b, 0x20, 0x17, 0x8e, 0xf0, 0x84, 0x24,
+	0x64, 0x11, 0x4c, 0x08, 0xc0, 0xdf, 0xeb, 0xb6, 0xeb, 0x96, 0x5d, 0x29, 0x25, 0x05, 0xd0, 0x04,
+	0x64, 0x01, 0x44, 0x28, 0xda, 0xf3, 0xeb, 0x6e, 0x65, 0x59, 0x5a, 0x07, 0x51, 0xb4, 0x68, 0x45,
+	0x26, 0x89, 0xe6, 0x8b, 0x50, 0x6a, 0x48, 0xfb, 0x72, 0xa5, 0x51, 0xac, 0xc8, 0x6e, 0x4f, 0x0f,
+	0xfa, 0x35, 0x53, 0x8b, 0x1a, 0x11, 0x91, 0x51, 0x28, 0xfe, 0x27, 0x07, 0xeb, 0xd4, 0xb8, 0x19,
+	0xef, 0xb6, 0x4f, 0xcc, 0x73, 0x90, 0x09, 0xb7, 0xd7, 0xca, 0xa0, 0x5f, 0x5b, 0xd2, 0x86, 0xd0,
+	0x44, 0x96, 0xb1, 0x9a, 0x43, 0x96, 0x9b, 0x99, 0xc5, 0x72, 0x3f, 0x37, 0xca, 0x47, 0x6d, 0x94,
+	0x81, 0x6f, 0x80, 0x49, 0xbe, 0x21, 0x66, 0xb9, 0xa5, 0x99, 0x2d, 0x77, 0x39, 0xbd, 0xe5, 0xae,
+	0x4c, 0xb0, 0x5c, 0xdc, 0x83, 0x53, 0x81, 0xf9, 0xbd, 0x61, 0xd9, 0xcd, 0xc8, 0x04, 0xbf, 0x0c,
+	0x8b, 0xc7, 0x96, 0xdd, 0x6c, 0x5b, 0x9e, 0xaf, 0xbc, 0x2a, 0xed, 0x41, 0x50, 0x90, 0x85, 0x00,
+	0xfc, 0xa3, 0x01, 0x6b, 0x32, 0x60, 0x3c, 0x34, 0xff, 0x7a, 0x29, 0x19, 0x46, 0x52, 0x2a, 0x34,
+	0x3b, 0x4d, 0xa1, 0x4f, 0x43, 0xae, 0x5b, 0x6f, 0x71, 0x69, 0xd0, 0xb1, 0x55, 0x11, 0xad, 0xc8,
+	0x24, 0x11, 0xff, 0x64, 0x80, 0x99, 0x90, 0x47, 0xac, 0xc9, 0xb7, 0x61, 0x29, 0x98, 0xa4, 0x0a,
+	0x35, 0xa5, 0xed, 0xd3, 0xd2, 0x44, 0x87, 0x76, 0x30, 0xd5, 0x65, 0xc8, 0x82, 0x2c, 0x62, 0x97,
+	0x2e, 0xa3, 0xe7, 0xba, 0xdc, 0xf6, 0xe5, 0x74, 0xd4, 0x16, 0xa6, 0x2e, 0x23, 0x22, 0x0a, 0x97,
+	0x11, 0xfd, 0x12, 0x96, 0xe3, 0x3b, 0x7e, 0xbd, 0x2d, 0xf9, 0x54, 0xf0, 0x24, 0xa3, 0x85, 0x24,
+	0x64, 0x11, 0x0c, 0xff, 0x6d, 0x04, 0x11, 0xf0, 0x75, 0xa7, 0xc3, 0xbf, 0xeb, 0xb8, 0xc7, 0x42,
+	0x43, 0x81, 0xa1, 0x1a, 0x93, 0x0c, 0xf5, 0x12, 0x14, 0x65, 0x7a, 0x60, 0x35, 0x87, 0x35, 0xa1,
+	0x09, 0xc8, 0x02, 0x88, 0xb9, 0x05, 0x8b, 0x9e, 0xdf, 0x6b, 0x72, 0xdb, 0xf7, 0x2a, 0x59, 0x69,
+	0x36, 0x1b, 0x83, 0x7e, 0x6d, 0x35, 0x30, 0x3c, 0x45, 0x41, 0x16, 0x82, 0x84, 0x34, 0xd1, 0x9a,
+	0xe6, 0x24, 0xc7, 0xd4, 0xb5, 0xbb, 0x14, 0x25, 0x0f, 0x79, 0x29, 0x3f, 0xdd, 0x07, 0x3a, 0x73,
+	0x88, 0x72, 0x88, 0xeb, 0xb0, 0x91, 0x14, 0x5d, 0x28, 0xf3, 0x05, 0x80, 0x23, 0xa7, 0xc3, 0xef,
+	0x39, 0xee, 0x71, 0xe8, 0x6b, 0x89, 0x7f, 0x8b, 0x68, 0xc8, 0x08, 0x10, 0x77, 0xe1, 0xb4, 0xb4,
+	0x0c, 0xc6, 0x1b, 0x4e, 0xa7, 0xc3, 0xed, 0xe6, 0xad, 0x7a, 0x97, 0xbb, 0x62, 0x35, 0x2f, 0x42,
+	0x41, 0x64, 0x63, 0x61, 0x67, 0xc4, 0x08, 0x55, 0x3b, 0x32, 0x0d, 0xc0, 0x7f, 0x66, 0x60, 0x99,
+	0xda, 0x8c, 0xf9, 0x15, 0x80, 0x40, 0xbc, 0x90, 0x3f, 0xb6, 0x0c, 0x9a, 0x84, 0x8c, 0xe0, 0xfe,
+	0x57, 0xe3, 0xc0, 0xb3, 0x90, 0xf7, 0x1a, 0x8e, 0xcb, 0x2b, 0x05, 0x29, 0x0f, 0x99, 0x99, 0xe7,
+	0x34, 0x5c, 0x31, 0x33, 0x49, 0x8e, 0xbb, 0xd0, 0x62, 0x2a, 0x17, 0x8a, 0x3f, 0x31, 0xa0, 0x32,
+	0x52, 0x7f, 0xc2, 0x24, 0x5e, 0x81, 0xc5, 0x40, 0xd3, 0x7a, 0x7b, 0x97, 0xe5, 0xa4, 0x25, 0x44,
+	0xa6, 0x9e, 0xc4, 0x98, 0x03, 0x24, 0xb2, 0x90, 0xc9, 0x7c, 0x1e, 0x72, 0xfc, 0xbd, 0x7a, 0xa7,
+	0x92, 0x19, 0xc9, 0x4c, 0x36, 0x98, 0x40, 0x21, 0x93, 0x60, 0xfc, 0xd8, 0x80, 0xf2, 0x9e, 0x13,
+	0x33, 0x87, 0x17, 0x46, 0x98, 0x03, 0x59, 0xf3, 0x88, 0x16, 0xb7, 0x87, 0xc8, 0x02, 0x33, 0x53,
+	0x2c, 0x50, 0xec, 0x53, 0xf1, 0x25, 0xb7, 0xbf, 0x32, 0x00, 0x22, 0x5a, 0x40, 0x41, 0x16, 0x82,
+	0xc4, 0x9e, 0x0b, 0x82, 0xb3, 0xda, 0xa5, 0x93, 0xe2, 0x31, 0xde, 0x37, 0x60, 0x65, 0xcf, 0xa1,
+	0xbe, 0x66, 0xbe, 0xed, 0xf6, 0x48, 0x45, 0x7a, 0x19, 0x0a, 0x6a, 0xbe, 0x52, 0xa2, 0xd2, 0xf6,
+	0x86, 0xd4, 0x57, 0x5c, 0x15, 0x74, 0x40, 0x05, 0x46, 0xa6, 0xb9, 0xf0, 0x06, 0x3c, 0x21, 0x4d,
+	0xe9, 0x8a, 0xfc, 0x29, 0x0c, 0xca, 0x6d, 0xce, 0x2f, 0x2a, 0xfe, 0xcc, 0x80, 0xf2, 0x6d, 0x8f,
+	0xbb, 0xaa, 0x3b, 0x69, 0x07, 0x54, 0x24, 0x23, 0x8d, 0x48, 0x33, 0x2c, 0xd7, 0xc5, 0x50, 0x7a,
+	0xe5, 0xa7, 0x27, 0x08, 0xfa, 0x9b, 0x0c, 0xac, 0x5f, 0x69, 0xb7, 0x13, 0x93, 0x9b, 0xd3, 0x48,
+	0x45, 0x3c, 0x71, 0x6c, 0x9f, 0xdb, 0x23, 0x22, 0xbb, 0x26, 0x88, 0x78, 0xa2, 0xbe, 0xc4, 0x2c,
+	0x95, 0x5b, 0x18, 0x9e, 0xa5, 0x6a, 0x47, 0xa6, 0x01, 0x22, 0xa2, 0xba, 0x56, 0xeb, 0xc8, 0x27,
+	0x3a, 0x8d, 0x25, 0xe1, 0x84, 0x88, 0x8c, 0x42, 0xcd, 0x7d, 0x58, 0xa9, 0xb7, 0xdb, 0x62, 0x5d,
+	0x34, 0x6f, 0x9e, 0xd8, 0x43, 0x5c, 0xea, 0x9d, 0xca, 0xa0, 0x5f, 0x7b, 0x42, 0x2f, 0x13, 0xe5,
+	0x41, 0x16, 0xef, 0x03, 0x3d, 0x1d, 0x28, 0xe2, 0xd6, 0x21, 0xdc, 0xcc, 0x5b, 0x50, 0x0e, 0xd4,
+	0xee, 0xca, 0xe6, 0x58, 0x2e, 0x31, 0xb4, 0xd0, 0x3b, 0x67, 0x07, 0xfd, 0xda, 0xa9, 0xb8, 0xed,
+	0x28, 0x3e, 0x64, 0x89, 0x8e, 0xf0, 0x10, 0xce, 0xca, 0x41, 0x83, 0x9d, 0x77, 0xcd, 0xde, 0x15,
+	0x81, 0x59, 0x8d, 0x7b, 0x75, 0xaa, 0x7b, 0x9b, 0x30, 0x52, 0xc8, 0x8a, 0x1f, 0x67, 0xa0, 0xa2,
+	0x02, 0xea, 0x2d, 0xb7, 0xde, 0xf0, 0xad, 0x06, 0xdf, 0xef, 0x75, 0x3a, 0x75, 0xe1, 0x52, 0xd3,
+	0xa7, 0x14, 0xce, 0x3d, 0x9b, 0x98, 0x29, 0x0d, 0x07, 0x8a, 0x20, 0xc2, 0x81, 0xfa, 0xa2, 0x09,
+	0x48, 0x76, 0x7a, 0x02, 0xb2, 0x0b, 0x85, 0xae, 0x27, 0xa3, 0xa1, 0x08, 0x55, 0xe5, 0xed, 0x8a,
+	0x12, 0x31, 0x3e, 0xd3, 0x83, 0x93, 0x2e, 0xa7, 0xa6, 0xa4, 0x38, 0x90, 0x69, 0x56, 0x11, 0x58,
+	0x2d, 0xdb, 0x77, 0x9d, 0x66, 0xaf, 0x21, 0x6d, 0x2f, 0x2f, 0xc7, 0x25, 0x81, 0x95, 0x52, 0x91,
+	0xc5, 0xc0, 0x22, 0x2c, 0xc9, 0xa9, 0xcb, 0x75, 0x28, 0x24, 0x43, 0x79, 0x48, 0x42, 0x16, 0xc1,
+	0xf0, 0x08, 0xaa, 0x63, 0x96, 0x54, 0xe5, 0x9d, 0xeb, 0x5d, 0xdd, 0xee, 0xa9, 0xf6, 0x70, 0xc3,
+	0x3d, 0x35, 0xe8, 0xd7, 0x2a, 0x5a, 0x88, 0x24, 0x04, 0xd9, 0x30, 0x1b, 0xbe, 0x6f, 0xc0, 0x19,
+	0x69, 0x22, 0x23, 0x94, 0xf7, 0x10, 0xc7, 0x09, 0xf3, 0xec, 0xcc, 0xa4, 0x3c, 0xfb, 0x77, 0x59,
+	0xd8, 0x48, 0xcc, 0x43, 0xba, 0x96, 0x87, 0x3c, 0x91, 0xe9, 0x95, 0x9a, 0xa4, 0xc2, 0xb3, 0xb3,
+	0x28, 0x7c, 0x0f, 0x56, 0x03, 0xff, 0x66, 0xf7, 0x3a, 0x87, 0x2a, 0x44, 0x0a, 0xa9, 0xab, 0x83,
+	0x7e, 0xed, 0x74, 0xdc, 0x1b, 0x6a, 0x00, 0xb2, 0x24, 0x0b, 0x31, 0xdc, 0xfc, 0xfc, 0x86, 0x3b,
+	0x87, 0xed, 0x09, 0x3f, 0xae, 0xce, 0x46, 0x92, 0xa9, 0x98, 0xf4, 0xe3, 0x11, 0x0d, 0x19, 0x01,
+	0xe2, 0x2f, 0xf2, 0x50, 0x0a, 0x22, 0xe5, 0x2d, 0x97, 0x7f, 0x9e, 0xc2, 0x8e, 0x29, 0x65, 0x14,
+	0xe7, 0x2f, 0x65, 0x2c, 0xcd, 0x72, 0xf2, 0x85, 0x69, 0x27, 0xdf, 0x97, 0x61, 0x25, 0xaa, 0x8b,
+	0x0a, 0x55, 0xab, 0xea, 0x17, 0x09, 0x68, 0x31, 0x32, 0xb2, 0x38, 0x3c, 0xdc, 0x48, 0xcb, 0x93,
+	0x36, 0x52, 0x9a, 0xa2, 0x43, 0x3c, 0x71, 0x2f, 0xcf, 0x5c, 0xfb, 0x58, 0x9d, 0x5a, 0xfb, 0xc0,
+	0x3f, 0x1b, 0x70, 0x36, 0xb1, 0x75, 0xf6, 0xb8, 0x5f, 0xb7, 0xda, 0xd2, 0xbd, 0xec, 0x0d, 0x9f,
+	0xe3, 0xd7, 0x62, 0xe7, 0xf8, 0x5b, 0x2e, 0x7f, 0xdc, 0x4e, 0xf0, 0xc7, 0x3a, 0xb2, 0xdf, 0x18,
+	0xe5, 0xb8, 0xd3, 0x1f, 0x3d, 0xd3, 0xf9, 0xe5, 0x4f, 0x0c, 0x78, 0x72, 0xdc, 0x68, 0x22, 0x20,
+	0xbd, 0x03, 0xab, 0x09, 0x47, 0xab, 0x97, 0x71, 0xa4, 0xd3, 0x92, 0xa9, 0x05, 0xf1, 0x85, 0x09,
+	0x56, 0x64, 0xc9, 0xce, 0x3e, 0xe3, 0xa5, 0xfd, 0xb9, 0x01, 0x67, 0x76, 0x1d, 0xe1, 0xd1, 0xdb,
+	0xed, 0x28, 0xf7, 0xbf, 0xb5, 0xff, 0xb0, 0x43, 0x62, 0xac, 0xd4, 0x91, 0x49, 0x55, 0xea, 0xc0,
+	0xbf, 0x66, 0xa1, 0xac, 0x33, 0x83, 0xa0, 0xce, 0xf0, 0x08, 0xaa, 0x36, 0xdf, 0x4b, 0x16, 0x61,
+	0x4a, 0xdb, 0xcf, 0x48, 0x4d, 0xc6, 0x87, 0x0e, 0xf7, 0x87, 0x77, 0xcd, 0x96, 0x6d, 0xa9, 0x36,
+	0x89, 0xd7, 0x6b, 0xb5, 0xb8, 0xe7, 0x93, 0x72, 0x0d, 0xd1, 0x24, 0x21, 0x22, 0xa3, 0x50, 0xb1,
+	0x5a, 0x5d, 0x31, 0xc6, 0xb1, 0x65, 0x37, 0x87, 0x43, 0x59, 0x48, 0x42, 0x16, 0xc1, 0xaa, 0xbf,
+	0x56, 0x75, 0xc8, 0xd8, 0x1c, 0xe7, 0x3d, 0xa7, 0x84, 0x55, 0x88, 0xcc, 0x50, 0x15, 0x42, 0x34,
+	0x8f, 0xae, 0x42, 0x64, 0xd3, 0x55, 0x21, 0x7c, 0x58, 0x8b, 0xad, 0xac, 0xd8, 0x53, 0x97, 0xa0,
+	0x28, 0x05, 0x09, 0xe7, 0x48, 0x34, 0xa6, 0x09, 0xc8, 0x02, 0x48, 0x7c, 0x75, 0x32, 0xa9, 0x56,
+	0x07, 0x3f, 0x32, 0xf4, 0x81, 0x55, 0x27, 0xfc, 0xfa, 0x68, 0x30, 0x93, 0xfb, 0x98, 0xcd, 0xae,
+	0x02, 0x67, 0x93, 0x9d, 0xe0, 0x6c, 0xe2, 0xa2, 0xe4, 0xd2, 0x89, 0xf2, 0xa1, 0xa1, 0x4f, 0x57,
+	0x71, 0x51, 0xc4, 0x3a, 0x7e, 0x15, 0xf2, 0x12, 0x37, 0xe6, 0x88, 0x43, 0xf4, 0x28, 0x61, 0xc8,
+	0x14, 0xfc, 0x33, 0xf6, 0x39, 0x3f, 0xa4, 0xf3, 0x0f, 0x4d, 0x56, 0x28, 0xe3, 0xd1, 0xdb, 0xc1,
+	0x83, 0xa0, 0x06, 0x96, 0x1c, 0x5c, 0x2c, 0xdf, 0x6b, 0x00, 0x2a, 0x01, 0xf2, 0x79, 0x27, 0x08,
+	0x8e, 0xab, 0x72, 0x0d, 0x0f, 0x44, 0xf3, 0x35, 0xd1, 0x4c, 0x97, 0x65, 0x33, 0x42, 0x23, 0x23,
+	0xac, 0xa9, 0x6f, 0x48, 0xd5, 0x26, 0xcb, 0x4e, 0xde, 0x64, 0x09, 0x37, 0x92, 0x4b, 0xed, 0x46,
+	0xf0, 0xc7, 0x06, 0x40, 0x34, 0xf3, 0x74, 0xce, 0x93, 0xc1, 0x4a, 0xe8, 0x08, 0xe4, 0x32, 0xa8,
+	0x7a, 0x9e, 0x19, 0xaf, 0xf5, 0xcb, 0x95, 0x20, 0xd9, 0x53, 0x8c, 0x05, 0x59, 0xbc, 0x0b, 0xfc,
+	0x69, 0x0e, 0x56, 0x62, 0xac, 0xff, 0xa7, 0x97, 0x7c, 0xaf, 0xc3, 0xb2, 0x2c, 0xbd, 0x04, 0xfc,
+	0x23, 0x6e, 0xfa, 0x88, 0x8c, 0x14, 0x8a, 0x2c, 0xc6, 0x29, 0xe6, 0xde, 0xe2, 0x61, 0x3f, 0x45,
+	0x19, 0x4f, 0xc9, 0xdc, 0x23, 0x1a, 0x32, 0x02, 0x8c, 0xfb, 0xeb, 0xc5, 0x99, 0x93, 0xcf, 0xa5,
+	0xe9, 0x17, 0x6f, 0x17, 0xa1, 0xe0, 0x72, 0xaf, 0xd7, 0xf6, 0x65, 0x4e, 0x9e, 0xa5, 0xee, 0x54,
+	0xb5, 0x23, 0xd3, 0x00, 0xfc, 0xa5, 0x01, 0x05, 0x25, 0xb5, 0xe0, 0xea, 0xba, 0xfc, 0x8e, 0xf5,
+	0xde, 0xb0, 0x13, 0x56, 0xed, 0xe2, 0x94, 0x27, 0x3f, 0x66, 0x2c, 0xa1, 0x89, 0xb3, 0xad, 0xa7,
+	0x7f, 0x08, 0x2d, 0xab, 0x18, 0x45, 0xcf, 0xb6, 0x84, 0x2a, 0xce, 0xb6, 0xf4, 0xe7, 0x27, 0x06,
+	0x2c, 0x85, 0xce, 0x73, 0x46, 0xdf, 0xf4, 0x78, 0x78, 0x00, 0x59, 0x42, 0x74, 0xad, 0x96, 0x15,
+	0x94, 0x71, 0x68, 0x09, 0x51, 0xb6, 0x23, 0xd3, 0x00, 0x7c, 0x3f, 0x03, 0xb0, 0xe7, 0x84, 0x99,
+	0xd6, 0x6c, 0xe2, 0x3e, 0xc6, 0xa5, 0xea, 0x78, 0x98, 0xc8, 0xa7, 0x0b, 0x13, 0xaa, 0x86, 0x4f,
+	0x6f, 0x74, 0x1f, 0xc3, 0x6b, 0x09, 0xba, 0x30, 0xc6, 0x1c, 0x35, 0xfc, 0xdf, 0x1b, 0xfa, 0x5c,
+	0x25, 0x95, 0x9e, 0xac, 0xe4, 0xbf, 0x0c, 0x2b, 0x72, 0x3d, 0x54, 0x11, 0x34, 0x94, 0x99, 0x38,
+	0xfd, 0x18, 0x19, 0x59, 0x1c, 0x3e, 0x8b, 0xe4, 0x31, 0x0d, 0x65, 0xd3, 0x69, 0xe8, 0x6f, 0x19,
+	0x7d, 0x4c, 0x1b, 0x31, 0xf9, 0xf9, 0x53, 0x4a, 0xb2, 0x67, 0x93, 0x33, 0xd0, 0xb5, 0xa3, 0xf0,
+	0x3b, 0xf5, 0xee, 0xdd, 0x82, 0xc5, 0x16, 0xf7, 0x15, 0x54, 0x6d, 0x5d, 0xa2, 0xd7, 0x80, 0x82,
+	0x2c, 0x04, 0xc5, 0xbd, 0x74, 0x3e, 0x9d, 0x97, 0x7e, 0x1d, 0x4a, 0x64, 0xf9, 0x75, 0x64, 0x19,
+	0xca, 0x5d, 0x88, 0xc1, 0x4a, 0xb4, 0xae, 0x6f, 0x53, 0x56, 0xfc, 0x43, 0x1e, 0x36, 0x6e, 0x7b,
+	0xdc, 0x25, 0xeb, 0xfa, 0x69, 0xae, 0x3c, 0x9e, 0x86, 0x1c, 0xc9, 0xcf, 0x86, 0xde, 0x51, 0x48,
+	0x62, 0xe8, 0x2d, 0xb3, 0xd3, 0x8e, 0x75, 0xda, 0xf3, 0xe7, 0x52, 0x5d, 0x9e, 0xdc, 0xb5, 0x3a,
+	0x22, 0x2b, 0x55, 0x2b, 0x48, 0xcc, 0x4f, 0xb5, 0x23, 0xd3, 0x00, 0x72, 0xcf, 0x52, 0x98, 0x76,
+	0xcf, 0x22, 0xa0, 0xaa, 0xd7, 0x62, 0xb2, 0x57, 0x27, 0xe8, 0x55, 0x7d, 0x24, 0xaf, 0x64, 0x16,
+	0xd3, 0x5f, 0xc9, 0x5c, 0x82, 0xa2, 0x5b, 0x57, 0xa3, 0x2c, 0xc9, 0x51, 0x88, 0xa0, 0x9a, 0x80,
+	0x2c, 0x80, 0x08, 0xbd, 0x90, 0xdb, 0x1b, 0x48, 0xa6, 0x02, 0xf4, 0x96, 0x86, 0x00, 0xc5, 0x20,
+	0x3d, 0x3d, 0x48, 0x29, 0x39, 0x48, 0x2f, 0x1c, 0x44, 0x7f, 0xc5, 0x4d, 0x72, 0x79, 0xe6, 0xc4,
+	0x61, 0x25, 0xfd, 0x8b, 0x9d, 0xf2, 0xa4, 0xe2, 0x59, 0x94, 0x5d, 0xac, 0x4e, 0xcb, 0x2e, 0x7e,
+	0x65, 0xc0, 0xb9, 0xd1, 0xfe, 0xe1, 0xba, 0xe5, 0xf9, 0x8f, 0xa0, 0x70, 0x34, 0x97, 0x17, 0xfb,
+	0x6d, 0x0e, 0x6a, 0x93, 0x66, 0x29, 0x3c, 0x59, 0xe2, 0x70, 0x56, 0x98, 0xf3, 0x70, 0x56, 0x4c,
+	0x75, 0x38, 0x33, 0x39, 0x80, 0x72, 0x04, 0xf2, 0xf5, 0x13, 0x48, 0x3f, 0x72, 0x39, 0x48, 0xfe,
+	0x27, 0xcd, 0xf3, 0xf2, 0x4d, 0x9b, 0xab, 0x26, 0x6a, 0x7e, 0x51, 0x5f, 0xc8, 0x48, 0xc7, 0xd5,
+	0x0f, 0x33, 0xb0, 0x14, 0x32, 0x7c, 0xea, 0x58, 0x33, 0x8f, 0xfb, 0x7e, 0x2e, 0xf1, 0x6e, 0x6a,
+	0x4c, 0xd9, 0x3f, 0xa8, 0x20, 0xbf, 0x08, 0x25, 0x9f, 0xd7, 0x1b, 0x47, 0x7a, 0x90, 0x5c, 0xf2,
+	0x99, 0x23, 0x21, 0x22, 0xa3, 0x50, 0x61, 0x67, 0x9e, 0x5f, 0xf7, 0x7b, 0x9e, 0xae, 0x00, 0x11,
+	0x3b, 0x53, 0xed, 0xc8, 0x34, 0x40, 0x40, 0x9b, 0x8e, 0xcc, 0xf1, 0x0a, 0x49, 0xa8, 0x6a, 0x47,
+	0xa6, 0x01, 0xf8, 0x23, 0x03, 0x56, 0x6e, 0x77, 0xdb, 0x4e, 0xbd, 0xf9, 0xaa, 0xd5, 0xe6, 0xba,
+	0x36, 0x46, 0xde, 0x9a, 0x11, 0x23, 0x55, 0x87, 0xa4, 0x5c, 0xf0, 0x76, 0xf7, 0x8e, 0xd5, 0x56,
+	0x8b, 0xb4, 0x4c, 0x41, 0xa2, 0x15, 0x99, 0x24, 0x9a, 0x5f, 0x0c, 0x77, 0xc6, 0x90, 0x43, 0x56,
+	0xb0, 0xe0, 0x2d, 0xcf, 0x3b, 0xb0, 0x4a, 0xe7, 0x20, 0xac, 0xf5, 0x22, 0x14, 0x04, 0x66, 0xd4,
+	0xae, 0x52, 0xed, 0xc8, 0x34, 0xc0, 0xdc, 0x84, 0x6c, 0xcf, 0x6d, 0x6b, 0x7d, 0x95, 0x07, 0xfd,
+	0x1a, 0xe8, 0xdd, 0xe7, 0xb6, 0x91, 0x09, 0xd2, 0x97, 0xbe, 0x35, 0x74, 0x45, 0x76, 0x20, 0x84,
+	0x28, 0x41, 0x71, 0xef, 0xea, 0xab, 0x57, 0x6e, 0x5f, 0x3f, 0x58, 0x5b, 0x30, 0xcb, 0x00, 0xbb,
+	0x37, 0xaf, 0x5f, 0xbf, 0xba, 0x7b, 0x70, 0xed, 0xe6, 0x77, 0xd6, 0x0c, 0x73, 0x19, 0x16, 0x6f,
+	0x5c, 0xdb, 0x3f, 0xb8, 0xf2, 0xc6, 0xd5, 0xfd, 0xb5, 0xcc, 0xf6, 0xbf, 0x00, 0x16, 0x83, 0x7c,
+	0xc8, 0x7c, 0x1b, 0xd6, 0x5f, 0xe3, 0x7e, 0xfc, 0x45, 0xb5, 0xa9, 0x8b, 0x7d, 0x93, 0x5f, 0x7d,
+	0x57, 0x6b, 0x1a, 0x35, 0xee, 0x3d, 0x36, 0x2e, 0x98, 0x3b, 0x41, 0xb5, 0x32, 0x1c, 0xef, 0x34,
+	0xa9, 0x23, 0x92, 0x5c, 0xb2, 0x3a, 0xe6, 0xe1, 0x1c, 0x2e, 0x98, 0xdf, 0x94, 0x2f, 0x62, 0xa3,
+	0xb7, 0x77, 0x6f, 0x88, 0xe8, 0x08, 0x12, 0x7e, 0xb5, 0xd3, 0xf5, 0x4f, 0xaa, 0xd5, 0x18, 0x6b,
+	0xec, 0xd9, 0x22, 0x2e, 0x98, 0x57, 0xe4, 0x39, 0x3b, 0x62, 0x37, 0x4f, 0x45, 0x3b, 0x97, 0x4e,
+	0xe0, 0xcc, 0xa8, 0x66, 0xd5, 0xc5, 0xd7, 0xc4, 0x29, 0x20, 0xe4, 0x1f, 0x95, 0x52, 0x56, 0x47,
+	0xd4, 0x02, 0x70, 0xc1, 0x7c, 0x0b, 0x4e, 0x8d, 0xbc, 0xc6, 0x35, 0xcf, 0xd1, 0x6a, 0xea, 0x50,
+	0xfd, 0x3e, 0x58, 0xd9, 0xb1, 0x37, 0xc0, 0xb8, 0x60, 0x1e, 0x04, 0x35, 0x9b, 0x11, 0xd7, 0xa5,
+	0x4f, 0x11, 0xdf, 0x34, 0xdc, 0xf9, 0xd8, 0x9a, 0xbc, 0xec, 0xd5, 0x7c, 0x8d, 0xfb, 0xc9, 0xd9,
+	0x4e, 0xee, 0xef, 0xfc, 0xa8, 0xfe, 0xa2, 0xdb, 0x15, 0x5c, 0x30, 0xdf, 0xd6, 0xc5, 0xad, 0xa1,
+	0xdb, 0x03, 0xf3, 0x7c, 0xd4, 0xf3, 0xa8, 0x8b, 0x8c, 0xea, 0xe6, 0x44, 0x7a, 0x60, 0x1f, 0xab,
+	0x57, 0x9a, 0x4d, 0x5a, 0xa8, 0xd7, 0x13, 0x1e, 0x53, 0xc3, 0xaf, 0x12, 0xdb, 0xc1, 0x05, 0xf3,
+	0x15, 0x58, 0xdf, 0xe3, 0xed, 0xc8, 0x18, 0x67, 0xee, 0xe0, 0x25, 0x28, 0x91, 0xe2, 0xad, 0x36,
+	0x8f, 0x78, 0xa1, 0xbc, 0x7a, 0x6a, 0xb8, 0x51, 0x4d, 0xfe, 0x86, 0x36, 0x6e, 0x5a, 0xb7, 0x34,
+	0xcf, 0x26, 0x62, 0x4b, 0x54, 0x9a, 0xad, 0x3e, 0x39, 0x8e, 0xa4, 0xba, 0xdb, 0x87, 0x8d, 0x11,
+	0xaf, 0xd9, 0x4c, 0xc2, 0x35, 0xf4, 0x4e, 0xb1, 0x7a, 0x6e, 0x3c, 0x31, 0xde, 0x69, 0xbc, 0x3c,
+	0x68, 0x26, 0xa7, 0x42, 0xab, 0x96, 0xb4, 0xd3, 0x11, 0x55, 0x45, 0x5c, 0x30, 0x2f, 0x40, 0x51,
+	0x9f, 0xac, 0xcd, 0x55, 0xbd, 0xa1, 0xc2, 0x19, 0xc5, 0xd7, 0xf7, 0x1d, 0x6d, 0xe9, 0x37, 0x86,
+	0x03, 0x2d, 0xb5, 0x9f, 0x51, 0x07, 0x36, 0x6a, 0x3f, 0xa3, 0xcf, 0x44, 0xb8, 0x60, 0xbe, 0x0b,
+	0x4f, 0x8d, 0xeb, 0x5f, 0x04, 0x72, 0x13, 0xa7, 0x46, 0xfa, 0xbb, 0xd5, 0x67, 0xd2, 0x64, 0x03,
+	0xb8, 0xb0, 0xb3, 0xf6, 0xd1, 0xfd, 0xf3, 0xc6, 0x5f, 0xee, 0x9f, 0x37, 0xfe, 0x7e, 0xff, 0xbc,
+	0xf1, 0xc1, 0x3f, 0xce, 0x2f, 0x1c, 0x16, 0xe4, 0x7f, 0xd9, 0x3c, 0xff, 0xdf, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x3f, 0x10, 0x8e, 0x3f, 0x3b, 0x34, 0x00, 0x00,
 }

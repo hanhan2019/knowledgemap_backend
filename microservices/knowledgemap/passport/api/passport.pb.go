@@ -43,7 +43,7 @@ type SessionTokenReq struct {
 	// string uid = 1;
 	// string stoken = 2;
 	// Identify type = 3 ;
-	Cookie string `protobuf:"bytes,1,opt,name=cookie,proto3" json:"cookie,omitempty"`
+	Cookie string `protobuf:"bytes,1,opt,name=cookie,proto3" json:"cookie"`
 }
 
 func (m *SessionTokenReq) Reset()                    { *m = SessionTokenReq{} }
@@ -59,9 +59,9 @@ func (m *SessionTokenReq) GetCookie() string {
 }
 
 type PassportUserReply struct {
-	User    *api1.UserReply `protobuf:"bytes,1,opt,name=user" json:"user,omitempty"`
-	Token   string          `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
-	Expires int64           `protobuf:"varint,3,opt,name=expires,proto3" json:"expires,omitempty"`
+	User    *api1.UserReply `protobuf:"bytes,1,opt,name=user" json:"user"`
+	Token   string          `protobuf:"bytes,2,opt,name=token,proto3" json:"token"`
+	Expires int64           `protobuf:"varint,3,opt,name=expires,proto3" json:"expires"`
 }
 
 func (m *PassportUserReply) Reset()                    { *m = PassportUserReply{} }
@@ -91,16 +91,16 @@ func (m *PassportUserReply) GetExpires() int64 {
 }
 
 type RegisterReq struct {
-	Usertype api1.Identify `protobuf:"varint,1,opt,name=usertype,proto3,enum=api.Identify" json:"usertype,omitempty" form:"usertype"`
-	Username string        `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty" form:"username"`
-	Major    string        `protobuf:"bytes,3,opt,name=major,proto3" json:"major,omitempty" form:"major"`
-	Sex      string        `protobuf:"bytes,4,opt,name=sex,proto3" json:"sex,omitempty" form:"sex"`
+	Usertype api1.Identify `protobuf:"varint,1,opt,name=usertype,proto3,enum=api.Identify" json:"usertype" form:"usertype"`
+	Username string        `protobuf:"bytes,2,opt,name=username,proto3" json:"username" form:"username"`
+	Major    string        `protobuf:"bytes,3,opt,name=major,proto3" json:"major" form:"major"`
+	Sex      string        `protobuf:"bytes,4,opt,name=sex,proto3" json:"sex" form:"sex"`
 	// string  origin = 5 [(gogoproto.moretags) = "form:\"origin\""];
 	// string  class = 5 [(gogoproto.moretags) = "form:\"class\""];
 	// string admissontime = 7 [(gogoproto.moretags) = "form:\"admissontime\""];
-	Account  string `protobuf:"bytes,5,opt,name=account,proto3" json:"account,omitempty" form:"account"`
-	Password string `protobuf:"bytes,6,opt,name=password,proto3" json:"password,omitempty" form:"password"`
-	College  string `protobuf:"bytes,7,opt,name=college,proto3" json:"college,omitempty" form:"college"`
+	Account  string `protobuf:"bytes,5,opt,name=account,proto3" json:"account" form:"account"`
+	Password string `protobuf:"bytes,6,opt,name=password,proto3" json:"password" form:"password"`
+	College  string `protobuf:"bytes,7,opt,name=college,proto3" json:"college" form:"college"`
 }
 
 func (m *RegisterReq) Reset()                    { *m = RegisterReq{} }
@@ -158,9 +158,9 @@ func (m *RegisterReq) GetCollege() string {
 }
 
 type LoginReq struct {
-	Usertype api1.Identify `protobuf:"varint,1,opt,name=usertype,proto3,enum=api.Identify" json:"usertype,omitempty" form:"usertype"`
-	Account  string        `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty" form:"account"`
-	Password string        `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty" form:"password"`
+	Usertype api1.Identify `protobuf:"varint,1,opt,name=usertype,proto3,enum=api.Identify" json:"usertype" form:"usertype"`
+	Account  string        `protobuf:"bytes,2,opt,name=account,proto3" json:"account" form:"account"`
+	Password string        `protobuf:"bytes,3,opt,name=password,proto3" json:"password" form:"password"`
 }
 
 func (m *LoginReq) Reset()                    { *m = LoginReq{} }
@@ -190,9 +190,9 @@ func (m *LoginReq) GetPassword() string {
 }
 
 type ChangePasswordReq struct {
-	Userid   string        `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Password string        `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty" form:"password"`
-	Identify api1.Identify `protobuf:"varint,3,opt,name=identify,proto3,enum=api.Identify" json:"identify,omitempty" form:"identify"`
+	Userid   string        `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Password string        `protobuf:"bytes,2,opt,name=password,proto3" json:"password" form:"password"`
+	Identify api1.Identify `protobuf:"varint,3,opt,name=identify,proto3,enum=api.Identify" json:"identify" form:"identify"`
 }
 
 func (m *ChangePasswordReq) Reset()                    { *m = ChangePasswordReq{} }
@@ -222,7 +222,7 @@ func (m *ChangePasswordReq) GetIdentify() api1.Identify {
 }
 
 type IdentifyReply struct {
-	Ltype api1.Identify `protobuf:"varint,1,opt,name=ltype,proto3,enum=api.Identify" json:"ltype,omitempty" form:"ltype"`
+	Ltype api1.Identify `protobuf:"varint,1,opt,name=ltype,proto3,enum=api.Identify" json:"ltype" form:"ltype"`
 }
 
 func (m *IdentifyReply) Reset()                    { *m = IdentifyReply{} }
@@ -238,13 +238,13 @@ func (m *IdentifyReply) GetLtype() api1.Identify {
 }
 
 type ChangeUserInfoReq struct {
-	Userid   string        `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty" form:"userid"`
-	Usertype api1.Identify `protobuf:"varint,2,opt,name=usertype,proto3,enum=api.Identify" json:"usertype,omitempty" form:"usertype"`
+	Userid   string        `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid" form:"userid"`
+	Usertype api1.Identify `protobuf:"varint,2,opt,name=usertype,proto3,enum=api.Identify" json:"usertype" form:"usertype"`
 	// string  password = 3 [(gogoproto.moretags) = "form:\"password\""];
-	Major    string `protobuf:"bytes,3,opt,name=major,proto3" json:"major,omitempty" form:"major"`
-	College  string `protobuf:"bytes,4,opt,name=college,proto3" json:"college,omitempty" form:"college"`
-	Sex      string `protobuf:"bytes,5,opt,name=sex,proto3" json:"sex,omitempty" form:"sex"`
-	Username string `protobuf:"bytes,6,opt,name=username,proto3" json:"username,omitempty" form:"username"`
+	Major    string `protobuf:"bytes,3,opt,name=major,proto3" json:"major" form:"major"`
+	College  string `protobuf:"bytes,4,opt,name=college,proto3" json:"college" form:"college"`
+	Sex      string `protobuf:"bytes,5,opt,name=sex,proto3" json:"sex" form:"sex"`
+	Username string `protobuf:"bytes,6,opt,name=username,proto3" json:"username" form:"username"`
 }
 
 func (m *ChangeUserInfoReq) Reset()                    { *m = ChangeUserInfoReq{} }
@@ -295,7 +295,7 @@ func (m *ChangeUserInfoReq) GetUsername() string {
 }
 
 type TransportReq struct {
-	Content []byte `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
+	Content []byte `protobuf:"bytes,1,opt,name=content,proto3" json:"content"`
 }
 
 func (m *TransportReq) Reset()                    { *m = TransportReq{} }
@@ -311,7 +311,7 @@ func (m *TransportReq) GetContent() []byte {
 }
 
 type TransportReply struct {
-	Status bool `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Status bool `protobuf:"varint,1,opt,name=status,proto3" json:"status"`
 }
 
 func (m *TransportReply) Reset()                    { *m = TransportReply{} }

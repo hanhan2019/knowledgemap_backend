@@ -46,6 +46,8 @@ type ClassService interface {
 	CreateInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error)
 	StopInvitaion(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*api.Empty, error)
 	InvitaionInfo(ctx context.Context, in *InvitationReq, opts ...client.CallOption) (*ClassReply, error)
+	DeleteStudent(ctx context.Context, in *DeleteStudentReq, opts ...client.CallOption) (*api.Empty, error)
+	QueryStudentInClass(ctx context.Context, in *QueryStudentInClassReq, opts ...client.CallOption) (*QueryClassUserInfoReply, error)
 }
 
 type classService struct {
@@ -166,6 +168,26 @@ func (c *classService) InvitaionInfo(ctx context.Context, in *InvitationReq, opt
 	return out, nil
 }
 
+func (c *classService) DeleteStudent(ctx context.Context, in *DeleteStudentReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Class.DeleteStudent", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *classService) QueryStudentInClass(ctx context.Context, in *QueryStudentInClassReq, opts ...client.CallOption) (*QueryClassUserInfoReply, error) {
+	req := c.c.NewRequest(c.name, "Class.QueryStudentInClass", in)
+	out := new(QueryClassUserInfoReply)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Class service
 
 type ClassHandler interface {
@@ -179,6 +201,8 @@ type ClassHandler interface {
 	CreateInvitaion(context.Context, *InvitationReq, *api.Empty) error
 	StopInvitaion(context.Context, *InvitationReq, *api.Empty) error
 	InvitaionInfo(context.Context, *InvitationReq, *ClassReply) error
+	DeleteStudent(context.Context, *DeleteStudentReq, *api.Empty) error
+	QueryStudentInClass(context.Context, *QueryStudentInClassReq, *QueryClassUserInfoReply) error
 }
 
 func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.HandlerOption) error {
@@ -193,6 +217,8 @@ func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.Han
 		CreateInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error
 		StopInvitaion(ctx context.Context, in *InvitationReq, out *api.Empty) error
 		InvitaionInfo(ctx context.Context, in *InvitationReq, out *ClassReply) error
+		DeleteStudent(ctx context.Context, in *DeleteStudentReq, out *api.Empty) error
+		QueryStudentInClass(ctx context.Context, in *QueryStudentInClassReq, out *QueryClassUserInfoReply) error
 	}
 	type Class struct {
 		class
@@ -243,4 +269,12 @@ func (h *classHandler) StopInvitaion(ctx context.Context, in *InvitationReq, out
 
 func (h *classHandler) InvitaionInfo(ctx context.Context, in *InvitationReq, out *ClassReply) error {
 	return h.ClassHandler.InvitaionInfo(ctx, in, out)
+}
+
+func (h *classHandler) DeleteStudent(ctx context.Context, in *DeleteStudentReq, out *api.Empty) error {
+	return h.ClassHandler.DeleteStudent(ctx, in, out)
+}
+
+func (h *classHandler) QueryStudentInClass(ctx context.Context, in *QueryStudentInClassReq, out *QueryClassUserInfoReply) error {
+	return h.ClassHandler.QueryStudentInClass(ctx, in, out)
 }

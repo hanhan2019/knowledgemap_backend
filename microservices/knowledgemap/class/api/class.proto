@@ -15,10 +15,13 @@ service Class {
     rpc CreateInvitaion(InvitationReq)returns (Empty){}
     rpc StopInvitaion(InvitationReq)returns (Empty){}
     rpc InvitaionInfo(InvitationReq)returns (ClassReply){}
+    rpc DeleteStudent(DeleteStudentReq)returns (Empty){}//删除班级中的某个学生
+    rpc QueryStudentInClass(QueryStudentInClassReq)returns (QueryClassUserInfoReply){}//在班级中查询某个学生
 }
 
 message ClassReq {
-	string classid = 1 [(gogoproto.moretags) = "form:\"classid\""];
+    string classid = 1 [(gogoproto.moretags) = "form:\"classid\""];
+    int64 page = 2[(gogoproto.moretags) = "form:\"page\""];
 }
 
 message ClassReply {
@@ -62,14 +65,21 @@ message InvitationReq{
     string  invitaioncode = 2 [(gogoproto.moretags) = "form:\"invitationcode\""];
     string  userid = 3 [(gogoproto.moretags) = "form:\"userid\""];
 }
-
+message StudentInfo{
+    string userid = 1 ;
+    string username = 2;
+    string number = 3;
+    string account = 4;
+    string sex = 5;
+    string college =6;
+    int64 createtime =7;
+    int64 status = 8;
+}
 message QueryClassUserInfoReply{
-    message StudentInfo{
-        string userid = 1 ;
-        string username = 2;
-    }
     string classid = 1 ;
     repeated StudentInfo students = 2;
+    int64 currentpage = 3[(gogoproto.moretags) = "form:\"currentpage\""];
+    int64 totalpage = 4[(gogoproto.moretags) = "form:\"totalpage\""];
 }
 
 message SearchClassesInfoReq{
@@ -91,4 +101,15 @@ message QueryFormListReply{
     repeated string colleges = 1[(gogoproto.moretags) = "form:\"colleges\""];
     repeated string subjects = 2[(gogoproto.moretags) = "form:\"subjects\""];
     repeated string courses = 3[(gogoproto.moretags) = "form:\"courses\""];
+}
+
+message DeleteStudentReq{
+    string userid = 1 [(gogoproto.moretags) = "form:\"userid\""];
+    string classid = 2 [(gogoproto.moretags) = "form:\"classid\""];
+}
+
+message QueryStudentInClassReq{
+    string classid = 1 [(gogoproto.moretags) = "form:\"classid\""];
+    int64 page = 2[(gogoproto.moretags) = "form:\"page\""];
+    string username = 3 [(gogoproto.moretags) = "form:\"username\""];
 }

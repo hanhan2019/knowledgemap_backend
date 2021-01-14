@@ -72,6 +72,7 @@ func queryAllUserInClass(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(capi.ClassReq)
 	req.Classid = c.QueryParam("classid")
+	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
 	if res, err := classSrv.QueryClassUserInfo(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
@@ -159,6 +160,35 @@ func queryFormList(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(uapi.Empty)
 	if res, err := classSrv.QueryFormList(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func deleteStudentInClass(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(capi.DeleteStudentReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	if res, err := classSrv.DeleteStudent(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
+func queryStudentInClass(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(capi.QueryStudentInClassReq)
+	req.Classid = c.QueryParam("classid")
+	req.Username = c.QueryParam("username")
+	req.Page, _ = strconv.ParseInt(c.QueryParam("page"), 10, 64)
+	if res, err := classSrv.QueryStudentInClass(context.TODO(), req); err != nil {
 		clog.Error("error %v", err)
 		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
 	} else {

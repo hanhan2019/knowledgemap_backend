@@ -111,19 +111,41 @@ func (s *ClassService) UserClassInfo(ctx context.Context, req *uapi.UserReq, rsp
 func (s *ClassService) QueryClassUserInfo(ctx context.Context, req *api.ClassReq, rsp *api.QueryClassUserInfoReply) error {
 	logrus.Infof("QueryClassUserInfo req is %v ", req)
 	if err := CheckClass(ctx, req.Classid); err != nil {
-		return nil
+		return err
 	}
 	allStudents := new([]*model.ClassUser)
-	if err := gdao.FillAllStudentsById(ctx, req.Classid, allStudents); err != nil {
+	err, allCount := gdao.FillAllStudentsById(ctx, req.Classid, allStudents, int(req.Page), int(PageCount))
+	if err != nil {
 		fmt.Println("query all students by classid err", err)
 		return fmt.Errorf("查无此班级学生信息")
 	}
+	fmt.Println(len(*allStudents))
 	for _, v := range *allStudents {
-		info := new(api.QueryClassUserInfoReply_StudentInfo)
+		info := new(api.StudentInfo)
 		info.Userid = v.UserId
-		info.Username = v.UserName
+		// info.Usernumber = v.Number
+		if v.UserId != "" {
+			fmt.Println("查学生信息")
+			userInfoReq := new(uapi.UserReq)
+			userInfoReq.Userid = v.UserId
+			userInfoReq.Identify = uapi.Identify_STUDENT
+			if res, err := userSrv.UserInfo(context.TODO(), userInfoReq); err != nil {
+				logrus.Errorf("query user %v info error %v\n", v.UserId, err)
+			} else {
+				user := res.GetUser()
+				info.Number = user.GetNumber()
+				info.Username = user.GetUsername()
+				info.Account = user.GetAccount()
+				info.Sex = user.GetSex()
+				info.College = user.GetCollege()
+				info.Createtime = user.GetCreatetime()
+				info.Status = 1
+			}
+		}
 		rsp.Students = append(rsp.Students, info)
 	}
+	rsp.Currentpage = req.Page
+	rsp.Totalpage = int64(allCount / PageCount)
 	return nil
 }
 
@@ -156,5 +178,54 @@ func (s *ClassService) QueryFormList(ctx context.Context, req *uapi.Empty, rsp *
 	rsp.Colleges = colleges
 	rsp.Courses = courses
 	rsp.Subjects = subjects
+	return nil
+}
+
+func (s *ClassService) DeleteStudent(ctx context.Context, req *api.DeleteStudentReq, rsp *uapi.Empty) error {
+	logrus.Infof("DeleteStudent req is %v ", req)
+	if err := gdao.DeleteStudenInClass(ctx, req.Classid, req.Userid); err != nil {
+		logrus.Errorf("delete student %v in class %v error %v", req.Classid, req.Userid, err)
+	}
+
+	return nil
+}
+
+func (s *ClassService) QueryStudentInClass(ctx context.Context, req *api.QueryStudentInClassReq, rsp *api.QueryClassUserInfoReply) error {
+	logrus.Infof("QueryStudentInClass req is %v ", req)
+	if err := CheckClass(ctx, req.Classid); err != nil {
+		return err
+	}
+	allStudents := new([]*model.ClassUser)
+	err, allCount := gdao.FillStudentsByUserName(ctx, req.Classid, allStudents, int(req.Page), int(PageCount), req.Username)
+	if err != nil {
+		fmt.Println("query students by name err", err)
+		return fmt.Errorf("此班级查无此学生信息")
+	}
+	fmt.Println(len(*allStudents))
+	for _, v := range *allStudents {
+		info := new(api.StudentInfo)
+		info.Userid = v.UserId
+		info.Username = v.UserName
+		// info.Usernumber = v.Number
+		if v.UserId != "" {
+			userInfoReq := new(uapi.UserReq)
+			userInfoReq.Userid = v.UserId
+			userInfoReq.Identify = uapi.Identify_STUDENT
+			if res, err := userSrv.UserInfo(context.TODO(), userInfoReq); err != nil {
+				logrus.Errorf("query user %v info error %v\n", v.UserId, err)
+			} else {
+				user := res.GetUser()
+				info.Number = user.GetNumber()
+				info.Account = user.GetAccount()
+				info.Sex = user.GetSex()
+				info.College = user.GetCollege()
+				info.Createtime = user.GetCreatetime()
+				info.Status = 1
+			}
+		}
+		rsp.Students = append(rsp.Students, info)
+	}
+	rsp.Currentpage = req.Page
+	rsp.Totalpage = int64(allCount / PageCount)
 	return nil
 }

@@ -298,21 +298,121 @@ method:get
 param:
 
     - classid string 班级id 
+    - page string 分页
   
 response:
 
    `{
-        "msg": "",
-        "code": 0,
-        "data": {
-            "students": [
-                {
-                    "userid": "5e919d0036d02a48ccc08225",
-                    "username": "黄"
-                }
-            ]
-        }
-    }`
+    "msg": "",
+    "code": 0,
+    "data": {
+        "classid": "",
+        "students": [
+            {
+                "userid": "5fdee86255a8d148cdc91ae2",
+                "username": "张十一",
+                "number": "18",
+                "account": "e2",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1 //状态，1是活跃，2是封禁
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ae1",
+                "username": "张十",
+                "number": "17",
+                "account": "e1",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad9",
+                "username": "张九",
+                "number": "16",
+                "account": "d9",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad8",
+                "username": "张八",
+                "number": "15",
+                "account": "d8",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad7",
+                "username": "张七",
+                "number": "14",
+                "account": "d7",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad6",
+                "username": "张六",
+                "number": "13",
+                "account": "d6",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad5",
+                "username": "张五",
+                "number": "12",
+                "account": "d5",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad4",
+                "username": "张四",
+                "number": "11",
+                "account": "d4",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad3",
+                "username": "张三",
+                "number": "10",
+                "account": "d3",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1 
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad2",
+                "username": "张二",
+                "number": "8",
+                "account": "d2",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            }
+        ],
+        "currentpage": 0,
+        "totalpage": 1
+    }
+}`
 
 --------
 
@@ -382,6 +482,62 @@ response:
         ]
     }
 }`
+
+--------
+
+api:/class/query/student
+
+desc:在班级中以用户名查询学生
+
+method:get
+
+param:
+    - classid string 班级id
+    - username string 学生用户名
+    - page string 分页
+
+  
+response:
+
+    `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "classid": "",
+        "students": [
+            {
+                "userid": "5fdee86255a8d148cdc91ad3",
+                "username": "张三",
+                "number": "10",
+                "account": "d3",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            }
+        ],
+        "currentpage": 0,
+        "totalpage": 0
+    }
+}`
+
+
+--------
+
+api:/class/deletestudent
+
+desc:在班级中删除学生
+
+method:post
+
+param:
+    - classid string 班级id
+    - userid string 学生id
+
+  
+response:
+
+    ``
 
 --------
 
@@ -522,18 +678,18 @@ response:
 
 --------
 
-api:/question/query/:kind/:course/:subject/:knowledge
+api:/question/query
 
-desc:根据知识点查询某种类型的题目
+desc:查询某种类型的题目
 
 method:GET
 
 param:
 
-    - kind int64 题目类型
+    - questiontype int64 题目类型
     - subject string 学科
     - course string 课程 
-    - knowledge string 知识点id
+    - page int64 分页
    
 response:
 
@@ -543,23 +699,149 @@ response:
     "data": {
         "questions": [
             {
-                "id": "5e9b0ccf36d02a7a6979991e",
-                "kind": 1,
-                "content": "1+1=？",
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
+                "id": "5fccd6bc36d02a179478822c",
+                "questiontype": 2,
+                "title": "多选题测试",
+                "istitleimg": false,
+                "options": [
+                    {
+                        "prefix": "A",
+                        "content": "1",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "B",
+                        "content": "2",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "C",
+                        "content": "3",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "D",
+                        "content": "4",
+                        "iscontentimg": false
+                    }
                 ],
-                "answer": [
-                    "2"
+                "answers": [
+                    {
+                        "prefix": "A",
+                        "content": "1",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "C",
+                        "content": "3",
+                        "iscontentimg": false
+                    }
                 ],
                 "subject": "math",
-                "course": "xx",
-                "knowledge": "5e9b06ce36d02a7b7637eccf"
+                "course": "高数",
+                "knowledge": "5fccd50d36d02a19df8ed447",
+                "name": "多选题简单测试",
+                "needcheck": false,
+                "explain": "看着搞",
+                "star": 2
+            },
+            {
+                "id": "5fccd6bc36d02a179478822b",
+                "questiontype": 2,
+                "title": "多选题测试",
+                "istitleimg": false,
+                "options": [
+                    {
+                        "prefix": "A",
+                        "content": "1",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "B",
+                        "content": "2",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "C",
+                        "content": "3",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "D",
+                        "content": "4",
+                        "iscontentimg": false
+                    }
+                ],
+                "answers": [
+                    {
+                        "prefix": "A",
+                        "content": "1",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "C",
+                        "content": "3",
+                        "iscontentimg": false
+                    }
+                ],
+                "subject": "math",
+                "course": "高数",
+                "knowledge": "5fccd50d36d02a19df8ed447",
+                "name": "多选题简单测试",
+                "needcheck": false,
+                "explain": "看着搞",
+                "star": 2
+            },
+            {
+                "id": "5fccd6bc36d02a179478822a",
+                "questiontype": 2,
+                "title": "多选题测试",
+                "istitleimg": false,
+                "options": [
+                    {
+                        "prefix": "A",
+                        "content": "1",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "B",
+                        "content": "2",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "C",
+                        "content": "3",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "D",
+                        "content": "4",
+                        "iscontentimg": false
+                    }
+                ],
+                "answers": [
+                    {
+                        "prefix": "A",
+                        "content": "1",
+                        "iscontentimg": false
+                    },
+                    {
+                        "prefix": "C",
+                        "content": "3",
+                        "iscontentimg": false
+                    }
+                ],
+                "subject": "math",
+                "course": "高数",
+                "knowledge": "5fccd50d36d02a19df8ed447",
+                "name": "多选题简单测试",
+                "needcheck": false,
+                "explain": "看着搞",
+                "star": 2
             }
-        ]
+        ],
+        "currentpage": 0,
+        "totalpage": 0
     }
 }`
 
@@ -1129,170 +1411,356 @@ method:Get
 param:
 
     - paperid string 试卷id
-  
+    - paperkind string 类型,value为homework和exam两种，value为exam，则为已完成的试卷功能，value为homework，则为首页待接的查询作业接口
+
 response:
 
    `{
     "msg": "",
     "code": 0,
     "data": {
-        "paper": [
+        "titleitems": [
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "单选题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478829a",
+                        "questiontype": 1,
+                        "title": "测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478829b",
+                        "questiontype": 1,
+                        "title": "测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478829c",
+                        "questiontype": 1,
+                        "title": "测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "多选题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478822a",
+                        "questiontype": 2,
+                        "title": "多选题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478822b",
+                        "questiontype": 2,
+                        "title": "多选题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478822c",
+                        "questiontype": 2,
+                        "title": "多选题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "判断题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478823a",
+                        "questiontype": 3,
+                        "title": "判断题测试1+1=2？",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "对",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "错",
+                                "iscontentimg": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478823b",
+                        "questiontype": 3,
+                        "title": "判断题测试5-4=1？",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "对",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "错",
+                                "iscontentimg": false
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "填空题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478824a",
+                        "questiontype": 4,
+                        "title": "填空题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "窗前_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "疑是_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "举头_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "低头_",
+                                "content": "",
+                                "iscontentimg": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478824b",
+                        "questiontype": 4,
+                        "title": "填空题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "窗前_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "疑是_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "举头_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "低头_",
+                                "content": "",
+                                "iscontentimg": false
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "简答题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478825a",
+                        "questiontype": 5,
+                        "title": "简述笛卡尔坐标系的建立方法",
+                        "istitleimg": false,
+                        "options": null
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478825b",
+                        "questiontype": 5,
+                        "title": "简述数学的应用方面？",
+                        "istitleimg": false,
+                        "options": null
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "图片题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478826a",
+                        "questiontype": 6,
+                        "title": "请上传y=cosx的图像",
+                        "istitleimg": false,
+                        "options": null
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478826b",
+                        "questiontype": 6,
+                        "title": "请上传y=sinx的图像",
+                        "istitleimg": false,
+                        "options": null
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
-            },
-            {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
-            },
-            {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
-            },
-            {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
-            },
-            {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "content": "测试",
-                "qimage":false,
-                "oimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "score": 10
+                "name": "文件题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478827a",
+                        "questiontype": 7,
+                        "title": "请上传第一次作业的文件",
+                        "istitleimg": false,
+                        "options": null
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478827b",
+                        "questiontype": 7,
+                        "title": "请上传第二次作业的文件",
+                        "istitleimg": false,
+                        "options": null
+                    }
+                ]
             }
         ],
         "name": "期中试卷试卷",
-        "totalscore": 110,
-        "continuingtime": 3600
+        "score": 110,
+        "suggesttime": 3600
     }
 }`
 
@@ -1307,25 +1775,20 @@ method:PUT
 param:
 
     `{
-	"paperid":"5fe47805a541ddbf7e4794fe",// string 试卷id
+	"paperid":"5fe47805a541ddbf7e4794fe",
+	"paperkind":"exam",
 	"answer":[
 		{
-			"questionid":"5fccd6d236d02a17947882a4", // 题目id
-			"answer":["1"],// 答题
-			"aimage":false// 是否是图片
+			"questionid":"5fccd6bc36d02a179478822a",
+			"answers":["A","B"]
 		},
 		{
-			"questionid":"5fccd6d236d02a17947882a4",
-			"answer":["2"],
-			"aimage":false
-		},
-		{
-			"questionid":"5fccd6d236d02a17947882a4",
-			"answer":["1"],
-			"aimage":false
+			"questionid":"5fccd6bc36d02a179478827a",
+			"answers":["http://127.0.0.1:8080/group1/default/20210102/20/40/5/transport_end.jpeg"
+			]
 		}
 		]
-    }`
+}`
   
 response:
 
@@ -1336,16 +1799,123 @@ response:
     }`
 
 --------
+api:/paper/answerrecord/query/list
+
+desc:查询我所答测试试卷或家庭作业的列表
+
+method:GET
+
+param:
+
+    - page int 分页
+    - paperkind string exam为测试试卷,homework为家庭作业
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "recordlist": [
+            {
+                "paperrecordid": "5ff42fc055a8d122a8b714d4",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838528
+            },
+            {
+                "paperrecordid": "5ff42fb955a8d122a8b714d1",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838521
+            },
+            {
+                "paperrecordid": "5ff42fb855a8d122a8b714ce",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838520
+            },
+            {
+                "paperrecordid": "5ff42fb755a8d122a8b714cb",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838519
+            },
+            {
+                "paperrecordid": "5ff42fb655a8d122a8b714c8",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838518
+            },
+            {
+                "paperrecordid": "5ff42fb655a8d122a8b714c5",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838518
+            },
+            {
+                "paperrecordid": "5ff42fb455a8d122a8b714c2",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838516
+            },
+            {
+                "paperrecordid": "5ff42fb355a8d122a8b714bf",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838515
+            },
+            {
+                "paperrecordid": "5ff42ece55a8d122a8b714bc",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838286
+            },
+            {
+                "paperrecordid": "5ff42eb855a8d122a8b714b9",
+                "papername": "有所要题目类型的试卷",
+                "course": "高数",
+                "teachername": "teacher1",
+                "status":"",
+                "dotime": 1609838264
+            }
+        ],
+        "currentpage": 0,
+        "totalpage": 1
+    }
+}`
+
+
+--------
+
 
 api:/paper/answerrecord/query
 
-desc:查询答卷记录
+desc:查询具体的测试答卷答题记录或家庭作业答题记录
 
 method:Get
 
 param:
 
-    - paperid string 试卷id
+    - paperrecordid string 试卷记录id
   
 response:
 
@@ -1354,161 +1924,738 @@ response:
     "code": 0,
     "data": {
         "paperid": "5fe47805a541ddbf7e4794fe",
-        "papername": "期中试卷试卷",
-        "totalscore": 110, //试卷总分
-        "getscore": 40, //答卷得分
-        "needcheck": false,//是否需要人工判卷，为true则不显示具体信息，提示用户等待判卷即可
+        "papername": "有所要题目类型的试卷",
+        "score": 110,//总分
+        "getscore": 0,//得分
+        "needcheck": true,//需要人工判卷
         "paperrecord": [
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "name":"测试名",
-                "content": "测试",
-                "qimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "oimage":false,
-                "rightanswer": [
-                    "1"
-                ],
-                "raimage":false,
-                "useranswer": [
-                    "1"
-                ],
-                "uimage":false,
-                "needcheck":false,
-                "explain":"答案解析",
-                "star":3//题目星级，最高为5
+                "name": "单选题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478829a",
+                        "questiontype": 1,
+                        "title": "测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            }
+                        ],//正确答案 
+                        "getoptions": null,//回答的答案
+                        "needcheck": false,//是否需要人工判卷
+                        "explain": "简单，自己想",//解析
+                        "result": 0 // 0未作答，1正确，2错误，3非最佳答案，4等待批改
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478829b",
+                        "questiontype": 1,
+                        "title": "测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "简单，自己想",
+                        "result": 0
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478829c",
+                        "questiontype": 1,
+                        "title": "测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "简单，自己想",
+                        "result": 0
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "name":"测试名",
-                "content": "测试",
-                "qimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "oimage":false,
-                "rightanswer": [
-                    "1"
-                ],
-                "raimage":false,
-                "useranswer": [
-                    "2"
-                ],
-                "uimage":false,
-                "needcheck":false,
-                "explain":"答案解析",
-                "star":3//题目星级，最高为5
+                "name": "多选题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478822a",
+                        "questiontype": 2,
+                        "title": "多选题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": [
+                            "A",
+                            "B"
+                        ],
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 2
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478822b",
+                        "questiontype": 2,
+                        "title": "多选题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 0
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478822c",
+                        "questiontype": 2,
+                        "title": "多选题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "2",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "D",
+                                "content": "4",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "1",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "C",
+                                "content": "3",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 0
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "name":"测试名",
-                "content": "测试",
-                "qimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "oimage":false,
-                "rightanswer": [
-                    "1"
-                ],
-                "raimage":false,
-                "useranswer": [
-                    "1"
-                ],
-                "uimage":false,
-                "needcheck":false,
-                "explain":"答案解析",
-                "star":3//题目星级，最高为5
+                "name": "判断题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478823a",
+                        "questiontype": 3,
+                        "title": "判断题测试1+1=2？",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "对",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "错",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "对",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 0
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478823b",
+                        "questiontype": 3,
+                        "title": "判断题测试5-4=1？",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "A",
+                                "content": "对",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "B",
+                                "content": "错",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "A",
+                                "content": "对",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 0
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "name":"测试名",
-                "content": "测试",
-                "qimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "oimage":false,
-                "rightanswer": [
-                    "1"
-                ],
-                "raimage":false,
-                "useranswer": [
-                    "2"
-                ],
-                "uimage":false,
-                "needcheck":false,
-                "explain":"答案解析",
-                "star":3//题目星级，最高为5
+                "name": "填空题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478824a",
+                        "questiontype": 4,
+                        "title": "填空题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "窗前_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "疑是_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "举头_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "低头_",
+                                "content": "",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "窗前_",
+                                "content": "明月光",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "疑是_",
+                                "content": "地上霜",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "举头_",
+                                "content": "望明月",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "低头_",
+                                "content": "思故乡",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 0
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478824b",
+                        "questiontype": 4,
+                        "title": "填空题测试",
+                        "istitleimg": false,
+                        "options": [
+                            {
+                                "prefix": "窗前_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "疑是_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "举头_",
+                                "content": "",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "低头_",
+                                "content": "",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "rightoptions": [
+                            {
+                                "prefix": "窗前_",
+                                "content": "明月光",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "疑是_",
+                                "content": "地上霜",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "举头_",
+                                "content": "望明月",
+                                "iscontentimg": false
+                            },
+                            {
+                                "prefix": "低头_",
+                                "content": "思故乡",
+                                "iscontentimg": false
+                            }
+                        ],
+                        "getoptions": null,
+                        "needcheck": false,
+                        "explain": "看着搞",
+                        "result": 0
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "name":"测试名",
-                "content": "测试",
-                "qimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "oimage":false,
-                "rightanswer": [
-                    "1"
-                ],
-                "raimage":false,
-                "useranswer": [
-                    "1"
-                ],
-                "uimage":false,
-                "needcheck":false,
-                "explain":"答案解析",
-                "star":3//题目星级，最高为5
+                "name": "简答题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478825a",
+                        "questiontype": 5,
+                        "title": "简述笛卡尔坐标系的建立方法",
+                        "istitleimg": false,
+                        "options": null,
+                        "rightoptions": null,
+                        "getoptions": null,
+                        "needcheck": true,
+                        "explain": "看着搞",
+                        "result": 0
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478825b",
+                        "questiontype": 5,
+                        "title": "简述数学的应用方面？",
+                        "istitleimg": false,
+                        "options": null,
+                        "rightoptions": null,
+                        "getoptions": null,
+                        "needcheck": true,
+                        "explain": "看着搞",
+                        "result": 0
+                    }
+                ]
             },
             {
-                "questionid": "5fccd6d236d02a17947882a4",
-                "kind": 1,
-                "name":"测试名",
-                "content": "测试",
-                "qimage":false,
-                "option": [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
-                ],
-                "oimage":false,
-                "rightanswer": [
-                    "1"
-                ],
-                "raimage":false,
-                "useranswer": [
-                    "2"
-                ],
-                "uimage":false,
-                "needcheck":false,
-                "explain":"答案解析",
-                "star":3//题目星级，最高为5
+                "name": "图片题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478826a",
+                        "questiontype": 6,
+                        "title": "请上传y=cosx的图像",
+                        "istitleimg": false,
+                        "options": null,
+                        "rightoptions": null,
+                        "getoptions": null,
+                        "needcheck": true,
+                        "explain": "看着搞",
+                        "result": 0
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478826b",
+                        "questiontype": 6,
+                        "title": "请上传y=sinx的图像",
+                        "istitleimg": false,
+                        "options": null,
+                        "rightoptions": null,
+                        "getoptions": null,
+                        "needcheck": true,
+                        "explain": "看着搞",
+                        "result": 0
+                    }
+                ]
+            },
+            {
+                "name": "文件题",
+                "questionitems": [
+                    {
+                        "id": "5fccd6bc36d02a179478827a",
+                        "questiontype": 7,
+                        "title": "请上传第一次作业的文件",
+                        "istitleimg": false,
+                        "options": null,
+                        "rightoptions": null,
+                        "getoptions": [
+                            "http://127.0.0.1:8080/group1/default/20210102/20/40/5/transport_end.jpeg"
+                        ],
+                        "needcheck": true,
+                        "explain": "看着搞",
+                        "result": 4
+                    },
+                    {
+                        "id": "5fccd6bc36d02a179478827b",
+                        "questiontype": 7,
+                        "title": "请上传第二次作业的文件",
+                        "istitleimg": false,
+                        "options": null,
+                        "rightoptions": null,
+                        "getoptions": null,
+                        "needcheck": true,
+                        "explain": "看着搞",
+                        "result": 0
+                    }
+                ]
             }
         ]
+    }
+}`
+
+
+--------
+
+api:/file/upload
+
+desc:上传文件
+
+method:PUT
+
+param:
+    - scene string 场景
+    - type string 1图片，2文件
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "fileid": "6a594fdee1fa1c60eca89f39c00d8a70",
+        "url": "http://127.0.0.1:8080/group1/default/20210102/20/40/5/transport_end.jpeg"
+    }
+    }`
+
+--------
+
+api:/paper/query/recommend
+
+desc:首页查看推荐试卷和待做作业
+
+method:GET
+
+param:
+
+response:
+
+`{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "homework": [
+            {
+                "paperid": "5fe47805a541ddbf7e479ad1",
+                "name": "家庭作业1",
+                "score": 0,
+                "suggesttime": 0,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e479ad2",
+                "name": "家庭作业2",
+                "score": 0,
+                "suggesttime": 0,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e479ad3",
+                "name": "家庭作业3",
+                "score": 0,
+                "suggesttime": 0,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e479ad4",
+                "name": "家庭作业4",
+                "score": 0,
+                "suggesttime": 0,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e479ad5",
+                "name": "家庭作业5",
+                "score": 0,
+                "suggesttime": 0,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e479ad6",
+                "name": "家庭作业6",
+                "score": 0,
+                "suggesttime": 0,
+                "origin": "高数Z"
+            }
+        ],
+        "exam": [
+            {
+                "paperid": "5fe47805a541ddbf7e4794fe",
+                "name": "有所要题目类型的试卷",
+                "score": 110,
+                "suggesttime": 3600,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e4794d3",
+                "name": "期中试卷试卷",
+                "score": 110,
+                "suggesttime": 3600,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e4794d2",
+                "name": "期中试卷试卷",
+                "score": 110,
+                "suggesttime": 3600,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e4794d1",
+                "name": "期中试卷试卷",
+                "score": 110,
+                "suggesttime": 3600,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e4794c9",
+                "name": "期中试卷试卷",
+                "score": 110,
+                "suggesttime": 3600,
+                "origin": "高数Z"
+            },
+            {
+                "paperid": "5fe47805a541ddbf7e4794c8",
+                "name": "期中试卷试卷",
+                "score": 110,
+                "suggesttime": 3600,
+                "origin": "高数Z"
+            }
+        ]
+    }
+}`
+
+
+--------
+
+api:/question/do
+
+desc:做单个题目
+
+method:PUT
+
+param:
+
+   `{
+			"questionid":"5fccd6bc36d02a179478821c",
+			"answers":["A","B"]	
+}`
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "id": "5fccd6bc36d02a179478821c",
+        "questiontype": 2,
+        "title": "多选题测试",
+        "istitleimg": false,
+        "options": [
+            {
+                "prefix": "A",
+                "content": "1",
+                "iscontentimg": false
+            },
+            {
+                "prefix": "B",
+                "content": "2",
+                "iscontentimg": false
+            },
+            {
+                "prefix": "C",
+                "content": "3",
+                "iscontentimg": false
+            },
+            {
+                "prefix": "D",
+                "content": "4",
+                "iscontentimg": false
+            }
+        ],
+        "rightoptions": [
+            {
+                "prefix": "A",
+                "content": "1",
+                "iscontentimg": false
+            },
+            {
+                "prefix": "C",
+                "content": "3",
+                "iscontentimg": false
+            }
+        ],
+        "getoptions": [
+            "A",
+            "B"
+        ],
+        "needcheck": false,
+        "explain": "看着搞",
+        "result": 2
     }
 }`
