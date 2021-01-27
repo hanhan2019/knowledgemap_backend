@@ -435,6 +435,34 @@ response:
 （2）班级创编
 
 1、获取所在学科接口
+api:/class/query/myinfo
+
+desc:获取自己所在学院、学科、课程信息
+
+method:get
+
+response:
+`{
+    "msg": "",
+    "code": 0,
+    "data": [
+        {
+            "college": "信息工程学院",
+            "subject": "软件工程",
+            "course": "C语言"
+        },
+        {
+            "college": "信息工程学院",
+            "subject": "软件工程",
+            "course": "C++语言"
+        },
+        {
+            "college": "信息工程学院",
+            "subject": "软件工程",
+            "course": "汇编"
+        }
+    ]
+}`
 
 2、新建班级接口
 api:/class/create
