@@ -167,6 +167,18 @@ func queryFormList(c echo.Context) error {
 	}
 }
 
+func queryMyCollegeInfo(c echo.Context) error {
+	type CollgeInfo struct {
+		College string `json:"college"`
+		Subject string `json:"subject"`
+		Course  string `json:"course"`
+	}
+
+	res := []CollgeInfo{CollgeInfo{"信息工程学院", "软件工程", "C语言"}, CollgeInfo{"信息工程学院", "软件工程", "C++语言"}, CollgeInfo{"信息工程学院", "软件工程", "汇编"}}
+	return c.JSON(http.StatusOK, comm.Data(res))
+
+}
+
 func deleteStudentInClass(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(capi.DeleteStudentReq)

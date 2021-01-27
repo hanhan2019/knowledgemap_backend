@@ -445,8 +445,9 @@ method:post
 
 param:
 
-   - classname string 课程名
-   - major string 专业名
+   - name string 班级名
+   - subject string 学科名
+   - course string 课程名
    - college string 学院
    - teachername string 教师名,教师创建必不填，教秘创建必填
    - teacherid string 教师id编号，教秘创建必填

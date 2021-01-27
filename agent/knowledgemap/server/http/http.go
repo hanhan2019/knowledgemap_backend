@@ -127,6 +127,7 @@ func InitRouter(e *echo.Echo) {
 		api.POST("/class/deletestudent", deleteStudentInClass, authMid)
 		api.GET("/class/query/student", queryStudentInClass, authMid)
 		api.POST("/class/delete", deleteClass, authMid)
+		api.GET("/class/query/myinfo", queryMyCollegeInfo, authMid)
 	}
 	// api.PUT("/class/invitation/create", createInvitation, authMid, mustTeacherMid)
 	// api.PUT("/class/invitation/drop", dropInvitation, authMid, mustTeacherMid)
