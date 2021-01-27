@@ -17,6 +17,8 @@ service Class {
     rpc InvitaionInfo(InvitationReq)returns (ClassReply){}
     rpc DeleteStudent(DeleteStudentReq)returns (Empty){}//删除班级中的某个学生
     rpc QueryStudentInClass(QueryStudentInClassReq)returns (QueryClassUserInfoReply){}//在班级中查询某个学生
+    rpc DeleteClass(DeleteClassReq)returns (Empty){}//删除班级
+
 }
 
 message ClassReq {
@@ -112,4 +114,9 @@ message QueryStudentInClassReq{
     string classid = 1 [(gogoproto.moretags) = "form:\"classid\""];
     int64 page = 2[(gogoproto.moretags) = "form:\"page\""];
     string username = 3 [(gogoproto.moretags) = "form:\"username\""];
+}
+
+message DeleteClassReq{
+    string userid = 1 [(gogoproto.jsontag) = "uid",(gogoproto.moretags) = "form:\"userid\""];
+    string classid = 2 [(gogoproto.moretags) = "form:\"classid\""];
 }

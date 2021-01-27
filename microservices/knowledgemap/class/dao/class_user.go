@@ -92,3 +92,11 @@ func (d *Dao) DeleteStudenInClass(ctx context.Context, classId, userId string) e
 	cont := bson.M{"classid": classId, "userid": userId}
 	return col.Remove(cont)
 }
+
+func (d *Dao) DeleteAllStudenInClass(ctx context.Context, classId string) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.CLASS_USER_COLLECTION_NAME)
+	cont := bson.M{"classid": classId}
+	return col.Remove(cont)
+}

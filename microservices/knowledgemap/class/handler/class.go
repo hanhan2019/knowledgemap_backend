@@ -229,3 +229,30 @@ func (s *ClassService) QueryStudentInClass(ctx context.Context, req *api.QuerySt
 	rsp.Totalpage = int64(allCount / PageCount)
 	return nil
 }
+
+func (s *ClassService) DeleteClass(ctx context.Context, req *api.DeleteClassReq, rsp *uapi.Empty) error {
+	logrus.Infof("DeleteClass req is %v ", req)
+	if !checkClassOnwer(ctx, req.Classid, req.Userid) {
+		return fmt.Errorf("无权限删除此班级")
+	}
+	if err := gdao.DeleteClass(ctx, req.Classid); err != nil {
+		logrus.Errorf("user %v delete class %v error %v", req.Userid, req.Classid, err)
+	}
+	if err := gdao.DeleteAllStudenInClass(ctx, req.Classid); err != nil {
+		logrus.Errorf("delete all student in class %v error %v", req.Classid, err)
+	}
+	return nil
+}
+
+func checkClassOnwer(ctx context.Context, classId, userId string) bool {
+	class := new(api.ClassReply)
+	if err := gdao.FillClassByID(ctx, bson.ObjectIdHex(classId), &class); err != nil {
+		logrus.Errorf("checkClassOnwer find class %v error %v", classId, err)
+		return false
+	}
+	if class.Teacherid != userId {
+		logrus.Errorf("checkClassOnwer wrong userId %v teacherId %v ", userId, classId)
+		return false
+	}
+	return true
+}

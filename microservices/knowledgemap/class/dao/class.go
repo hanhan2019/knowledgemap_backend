@@ -90,3 +90,11 @@ func (d *Dao) FillClassByConditions(ctx context.Context, req *api.SearchClassesI
 	allCount, err = db.C(model.CLASS_COLLECTION_NAME).Find(cont).Count()
 	return
 }
+
+func (d *Dao) DeleteClass(ctx context.Context, classId string) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(model.CLASS_COLLECTION_NAME)
+	cont := bson.M{"_id": classId}
+	return col.Remove(cont)
+}

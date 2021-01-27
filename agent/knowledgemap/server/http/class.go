@@ -195,3 +195,19 @@ func queryStudentInClass(c echo.Context) error {
 		return c.JSON(http.StatusOK, comm.Data(res))
 	}
 }
+
+func deleteClass(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(capi.DeleteClassReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	req.Userid = c.Get("userId").(string)
+	if res, err := classSrv.DeleteClass(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}

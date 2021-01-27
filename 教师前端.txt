@@ -414,6 +414,23 @@ response:
     }`
 
 2、删除自己所创班级接口
+--------
+
+api:/class/delete
+
+desc:教师删除班级
+
+method:post
+
+param:
+    - classid string 班级id
+response:
+
+    `{
+        "msg": "",
+        "code": 0,
+    }`
+
 
 （2）班级创编
 
