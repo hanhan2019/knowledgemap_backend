@@ -181,6 +181,15 @@ func (s *ClassService) QueryFormList(ctx context.Context, req *uapi.Empty, rsp *
 	return nil
 }
 
+func (s *ClassService) QueryMyCollegeinfo(ctx context.Context, req *uapi.Empty, rsp *api.CollegeInfoReq) error {
+	rsp.College = "信息工程学院"
+	b := make(map[string]*api.CollegeInfoReq_Courses)
+	b["软件工程"] = &api.CollegeInfoReq_Courses{[]string{"c语言", "c++", "数据结构"}}
+	b["数学"] = &api.CollegeInfoReq_Courses{[]string{"高数", "线性代数", "概率论"}}
+	rsp.Info = b
+	return nil
+}
+
 func (s *ClassService) DeleteStudent(ctx context.Context, req *api.DeleteStudentReq, rsp *uapi.Empty) error {
 	logrus.Infof("DeleteStudent req is %v ", req)
 	if err := gdao.DeleteStudenInClass(ctx, req.Classid, req.Userid); err != nil {

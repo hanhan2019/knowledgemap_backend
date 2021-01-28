@@ -49,6 +49,7 @@ type ClassService interface {
 	DeleteStudent(ctx context.Context, in *DeleteStudentReq, opts ...client.CallOption) (*api.Empty, error)
 	QueryStudentInClass(ctx context.Context, in *QueryStudentInClassReq, opts ...client.CallOption) (*QueryClassUserInfoReply, error)
 	DeleteClass(ctx context.Context, in *DeleteClassReq, opts ...client.CallOption) (*api.Empty, error)
+	QueryMyCollegeinfo(ctx context.Context, in *api.Empty, opts ...client.CallOption) (*CollegeInfoReq, error)
 }
 
 type classService struct {
@@ -199,6 +200,16 @@ func (c *classService) DeleteClass(ctx context.Context, in *DeleteClassReq, opts
 	return out, nil
 }
 
+func (c *classService) QueryMyCollegeinfo(ctx context.Context, in *api.Empty, opts ...client.CallOption) (*CollegeInfoReq, error) {
+	req := c.c.NewRequest(c.name, "Class.QueryMyCollegeinfo", in)
+	out := new(CollegeInfoReq)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Class service
 
 type ClassHandler interface {
@@ -215,6 +226,7 @@ type ClassHandler interface {
 	DeleteStudent(context.Context, *DeleteStudentReq, *api.Empty) error
 	QueryStudentInClass(context.Context, *QueryStudentInClassReq, *QueryClassUserInfoReply) error
 	DeleteClass(context.Context, *DeleteClassReq, *api.Empty) error
+	QueryMyCollegeinfo(context.Context, *api.Empty, *CollegeInfoReq) error
 }
 
 func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.HandlerOption) error {
@@ -232,6 +244,7 @@ func RegisterClassHandler(s server.Server, hdlr ClassHandler, opts ...server.Han
 		DeleteStudent(ctx context.Context, in *DeleteStudentReq, out *api.Empty) error
 		QueryStudentInClass(ctx context.Context, in *QueryStudentInClassReq, out *QueryClassUserInfoReply) error
 		DeleteClass(ctx context.Context, in *DeleteClassReq, out *api.Empty) error
+		QueryMyCollegeinfo(ctx context.Context, in *api.Empty, out *CollegeInfoReq) error
 	}
 	type Class struct {
 		class
@@ -294,4 +307,8 @@ func (h *classHandler) QueryStudentInClass(ctx context.Context, in *QueryStudent
 
 func (h *classHandler) DeleteClass(ctx context.Context, in *DeleteClassReq, out *api.Empty) error {
 	return h.ClassHandler.DeleteClass(ctx, in, out)
+}
+
+func (h *classHandler) QueryMyCollegeinfo(ctx context.Context, in *api.Empty, out *CollegeInfoReq) error {
+	return h.ClassHandler.QueryMyCollegeinfo(ctx, in, out)
 }

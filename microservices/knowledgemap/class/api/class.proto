@@ -18,6 +18,7 @@ service Class {
     rpc DeleteStudent(DeleteStudentReq)returns (Empty){}//删除班级中的某个学生
     rpc QueryStudentInClass(QueryStudentInClassReq)returns (QueryClassUserInfoReply){}//在班级中查询某个学生
     rpc DeleteClass(DeleteClassReq)returns (Empty){}//删除班级
+    rpc QueryMyCollegeinfo(Empty)returns (CollegeInfoReq){}
 
 }
 
@@ -119,4 +120,12 @@ message QueryStudentInClassReq{
 message DeleteClassReq{
     string userid = 1 [(gogoproto.jsontag) = "uid",(gogoproto.moretags) = "form:\"userid\""];
     string classid = 2 [(gogoproto.moretags) = "form:\"classid\""];
+}
+
+message CollegeInfoReq{
+    message Courses{
+        repeated string courses = 1 [(gogoproto.moretags) = "form:\"courses\""];
+    }
+    string college = 1 [(gogoproto.moretags) = "form:\"college\""];
+    map<string, Courses> info  = 2  [(gogoproto.moretags) = "form:\"info\""];
 }

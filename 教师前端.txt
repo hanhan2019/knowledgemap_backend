@@ -445,23 +445,25 @@ response:
 `{
     "msg": "",
     "code": 0,
-    "data": [
-        {
-            "college": "信息工程学院",
-            "subject": "软件工程",
-            "course": "C语言"
-        },
-        {
-            "college": "信息工程学院",
-            "subject": "软件工程",
-            "course": "C++语言"
-        },
-        {
-            "college": "信息工程学院",
-            "subject": "软件工程",
-            "course": "汇编"
+    "data": {
+        "college": "信息工程学院",
+        "info": {
+            "数学": {
+                "courses": [
+                    "高数",
+                    "线性代数",
+                    "概率论"
+                ]
+            },
+            "软件工程": {
+                "courses": [
+                    "c语言",
+                    "c++",
+                    "数据结构"
+                ]
+            }
         }
-    ]
+    }
 }`
 
 2、新建班级接口

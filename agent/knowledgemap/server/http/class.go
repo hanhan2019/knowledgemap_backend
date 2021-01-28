@@ -168,15 +168,14 @@ func queryFormList(c echo.Context) error {
 }
 
 func queryMyCollegeInfo(c echo.Context) error {
-	type CollgeInfo struct {
-		College string `json:"college"`
-		Subject string `json:"subject"`
-		Course  string `json:"course"`
+	clog := middlewares.Log(c)
+	req := new(uapi.Empty)
+	if res, err := classSrv.QueryMyCollegeinfo(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
 	}
-
-	res := []CollgeInfo{CollgeInfo{"信息工程学院", "软件工程", "C语言"}, CollgeInfo{"信息工程学院", "软件工程", "C++语言"}, CollgeInfo{"信息工程学院", "软件工程", "汇编"}}
-	return c.JSON(http.StatusOK, comm.Data(res))
-
 }
 
 func deleteStudentInClass(c echo.Context) error {
