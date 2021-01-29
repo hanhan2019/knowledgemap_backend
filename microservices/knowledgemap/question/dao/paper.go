@@ -14,6 +14,18 @@ func (d *Dao) NewPaper(ctx context.Context, paper *model.Paper, tableName string
 	return col.Insert(paper)
 }
 
+func (d *Dao) ChangeQuestionsInPaper(ctx context.Context, paperid bson.ObjectId, tableName string, questions []model.QuestionScore, totolScore int64) error {
+	db := d.mdb.Copy()
+	defer db.Session.Close()
+	col := db.C(tableName)
+	return col.UpdateId(paperid, bson.M{
+		"$set": bson.M{
+			"questions":  questions,
+			"totalscore": totolScore,
+		},
+	})
+}
+
 func (d *Dao) FillPaperByClassId(ctx context.Context, tableName, classid string, paper *[]*model.Paper, page, pageCount int64) (err error, allCount int) {
 	db := d.mdb.Copy()
 	defer db.Session.Close()

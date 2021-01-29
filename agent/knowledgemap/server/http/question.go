@@ -144,6 +144,21 @@ func createPaper(c echo.Context) error {
 	}
 }
 
+func changeQuestionsInPaper(c echo.Context) error {
+	clog := middlewares.Log(c)
+	req := new(qapi.ChangeQuestionInPaperReq)
+	if err := comm.VBind(c, req); err != nil {
+		clog.Errorf("参数错误:%v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error(), comm.STATUS_INVALIDE_ARGS))
+	}
+	if res, err := questionSrv.ChangeQuestionInPaper(context.TODO(), req); err != nil {
+		clog.Error("error %v", err)
+		return c.JSON(http.StatusBadRequest, comm.Err(err.Error()))
+	} else {
+		return c.JSON(http.StatusOK, comm.Data(res))
+	}
+}
+
 func queryPaper(c echo.Context) error {
 	clog := middlewares.Log(c)
 	req := new(qapi.QueryPaperInClassReq)

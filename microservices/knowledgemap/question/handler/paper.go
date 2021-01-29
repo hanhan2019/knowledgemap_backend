@@ -18,16 +18,27 @@ func (s *QuestionService) CreatePaper(ctx context.Context, req *api.CreatePaperR
 	id := bson.NewObjectId()
 	questions := []model.QuestionScore{}
 	totalScore := int64(0)
-	for _, v := range req.Questions {
-		questions = append(questions, model.QuestionScore{v.Questionid, v.Score, v.Needcheck})
-		totalScore = totalScore + v.Score
-	}
 	paper := &model.Paper{id, req.Name, req.Classid, questions, time.Now().Unix(), totalScore, req.Suggesttime}
 	if err := gdao.NewPaper(ctx, paper, req.Paperkind); err != nil {
 		fmt.Println("create paper error", err)
 		return fmt.Errorf("创建失败")
 	} else {
 		rsp.Paperid = id.Hex()
+	}
+	return nil
+}
+
+func (s *QuestionService) ChangeQuestionInPaper(ctx context.Context, req *api.ChangeQuestionInPaperReq, rsp *uapi.Empty) error {
+	logrus.Infof("ChangeQuestionInPaper req is %v ", req)
+	questions := []model.QuestionScore{}
+	totalScore := int64(0)
+	for _, v := range req.Questions {
+		questions = append(questions, model.QuestionScore{v.Questionid, v.Score, v.Needcheck})
+		totalScore = totalScore + v.Score
+	}
+	if err := gdao.ChangeQuestionsInPaper(ctx, bson.ObjectIdHex(req.Paperid), req.Paperkind, questions, totalScore); err != nil {
+		fmt.Println("ChangeQuestionInPaper %v error", req.Paperid, err)
+		return fmt.Errorf("修改题目失败")
 	}
 	return nil
 }

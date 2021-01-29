@@ -32,6 +32,7 @@ service Question {
 	rpc DelteQuestionInPS(ControllQuestionInPSReq)returns (Empty) {}
 	
 	rpc CreatePaper(CreatePaperReq) returns (CreatePaperReply) {}
+	rpc ChangeQuestionInPaper(ChangeQuestionInPaperReq)returns (Empty) {}
 	rpc QueryPaperInClass(QueryPaperInClassReq) returns (QueryPaperInClassReply) {}
 	rpc QueryRecommendPaper(QueryRecommendPaperReq) returns (QueryRecommendPaperReply) {}
 	rpc QueryPaperQuestions(QueryPaperQuestionsReq) returns (QueryPaperQuestionsReply) {}
@@ -252,16 +253,21 @@ message ControllQuestionInPSReq{
 
 
 message CreatePaperReq{
+	string name = 1 [(gogoproto.moretags) = "form:\"name\""] ;
+	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
+	int64 suggesttime = 3 [(gogoproto.moretags) = "form:\"suggesttime\""] ;
+	string paperkind = 4 [(gogoproto.moretags) = "form:\"paperkind\""] ;
+}
+
+message ChangeQuestionInPaperReq{
 	message QuestionsInPaper{
 		string questionid = 1 [(gogoproto.moretags) = "form:\"questionid\""] ;
 		int64 score = 2 [(gogoproto.moretags) = "form:\"score\""] ;
 		bool needcheck = 3 [(gogoproto.moretags) = "form:\"needcheck\""] ;
 	}
-	string name = 1 [(gogoproto.moretags) = "form:\"name\""] ;
-	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
-	repeated QuestionsInPaper questions =4 [(gogoproto.moretags) = "form:\"questions\""];
-	int64 suggesttime = 5 [(gogoproto.moretags) = "form:\"suggesttime\""] ;
-	string paperkind = 6 [(gogoproto.moretags) = "form:\"paperkind\""] ;
+	string paperid  = 1 [(gogoproto.moretags) = "form:\"questions\""];
+	repeated QuestionsInPaper questions =2 [(gogoproto.moretags) = "form:\"questions\""];
+	string paperkind = 3 [(gogoproto.moretags) = "form:\"paperkind\""] ;
 }
 
 message CreatePaperReply{

@@ -124,8 +124,9 @@ message DeleteClassReq{
 
 message CollegeInfoReq{
     message Courses{
-        repeated string courses = 1 [(gogoproto.moretags) = "form:\"courses\""];
+        string subject = 1  [(gogoproto.moretags) = "form:\"subject\""];
+        repeated string courses = 2 [(gogoproto.moretags) = "form:\"courses\""];
     }
     string college = 1 [(gogoproto.moretags) = "form:\"college\""];
-    map<string, Courses> info  = 2  [(gogoproto.moretags) = "form:\"info\""];
+    repeated Courses info  = 2  [(gogoproto.moretags) = "form:\"info\""];
 }

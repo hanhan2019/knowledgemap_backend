@@ -160,12 +160,14 @@ func InitRouter(e *echo.Echo) {
 	}
 	{
 		api.POST("/paper/create", createPaper, authMid, mustTeacherMid)
+		api.POST("/paper/changequestions", changeQuestionsInPaper, authMid, mustTeacherMid)
 		api.GET("/paper/query", queryPaper, authMid)                    //根据班级号查试卷
 		api.GET("/paper/query/recommend", queryRecommendPaper, authMid) //查待做作业和推荐试卷
 		api.GET("/paper/query/questions", queryPaperQuestion, authMid)  //根据试卷号查试题目
 		api.PUT("/paper/do", doPaper, authMid)
 		api.GET("/paper/answerrecord/query", queryPaperAnswerRecord, authMid)          // 查询具体某次试卷的答题记录
 		api.GET("/paper/answerrecord/query/list", queryPaperAnswerRecordList, authMid) //查询我答过哪些试卷
+
 	}
 	//api.GET("/user/allcourse/:uid/:major", getAllCourseInfo, authMid)
 }

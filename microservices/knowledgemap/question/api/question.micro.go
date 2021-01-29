@@ -49,6 +49,7 @@ type QuestionService interface {
 	AddQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error)
 	DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, opts ...client.CallOption) (*api.Empty, error)
 	CreatePaper(ctx context.Context, in *CreatePaperReq, opts ...client.CallOption) (*CreatePaperReply, error)
+	ChangeQuestionInPaper(ctx context.Context, in *ChangeQuestionInPaperReq, opts ...client.CallOption) (*api.Empty, error)
 	QueryPaperInClass(ctx context.Context, in *QueryPaperInClassReq, opts ...client.CallOption) (*QueryPaperInClassReply, error)
 	QueryRecommendPaper(ctx context.Context, in *QueryRecommendPaperReq, opts ...client.CallOption) (*QueryRecommendPaperReply, error)
 	QueryPaperQuestions(ctx context.Context, in *QueryPaperQuestionsReq, opts ...client.CallOption) (*QueryPaperQuestionsReply, error)
@@ -195,6 +196,16 @@ func (c *questionService) CreatePaper(ctx context.Context, in *CreatePaperReq, o
 	return out, nil
 }
 
+func (c *questionService) ChangeQuestionInPaper(ctx context.Context, in *ChangeQuestionInPaperReq, opts ...client.CallOption) (*api.Empty, error) {
+	req := c.c.NewRequest(c.name, "Question.ChangeQuestionInPaper", in)
+	out := new(api.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *questionService) QueryPaperInClass(ctx context.Context, in *QueryPaperInClassReq, opts ...client.CallOption) (*QueryPaperInClassReply, error) {
 	req := c.c.NewRequest(c.name, "Question.QueryPaperInClass", in)
 	out := new(QueryPaperInClassReply)
@@ -270,6 +281,7 @@ type QuestionHandler interface {
 	AddQuestionInPS(context.Context, *ControllQuestionInPSReq, *api.Empty) error
 	DelteQuestionInPS(context.Context, *ControllQuestionInPSReq, *api.Empty) error
 	CreatePaper(context.Context, *CreatePaperReq, *CreatePaperReply) error
+	ChangeQuestionInPaper(context.Context, *ChangeQuestionInPaperReq, *api.Empty) error
 	QueryPaperInClass(context.Context, *QueryPaperInClassReq, *QueryPaperInClassReply) error
 	QueryRecommendPaper(context.Context, *QueryRecommendPaperReq, *QueryRecommendPaperReply) error
 	QueryPaperQuestions(context.Context, *QueryPaperQuestionsReq, *QueryPaperQuestionsReply) error
@@ -292,6 +304,7 @@ func RegisterQuestionHandler(s server.Server, hdlr QuestionHandler, opts ...serv
 		AddQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error
 		DelteQuestionInPS(ctx context.Context, in *ControllQuestionInPSReq, out *api.Empty) error
 		CreatePaper(ctx context.Context, in *CreatePaperReq, out *CreatePaperReply) error
+		ChangeQuestionInPaper(ctx context.Context, in *ChangeQuestionInPaperReq, out *api.Empty) error
 		QueryPaperInClass(ctx context.Context, in *QueryPaperInClassReq, out *QueryPaperInClassReply) error
 		QueryRecommendPaper(ctx context.Context, in *QueryRecommendPaperReq, out *QueryRecommendPaperReply) error
 		QueryPaperQuestions(ctx context.Context, in *QueryPaperQuestionsReq, out *QueryPaperQuestionsReply) error
@@ -356,6 +369,10 @@ func (h *questionHandler) DelteQuestionInPS(ctx context.Context, in *ControllQue
 
 func (h *questionHandler) CreatePaper(ctx context.Context, in *CreatePaperReq, out *CreatePaperReply) error {
 	return h.QuestionHandler.CreatePaper(ctx, in, out)
+}
+
+func (h *questionHandler) ChangeQuestionInPaper(ctx context.Context, in *ChangeQuestionInPaperReq, out *api.Empty) error {
+	return h.QuestionHandler.ChangeQuestionInPaper(ctx, in, out)
 }
 
 func (h *questionHandler) QueryPaperInClass(ctx context.Context, in *QueryPaperInClassReq, out *QueryPaperInClassReply) error {
