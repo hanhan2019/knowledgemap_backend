@@ -257,6 +257,8 @@ message CreatePaperReq{
 	string classid = 2 [(gogoproto.moretags) = "form:\"classid\""] ;
 	int64 suggesttime = 3 [(gogoproto.moretags) = "form:\"suggesttime\""] ;
 	string paperkind = 4 [(gogoproto.moretags) = "form:\"paperkind\""] ;
+	repeated string studentsid = 5 [(gogoproto.moretags) = "form:\"studentsid\""] ;
+	bool isallneeddo = 6 [(gogoproto.moretags) = "form:\"isallneeddo\""] ;
 }
 
 message ChangeQuestionInPaperReq{
@@ -334,7 +336,8 @@ message PaperInfo{
 	// repeated QuestionInfo questions = 4 [(gogoproto.moretags) = "form:\"questions\""] ;
 	int64 suggesttime = 4 [(gogoproto.moretags) = "form:\"suggesttime\""] ;
 	string origin = 5 [(gogoproto.moretags) = "form:\"origin\""] ;
-
+	string subject = 6 [(gogoproto.moretags) = "form:\"subject\""] ;
+	string course = 7 [(gogoproto.moretags) = "form:\"course\""] ; 
 }
 
 message DoPaperReq{

@@ -24,7 +24,35 @@ func (s *QuestionService) CreatePaper(ctx context.Context, req *api.CreatePaperR
 		return fmt.Errorf("创建失败")
 	} else {
 		rsp.Paperid = id.Hex()
+		rsp.Paperkind = req.Paperkind
 	}
+
+	if req.Paperkind == "homework" {
+		classStudents := []*capi.StudentInfo{}
+		if req.Classid != "" && req.Isallneeddo {
+			classReq := new(capi.ClassReq)
+			classReq.Classid = req.Classid
+			if res, err := classSrv.QueryClassUserInfo(context.TODO(), classReq); err != nil {
+				logrus.Error("CreateHomeWork query students in class %v error %v", req.Classid, err)
+			} else {
+				classStudents = res.GetStudents()
+			}
+		}
+		if req.Isallneeddo {
+			for _, v := range classStudents {
+				recordId := bson.NewObjectId()
+				record := &model.PaperRecord{recordId, req.Name, bson.ObjectIdHex(v.Userid), model.RECORD_WAITTING_DONE, id.Hex(), 0, time.Now().Unix(), 0}
+				gdao.NewPaperRecord(ctx, getPaperRecordTableName(req.Paperkind), record)
+			}
+		} else {
+			for _, v := range req.GetStudentsid() {
+				recordId := bson.NewObjectId()
+				record := &model.PaperRecord{recordId, req.Name, bson.ObjectIdHex(v), model.RECORD_WAITTING_DONE, id.Hex(), 0, time.Now().Unix(), 0}
+				gdao.NewPaperRecord(ctx, getPaperRecordTableName(req.Paperkind), record)
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -123,7 +151,9 @@ func (s *QuestionService) DoPaper(ctx context.Context, req *api.DoPaperReq, rsp 
 			gdao.RemovePaperRecord(ctx, bson.ObjectIdHex(req.Userid), paper.ID, getPaperRecordTableName(req.Paperkind))
 		}
 		// if req.Paperkind == model.EXAM_COLLECTION_NAME {
-		paperRecord := &model.PaperRecord{paperRecordId, paper.Name, bson.ObjectIdHex(req.Userid), req.Username, paperRecordStaus, req.Paperid, getScore, time, time}
+		//paperRecord := &model.PaperRecord{paperRecordId, paper.Name, bson.ObjectIdHex(req.Userid), req.Username, paperRecordStaus, req.Paperid, getScore, time, time}
+		paperRecord := &model.PaperRecord{paperRecordId, paper.Name, bson.ObjectIdHex(req.Userid), paperRecordStaus, req.Paperid, getScore, time, time}
+
 		gdao.NewPaperRecord(ctx, getPaperRecordTableName(req.Paperkind), paperRecord)
 		// }
 		// if req.Paperkind == model.HOMEWORK_COLLECTION_NAME {
@@ -261,7 +291,19 @@ func (s *QuestionService) QueryPaperInClass(ctx context.Context, req *api.QueryP
 		return fmt.Errorf("查找试卷失败")
 	} else {
 		for _, v := range *papers {
-			rsp.Paper = append(rsp.Paper, &api.PaperInfo{Paperid: v.ID.Hex(), Name: v.Name, Score: v.Totalscore, Suggesttime: v.SuggestTime})
+			courseName := ""
+			subjectName := ""
+			if v.ClassId != "" {
+				classReq := new(capi.ClassReq)
+				classReq.Classid = v.ClassId
+				if res, err := classSrv.ClassInfo(context.TODO(), classReq); err != nil {
+					logrus.Error("QueryPaperInClass query paper classid %v error %v", v.ClassId, err)
+				} else {
+					courseName = res.GetCourse()
+					subjectName = res.GetSubject()
+				}
+			}
+			rsp.Paper = append(rsp.Paper, &api.PaperInfo{Paperid: v.ID.Hex(), Name: v.Name, Score: v.Totalscore, Suggesttime: v.SuggestTime, Subject: subjectName, Course: courseName})
 		}
 	}
 	rsp.Currentpage = req.Page

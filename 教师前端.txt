@@ -552,6 +552,7 @@ param:
 
     - classid string 班级id
     - page string 当前页数
+    - paperkind string 试卷类型
   
 response:
 
@@ -1251,14 +1252,170 @@ response:
 
 八、作业管理界面
 （1）作业列表
-1、获取所教学科作业接口
-（2）作业创编
-1、获取所教学科接口
-2、分题型获取所教学科所有题目接口
-3、获取所教班级接口
-4、获取所教学生接口
-5、创建作业接口
+1、获取自己所创班级接口
+2、根据班级获取试卷接口
+3、根据试卷id获得试卷内容接口
+4、分题型获取所教学科所有题目接口
+5、修改试卷题目接口
 
+（2）作业创编
+1、获取所教班级接口
+2、获取所教学生接口
+--------
+
+api:/class/query/alluserinclass/:classid
+
+desc:查询班级所有学生信息
+
+method:get
+
+param:
+
+    - classid string 班级id 
+    - page string 分页
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "classid": "",
+        "students": [
+            {
+                "userid": "5fdee86255a8d148cdc91ae2",
+                "username": "张十一",
+                "number": "18",
+                "account": "e2",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1 //状态，1是活跃，2是封禁
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ae1",
+                "username": "张十",
+                "number": "17",
+                "account": "e1",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad9",
+                "username": "张九",
+                "number": "16",
+                "account": "d9",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad8",
+                "username": "张八",
+                "number": "15",
+                "account": "d8",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad7",
+                "username": "张七",
+                "number": "14",
+                "account": "d7",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad6",
+                "username": "张六",
+                "number": "13",
+                "account": "d6",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad5",
+                "username": "张五",
+                "number": "12",
+                "account": "d5",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad4",
+                "username": "张四",
+                "number": "11",
+                "account": "d4",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad3",
+                "username": "张三",
+                "number": "10",
+                "account": "d3",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1 
+            },
+            {
+                "userid": "5fdee86255a8d148cdc91ad2",
+                "username": "张二",
+                "number": "8",
+                "account": "d2",
+                "sex": "男",
+                "college": "数学学院",
+                "createtime": 1608444002,
+                "status": 1
+            }
+        ],
+        "currentpage": 0,
+        "totalpage": 1
+    }
+}`
+3、创建试卷接口
+--------
+
+api:/paper/create
+
+desc:教师创建作业
+
+method:post
+
+param:
+
+    `{
+	"name":"期中试卷试卷", //string 试卷名
+	"classid":"5fbbc8af36d02ac44f70eb67", //string 班级id
+	"suggesttime":3600, //in64 答题时长，单位秒  
+    "paperkind":"homework",//string，作业类型为homework
+    "studentsid":["5fb8f3cd29444b9a057db455","5fb8f4d429444b9d7b45c95a"],//需要做作业的学生id数组
+	"isallneeddo":false //bool，是否需要布置该作业给班级里所有学生
+}`
+  
+response:
+
+   `{
+    "msg": "",
+    "code": 0,
+    "data": {
+        "paperid": "5fe478b3a541ddbf7e479508" // string  试卷id
+    }
+    }`
 
 九、题库管理
 （1）题目列表

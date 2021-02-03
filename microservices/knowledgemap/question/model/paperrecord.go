@@ -16,11 +16,11 @@ const (
 )
 
 type PaperRecord struct {
-	ID       bson.ObjectId `json:"_id" bson:"_id"`
-	Name     string        `json:"name" bson:"name"`
-	UserID   bson.ObjectId `json:"userid" bson:"userid"`
-	UserName string        `json:"username" bson:"username"`
-	Status   RecordStatus  `json:"status" bson:"status"`
+	ID     bson.ObjectId `json:"_id" bson:"_id"`
+	Name   string        `json:"name" bson:"name"`
+	UserID bson.ObjectId `json:"userid" bson:"userid"`
+	//UserName string        `json:"username" bson:"username"`
+	Status RecordStatus `json:"status" bson:"status"`
 	// TypeId   string        `json:"typeid" bson:"typeid"`
 	PaperId    string `json:"paperid" bson:"paperid"`
 	Score      int64  `json:"score" bson:"socre"`
